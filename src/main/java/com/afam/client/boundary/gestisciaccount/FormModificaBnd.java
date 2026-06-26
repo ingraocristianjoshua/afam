@@ -4,6 +4,9 @@ import com.afam.client.boundary.dialog.MessErrBnd;
 import com.afam.client.boundary.dialog.MessSuccessoBnd;
 import com.afam.client.rest.RestClient;
 import javafx.application.Platform;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -27,6 +30,8 @@ public class FormModificaBnd {
     @FXML private TextField campoEmail;
     @FXML private Label     labelErrore;
 
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
     private final RestClient rest = RestClient.getInstance();
 
     @FXML
@@ -42,12 +47,13 @@ public class FormModificaBnd {
             String nome    = (String) resp.getOrDefault("nome", "");
             String cognome = (String) resp.getOrDefault("cognome", "");
             String email   = (String) resp.getOrDefault("email", "");
-            String dn      = (String) resp.get("dataNascita");
+            String dn      = formatData((String) resp.get("dataNascita"));
             Platform.runLater(() -> {
                 campoNome.setText(nome);
                 campoCognome.setText(cognome);
                 campoEmail.setText(email);
-                campoDataNascita.setText(dn != null ? dn : "");
+                campoDataNascita.setText(dn);
+                campoDataNascita.setPromptText("Non impostata");
             });
         } catch (RestClient.RestException e) {
             Platform.runLater(() -> mostraErrore("Impossibile caricare i dati: " + e.getMessage()));
@@ -98,6 +104,12 @@ public class FormModificaBnd {
     }
 
     @FXML public void onAnnulla() { chiudi(); }
+
+    private String formatData(String iso) {
+        if (iso == null || iso.isBlank()) return "";
+        try { return LocalDate.parse(iso).format(FMT); }
+        catch (Exception e) { return iso; }
+    }
 
     public void mostraErrore(String msg) {
         labelErrore.setText(msg);

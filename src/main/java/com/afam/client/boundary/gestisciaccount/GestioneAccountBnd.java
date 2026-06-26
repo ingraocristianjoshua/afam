@@ -3,6 +3,9 @@ package com.afam.client.boundary.gestisciaccount;
 import com.afam.client.boundary.dialog.MessConfermaBnd;
 import com.afam.client.boundary.dialog.MessErrBnd;
 import com.afam.client.boundary.dialog.MessSuccessoBnd;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import com.afam.client.rest.RestClient;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -45,6 +48,8 @@ public class GestioneAccountBnd {
     @FXML private Label labelStatoNumero;
     @FXML private Label labelStato2FA;
 
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
     private final RestClient rest = RestClient.getInstance();
 
     @FXML
@@ -62,12 +67,14 @@ public class GestioneAccountBnd {
             boolean emailVal  = Boolean.TRUE.equals(p.get("emailValidata"));
             boolean numeroVal = Boolean.TRUE.equals(p.get("numeroValidato"));
             boolean fa2       = Boolean.TRUE.equals(p.get("stato2FA"));
-            String  dataNascita = (String) p.get("dataNascita");
+            String  dataNascitaRaw = (String) p.get("dataNascita");
+            String  dataNascita = formatData(dataNascitaRaw);
 
             Platform.runLater(() -> {
                 campoNomeRO.setText(nome);
                 campoCognomeRO.setText(cognome);
-                campoDataNascitaRO.setText(dataNascita != null ? dataNascita : "");
+                campoDataNascitaRO.setText(dataNascita);
+                campoDataNascitaRO.setPromptText("Non impostata");
                 campoEmailRO.setText(email);
                 campoTelefonoRO.setText(telefono != null ? telefono : "");
 
@@ -165,6 +172,12 @@ public class GestioneAccountBnd {
         rest.logout();
         chiudi();
         apri("/fxml/autenticati/AuthPage.fxml", "AFAM");
+    }
+
+    private String formatData(String iso) {
+        if (iso == null || iso.isBlank()) return "";
+        try { return LocalDate.parse(iso).format(FMT); }
+        catch (Exception e) { return iso; }
     }
 
     public void chiudi() {
