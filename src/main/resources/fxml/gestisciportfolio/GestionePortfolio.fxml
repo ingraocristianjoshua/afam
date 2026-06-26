@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.afam.client.boundary.gestisciportfolio.GestionePortfolioBnd"
+            prefWidth="920" prefHeight="680"
+            styleClass="root">
+
+    <!-- Header -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="header-bar">
+            <padding><Insets top="14" right="20" bottom="14" left="20"/></padding>
+            <Label text="Gestisci Portfolio" styleClass="label-title" HBox.hgrow="ALWAYS"/>
+            <Button text="CREA PORTFOLIO" onAction="#onCreaPortfolio" styleClass="button-primary"/>
+        </HBox>
+    </top>
+
+    <!-- Content -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+            <padding><Insets top="20" right="30" bottom="20" left="30"/></padding>
+
+            <!-- Nessun portfolio -->
+            <VBox fx:id="panelVuoto" alignment="CENTER" spacing="20"
+                  style="-fx-padding: 80 0 0 0;" managed="false" visible="false">
+                <Label text="Non hai ancora creato nessun portfolio."
+                       style="-fx-font-size: 15px; -fx-text-fill: #6c3fc5;"/>
+                <Label text="Clicca su CREA PORTFOLIO per iniziare."
+                       style="-fx-font-size: 13px; -fx-text-fill: #9879e0;"/>
+            </VBox>
+
+            <!-- Card portfolio -->
+            <VBox fx:id="panelPortfolio" spacing="14" styleClass="card"
+                  managed="false" visible="false">
+
+                <!-- Titolo + pulsanti portfolio -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <TextField fx:id="fieldTitolo" editable="false" focusTraversable="false"
+                               HBox.hgrow="ALWAYS"
+                               style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <Button text="ANNULLA" onAction="#onAnnulla" styleClass="button-secondary"/>
+                    <Button text="ELIMINA PORTFOLIO" onAction="#onEliminaPortfolio"
+                            style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"/>
+                </HBox>
+
+                <!-- Sezione Raccolte -->
+                <Label text="Raccolte" styleClass="label-subtitle"/>
+                <VBox fx:id="boxRaccolte" spacing="8"/>
+                <Button text="CREA RACCOLTA" onAction="#onCreaRaccolta" styleClass="button-secondary"
+                        maxWidth="200"/>
+
+                <Separator/>
+
+                <!-- Sezione Contenuti -->
+                <Label text="Contenuti" styleClass="label-subtitle"/>
+                <VBox fx:id="boxContenuti" spacing="8"/>
+
+                <!-- Footer -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <padding><Insets top="6"/></padding>
+                    <Button text="AGGIUNGI CONTENUTO" onAction="#onAggiungiContenuto"
+                            styleClass="button-secondary"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="CHIUDI" onAction="#chiudi" styleClass="button-secondary"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

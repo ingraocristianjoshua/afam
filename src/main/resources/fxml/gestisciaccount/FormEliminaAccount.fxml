@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.afam.client.boundary.gestisciaccount.FormEliminaAccountBnd"
+      spacing="0" prefWidth="420" styleClass="root">
+
+    <VBox spacing="14" styleClass="card">
+        <padding><Insets top="30" right="36" bottom="30" left="36"/></padding>
+        <Label text="Elimina account" styleClass="label-title"
+               style="-fx-text-fill: #f87171;"/>
+        <Label text="Questa operazione è irreversibile. Tutti i tuoi dati, portfolio e contenuti verranno eliminati."
+               styleClass="label-subtitle" wrapText="true"/>
+        <VBox spacing="4">
+            <Label text="Inserisci la password per confermare:" styleClass="label"/>
+            <PasswordField fx:id="campoPassword" promptText="Password"
+                           maxWidth="Infinity" styleClass="text-field"/>
+        </VBox>
+        <Label fx:id="labelErrore" styleClass="label-error" wrapText="true" maxWidth="340"/>
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="ANNULLA"               onAction="#onAnnulla" styleClass="button-secondary"/>
+            <Button text="ELIMINA DEFINITIVAMENTE" onAction="#onElimina" styleClass="button-danger"/>
+        </HBox>
+    </VBox>
+</VBox>

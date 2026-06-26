@@ -1,0 +1,26 @@
+target/
+*.class
+*.jar
+.DS_Store
+.idea/
+*.iml
+*.iws
+.settings/
+.classpath
+.project
+*.log
+
+# Dati sensibili — non caricare mai
+src/main/resources/config.properties
+
+# Maven locale (ogni dev usa il proprio)
+apache-maven-3.9.6/
+
+# App bundle macOS (generato localmente)
+AFAM.app/
+
+# Impostazioni Claude Code
+.claude/
+
+# Temp
+*.command

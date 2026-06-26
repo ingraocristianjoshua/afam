@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.afam.client.boundary.gestisciaccount.GestioneAccountBnd"
+            fx:id="root"
+            prefWidth="1000" prefHeight="680" styleClass="root">
+
+    <!-- Header -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="header-bar">
+            <padding><Insets top="14" right="20" bottom="14" left="20"/></padding>
+            <Label text="Gestisci Account" styleClass="label-title" HBox.hgrow="ALWAYS"/>
+            <Button text="LOGOUT" onAction="#onLogout"
+                    style="-fx-background-color: transparent; -fx-text-fill: #c4b5fd; -fx-font-size: 13px; -fx-cursor: hand;"/>
+        </HBox>
+    </top>
+
+    <!-- Sidebar sinistra -->
+    <left>
+        <VBox spacing="4" style="-fx-background-color: #1a0533; -fx-padding: 20 12;" prefWidth="210">
+
+            <Label text="PROFILO" style="-fx-text-fill: #9879e0; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 8 8 4 8;"/>
+            <Button text="Modifica Informazioni"  onAction="#onModificaInformazioni" styleClass="sidebar-btn" maxWidth="Infinity"/>
+            <Button text="Reimposta Password"      onAction="#onReimpostaPassword"    styleClass="sidebar-btn" maxWidth="Infinity"/>
+            <Button text="Gestione 2FA"            onAction="#onGestione2FA"           styleClass="sidebar-btn" maxWidth="Infinity"/>
+            <Button text="Valida Email"            onAction="#onValidaEmail"           styleClass="sidebar-btn" maxWidth="Infinity"/>
+            <Button text="Valida Numero"           onAction="#onValidaNumero"          styleClass="sidebar-btn" maxWidth="Infinity"/>
+            <Button text="Carica CV"               onAction="#onCaricaCV"              styleClass="sidebar-btn" maxWidth="Infinity"/>
+
+            <Separator style="-fx-background-color: #3d1a78; -fx-padding: 6 0;"/>
+
+            <Label text="SEZIONI" style="-fx-text-fill: #9879e0; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 8 8 4 8;"/>
+            <Button text="Gestisci Portfolio"     onAction="#onVaiPortfolio"    styleClass="sidebar-btn" maxWidth="Infinity"/>
+            <Button text="Gestisci Contenuti"     onAction="#onVaiContenuti"    styleClass="sidebar-btn" maxWidth="Infinity"/>
+            <Button text="Gestisci Condivisione"  onAction="#onVaiCondivisione" styleClass="sidebar-btn" maxWidth="Infinity"/>
+            <Button text="Profilo Pubblico"       onAction="#onVisualizzaProfilo" styleClass="sidebar-btn" maxWidth="Infinity"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Separator style="-fx-background-color: #3d1a78;"/>
+            <Button text="Elimina Account" onAction="#onEliminaAccount"
+                    style="-fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 8 12; -fx-cursor: hand;" maxWidth="Infinity"/>
+        </VBox>
+    </left>
+
+    <!-- Centro: card profilo -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+            <VBox spacing="24" style="-fx-padding: 32 40;">
+
+                <!-- Header nome -->
+                <VBox spacing="4" styleClass="card">
+                    <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+                    <Label fx:id="labelNomeCompleto" text="Caricamento..."
+                           style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                    <Label fx:id="labelEmailHeader" text=""
+                           style="-fx-font-size: 14px; -fx-text-fill: #9879e0;"/>
+                </VBox>
+
+                <!-- Dati anagrafici -->
+                <VBox spacing="12" styleClass="card">
+                    <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+                    <Label text="Dati personali" styleClass="label-subtitle"/>
+                    <HBox spacing="16">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Nome" style="-fx-text-fill: #9879e0; -fx-font-size: 12px;"/>
+                            <TextField fx:id="campoNomeRO" editable="false" focusTraversable="false" styleClass="text-field"/>
+                        </VBox>
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Cognome" style="-fx-text-fill: #9879e0; -fx-font-size: 12px;"/>
+                            <TextField fx:id="campoCognomeRO" editable="false" focusTraversable="false" styleClass="text-field"/>
+                        </VBox>
+                    </HBox>
+                    <HBox spacing="16">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Email" style="-fx-text-fill: #9879e0; -fx-font-size: 12px;"/>
+                            <TextField fx:id="campoEmailRO" editable="false" focusTraversable="false" styleClass="text-field"/>
+                        </VBox>
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Numero di telefono" style="-fx-text-fill: #9879e0; -fx-font-size: 12px;"/>
+                            <TextField fx:id="campoTelefonoRO" editable="false" focusTraversable="false" styleClass="text-field"/>
+                        </VBox>
+                    </HBox>
+                    <VBox spacing="4">
+                        <Label text="Data di nascita" style="-fx-text-fill: #9879e0; -fx-font-size: 12px;"/>
+                        <TextField fx:id="campoDataNascitaRO" editable="false" focusTraversable="false" styleClass="text-field" maxWidth="300"/>
+                    </VBox>
+                </VBox>
+
+                <!-- Stato validazioni -->
+                <HBox spacing="16">
+                    <VBox spacing="8" styleClass="card" HBox.hgrow="ALWAYS">
+                        <padding><Insets top="16" right="20" bottom="16" left="20"/></padding>
+                        <Label text="Email" style="-fx-text-fill: #9879e0; -fx-font-size: 12px;"/>
+                        <Label fx:id="labelStatoEmail" text="–"
+                               style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #3d1a78;"/>
+                        <Button text="Valida ora" onAction="#onValidaEmail" styleClass="button-secondary" maxWidth="Infinity"/>
+                    </VBox>
+                    <VBox spacing="8" styleClass="card" HBox.hgrow="ALWAYS">
+                        <padding><Insets top="16" right="20" bottom="16" left="20"/></padding>
+                        <Label text="Numero di telefono" style="-fx-text-fill: #9879e0; -fx-font-size: 12px;"/>
+                        <Label fx:id="labelStatoNumero" text="–"
+                               style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #3d1a78;"/>
+                        <Button text="Valida ora" onAction="#onValidaNumero" styleClass="button-secondary" maxWidth="Infinity"/>
+                    </VBox>
+                    <VBox spacing="8" styleClass="card" HBox.hgrow="ALWAYS">
+                        <padding><Insets top="16" right="20" bottom="16" left="20"/></padding>
+                        <Label text="Autenticazione 2FA" style="-fx-text-fill: #9879e0; -fx-font-size: 12px;"/>
+                        <Label fx:id="labelStato2FA" text="–"
+                               style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #3d1a78;"/>
+                        <Button text="Configura" onAction="#onGestione2FA" styleClass="button-secondary" maxWidth="Infinity"/>
+                    </VBox>
+                </HBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.afam.client.boundary.gestisciportfolio.VisualizzaRaccoltaBnd"
+            prefWidth="700" prefHeight="500"
+            styleClass="root">
+
+    <top>
+        <VBox styleClass="header-bar">
+            <padding><Insets top="14" right="20" bottom="14" left="20"/></padding>
+            <Label text="Visualizza raccolta" styleClass="label-title"/>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <padding><Insets top="8"/></padding>
+                <TextField fx:id="fieldNomeRaccolta" editable="false" focusTraversable="false"
+                           HBox.hgrow="ALWAYS"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                <Button text="RINOMINA RACCOLTA" onAction="#onRinomina"
+                        style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+            <VBox fx:id="boxContenuti" spacing="8" styleClass="card">
+                <padding><Insets top="16" right="20" bottom="16" left="20"/></padding>
+                <Label text="Contenuti" styleClass="label-subtitle"/>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="card">
+            <padding><Insets top="12" right="20" bottom="12" left="20"/></padding>
+            <Button text="AGGIUNGI ALLA RACCOLTA" onAction="#onAggiungiAllaRaccolta"
+                    style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="CHIUDI" onAction="#chiudi" styleClass="button-secondary"/>
+        </HBox>
+    </bottom>
+</BorderPane>

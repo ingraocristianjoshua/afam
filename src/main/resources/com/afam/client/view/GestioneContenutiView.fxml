@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.afam.client.controller.GestioneContenutiViewController">
+    <VBox alignment="CENTER" spacing="15.0" styleClass="main-box" maxWidth="400" maxHeight="450">
+        <Label styleClass="title-label" text="Gestione Contenuti" textAlignment="CENTER" />
+        <Button styleClass="button" fx:id="btnCarica" mnemonicParsing="false" onAction="#handleCarica" text="CARICA CONTENUTO" />
+        <Button styleClass="button" fx:id="btnModifica" mnemonicParsing="false" onAction="#handleModifica" text="MODIFICA" />
+        <Button styleClass="button" fx:id="btnElimina" mnemonicParsing="false" onAction="#handleElimina" text="ELIMINA" />
+        <Button styleClass="button" fx:id="btnVisibilita" mnemonicParsing="false" onAction="#handleVisibilita" text="IMPOSTA VISIBILITA'" />
+        <Button styleClass="button" fx:id="btnIndietro" mnemonicParsing="false" onAction="#handleIndietro" text="INDIETRO" />
+    </VBox>
+</StackPane>

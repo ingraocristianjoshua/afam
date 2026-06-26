@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.afam.client.boundary.gestiscicondivisione.GestioneCondivisioneBnd"
+            prefWidth="700" prefHeight="500"
+            styleClass="root">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="header-bar">
+            <padding><Insets top="14" right="20" bottom="14" left="20"/></padding>
+            <Label text="Gestisci Condivisione" styleClass="label-title"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox alignment="CENTER" spacing="20">
+            <padding><Insets top="60" right="60" bottom="60" left="60"/></padding>
+            <Button text="VISUALIZZA LINK" onAction="#onVisualizzaLink"
+                    maxWidth="340" prefHeight="52" styleClass="button-secondary"
+                    style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+            <Button text="GENERA LINK CONDIVISIONE" onAction="#onGeneraLink"
+                    maxWidth="340" prefHeight="52" styleClass="button-primary"
+                    style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        </VBox>
+    </center>
+</BorderPane>

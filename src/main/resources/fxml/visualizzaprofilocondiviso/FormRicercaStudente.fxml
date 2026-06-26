@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.afam.client.boundary.visualizzaprofilocondiviso.FormRicercaStudenteBnd"
+            prefWidth="660" prefHeight="520" styleClass="root">
+
+    <top>
+        <VBox styleClass="header-bar" spacing="10">
+            <padding><Insets top="16" right="24" bottom="16" left="24"/></padding>
+            <Label text="Esplora profili AFAM" styleClass="label-title"
+                   style="-fx-text-fill: white; -fx-font-size: 20px;"/>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="fieldNome" promptText="Cerca per nome o cognome…"
+                           HBox.hgrow="ALWAYS" styleClass="text-field"
+                           onAction="#onCerca"/>
+                <Button text="CERCA"            onAction="#onCerca"    styleClass="button-primary"/>
+                <Button text="ACCEDI CON LINK"  onAction="#onAccediTramiteLink"
+                        style="-fx-background-color: #27ae60; -fx-text-fill: white;
+                               -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 14;"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true"
+                    style="-fx-background-color: transparent; -fx-background: transparent;">
+            <VBox fx:id="boxStudenti" spacing="10">
+                <padding><Insets top="16" right="20" bottom="16" left="20"/></padding>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

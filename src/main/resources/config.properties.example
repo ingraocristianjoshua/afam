@@ -1,0 +1,30 @@
+# =============================================================================
+# Configurazione AFAM – copia questo file in config.properties e personalizza
+# =============================================================================
+
+# --- Database (PostgreSQL) ---
+db.url      = jdbc:postgresql://localhost:5432/afam
+db.user     = postgres
+db.password = postgres
+
+# --- Server applicativo ---
+server.baseUri = http://localhost:8080/api/
+
+# --- Link condivisione ---
+# Per test locale: http://localhost:8080/api/share/
+# Con ngrok: https://XYZ.ngrok-free.app/api/share/
+link.baseUrl = http://localhost:8080/api/share/
+
+# --- Mail (SMTP) ---
+mail.host     = smtp.gmail.com
+mail.port     = 587
+mail.user     = TUA_EMAIL@gmail.com
+mail.password = TUA_APP_PASSWORD
+mail.from     = TUA_EMAIL@gmail.com
+mail.starttls = true
+
+# --- OTP ---
+otp.durata.minuti = 10
+
+# --- File upload ---
+contenuto.dimensione.max = 52428800

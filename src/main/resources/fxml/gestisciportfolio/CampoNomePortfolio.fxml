@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.afam.client.boundary.gestisciportfolio.CampoNomePortfolioBnd"
+      spacing="16" prefWidth="380"
+      styleClass="dialog-pane">
+
+    <!-- Finto header del dialog -->
+    <HBox styleClass="header-panel">
+        <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
+        <Label text="Crea nuovo portfolio" styleClass="label"/>
+    </HBox>
+
+    <VBox spacing="16" styleClass="content">
+        <padding><Insets top="16" right="24" bottom="24" left="24"/></padding>
+        
+        <Label text="Nome portfolio"/>
+        <TextField fx:id="fieldNome" promptText="Es. Portfolio fotografico"/>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT" styleClass="button-bar">
+            <Button text="Annulla" onAction="#onAnnulla" styleClass="button"/>
+            <Button text="Crea"    onAction="#onCrea" styleClass="button-primary"/>
+        </HBox>
+    </VBox>
+</VBox>

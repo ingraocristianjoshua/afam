@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.afam.client.boundary.gestisciaccount.CambiaEmailBnd"
+      spacing="0" prefWidth="440" styleClass="root">
+
+    <VBox spacing="16" styleClass="card">
+        <padding><Insets top="32" right="36" bottom="32" left="36"/></padding>
+
+        <Label text="Cambia Email" styleClass="label-title"/>
+        <Label fx:id="labelIstruzione"
+               text="Inserisci la nuova email. Riceverai un codice OTP per confermare."
+               styleClass="label-subtitle" wrapText="true"/>
+
+        <Separator style="-fx-background-color: rgba(255,255,255,0.1);"/>
+
+        <!-- Step 1: nuova email -->
+        <VBox fx:id="panelEmail" spacing="10">
+            <Label text="Nuova email" styleClass="label"/>
+            <TextField fx:id="campoNuovaEmail" promptText="nuova@email.it"
+                       maxWidth="Infinity" styleClass="text-field"/>
+            <Button text="INVIA CODICE OTP" onAction="#onInviaOTP"
+                    maxWidth="Infinity" styleClass="button-primary"/>
+        </VBox>
+
+        <!-- Step 2: verifica OTP -->
+        <VBox fx:id="panelOTP" spacing="10" visible="false" managed="false">
+            <Label text="Codice OTP (visibile nel terminale del server)" styleClass="label"/>
+            <TextField fx:id="campoOTP" promptText="6 cifre"
+                       maxWidth="Infinity" styleClass="text-field"/>
+            <Button text="CONFERMA CAMBIO EMAIL" onAction="#onConfermaOTP"
+                    maxWidth="Infinity" styleClass="button-primary"/>
+        </VBox>
+
+        <Label fx:id="labelErrore" styleClass="label-error" wrapText="true"
+               visible="false" managed="false"/>
+
+        <Button text="ANNULLA" onAction="#onAnnulla"
+                maxWidth="Infinity" styleClass="button-secondary"/>
+    </VBox>
+</VBox>

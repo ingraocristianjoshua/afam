@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.afam.client.boundary.gestisciaccount.ValidaEmailBnd"
+      spacing="0" prefWidth="400" styleClass="root">
+
+    <VBox spacing="14" alignment="CENTER" styleClass="card">
+        <padding><Insets top="30" right="36" bottom="30" left="36"/></padding>
+        <Label text="Valida indirizzo email" styleClass="label-title"/>
+        <Label fx:id="labelInfo" styleClass="label-subtitle" wrapText="true" maxWidth="320"/>
+        <VBox spacing="4" maxWidth="Infinity">
+            <Label text="Codice OTP" styleClass="label"/>
+            <TextField fx:id="campoOTP" promptText="123456" maxWidth="Infinity"
+                       styleClass="text-field"
+                       style="-fx-font-size:20px; -fx-alignment:CENTER;"/>
+        </VBox>
+        <Label fx:id="labelErrore" styleClass="label-error" wrapText="true" maxWidth="300"/>
+        <Button text="VERIFICA" onAction="#onVerifica" maxWidth="Infinity" styleClass="button-primary"/>
+        <HBox spacing="16" alignment="CENTER">
+            <Hyperlink text="Invia di nuovo" onAction="#onInviaDiNuovo"/>
+            <Hyperlink text="Annulla"        onAction="#onAnnulla"/>
+        </HBox>
+    </VBox>
+</VBox>

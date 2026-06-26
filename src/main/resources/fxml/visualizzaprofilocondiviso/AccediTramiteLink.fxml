@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.afam.client.boundary.visualizzaprofilocondiviso.AccediTramiteLinkBnd"
+      spacing="16" prefWidth="460" styleClass="card">
+    <padding><Insets top="28" right="28" bottom="28" left="28"/></padding>
+
+    <Label text="Accedi tramite link condiviso" styleClass="label-title"/>
+    <Label text="Incolla il token o l'URL completo del link ricevuto:"
+           styleClass="label-subtitle" wrapText="true"/>
+    <TextField fx:id="fieldToken"
+               promptText="Es. a1b2c3d4… oppure http://localhost:8080/share/…"
+               styleClass="text-field"/>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT" style="-fx-padding: 6 0 0 0;">
+        <Button text="ANNULLA"  onAction="#onAnnulla" styleClass="button-secondary"/>
+        <Button fx:id="btnAccedi" text="ACCEDI" onAction="#onAccedi" styleClass="button-primary"/>
+    </HBox>
+</VBox>

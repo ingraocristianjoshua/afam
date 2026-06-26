@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.afam.client.boundary.homepage.HomePageBnd"
+            fx:id="root"
+            prefWidth="1000" prefHeight="700" styleClass="root">
+
+    <top>
+        <VBox styleClass="header-bar">
+            <HBox alignment="CENTER_LEFT">
+                <Label text="Home" styleClass="label-title"/>
+            </HBox>
+            <Label text="&quot;Il primo passo indispensabile per ottenere dalla vita ciò che si vuole: decidere cosa si vuole&quot;"
+                   wrapText="true" maxWidth="900"
+                   style="-fx-font-style: italic; -fx-font-size: 13px; -fx-text-fill: #c4b5fd; -fx-padding: 4 0 0 0;"/>
+        </VBox>
+    </top>
+
+    <center>
+        <GridPane hgap="20" vgap="20" alignment="CENTER">
+            <BorderPane.margin>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </BorderPane.margin>
+
+            <!-- Sezione Account -->
+            <VBox styleClass="card" alignment="CENTER" spacing="15" GridPane.columnIndex="0" GridPane.rowIndex="0" prefWidth="280" prefHeight="200">
+                <Label text="Gestisci Account" style="-fx-font-size:20px; -fx-font-weight:bold;"/>
+                <Label text="Modifica le tue informazioni, password e validazioni" wrapText="true" textAlignment="CENTER" styleClass="label"/>
+                <Button text="Clicca" onAction="#onGestisciAccount" styleClass="button-primary"/>
+            </VBox>
+
+            <!-- Sezione Portfolio -->
+            <VBox styleClass="card" alignment="CENTER" spacing="15" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="280" prefHeight="200">
+                <Label text="Gestisci Portfolio" style="-fx-font-size:20px; -fx-font-weight:bold;"/>
+                <Label text="Crea e organizza le tue opere in raccolte" wrapText="true" textAlignment="CENTER" styleClass="label"/>
+                <Button text="Clicca" onAction="#onGestisciPortfolio" styleClass="button-primary"/>
+            </VBox>
+
+            <!-- Sezione Contenuti -->
+            <VBox styleClass="card" alignment="CENTER" spacing="15" GridPane.columnIndex="0" GridPane.rowIndex="1" prefWidth="280" prefHeight="200">
+                <Label text="Gestisci Contenuti" style="-fx-font-size:20px; -fx-font-weight:bold;"/>
+                <Label text="Carica file, gestisci metadati e visibilità" wrapText="true" textAlignment="CENTER" styleClass="label"/>
+                <Button text="Clicca" onAction="#onGestisciContenuti" styleClass="button-primary"/>
+            </VBox>
+
+            <!-- Sezione Condivisione -->
+            <VBox styleClass="card" alignment="CENTER" spacing="15" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="280" prefHeight="200">
+                <Label text="Gestisci Condivisione" style="-fx-font-size:20px; -fx-font-weight:bold;"/>
+                <Label text="Genera link per condividere il tuo profilo" wrapText="true" textAlignment="CENTER" styleClass="label"/>
+                <Button text="Clicca" onAction="#onGestisciLink" styleClass="button-primary"/>
+            </VBox>
+
+            <!-- Sezione Profilo Pubblico -->
+            <VBox styleClass="card" alignment="CENTER" spacing="15" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2" prefWidth="280" prefHeight="200">
+                <Label text="Visualizza Profilo Condiviso" style="-fx-font-size:20px; -fx-font-weight:bold;"/>
+                <Label text="Guarda come appare il tuo profilo agli ospiti" wrapText="true" textAlignment="CENTER" styleClass="label"/>
+                <Button text="Clicca" onAction="#onVisualizzaProfilo" styleClass="button-primary"/>
+            </VBox>
+
+        </GridPane>
+    </center>
+
+</BorderPane>

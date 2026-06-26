@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.afam.client.boundary.gestisciportfolio.FormModificheBnd"
+      spacing="16" prefWidth="380" styleClass="root">
+    <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+    <Label text="Rinomina raccolta" style="-fx-font-size:16px; -fx-font-weight:bold;"/>
+
+    <Label text="Nuovo nome"/>
+    <TextField fx:id="fieldNome" promptText="Inserisci il nuovo nome"/>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Annulla"  onAction="#onAnnulla"/>
+        <Button text="Modifica" onAction="#onRinomina" styleClass="button-primary"/>
+    </HBox>
+</VBox>

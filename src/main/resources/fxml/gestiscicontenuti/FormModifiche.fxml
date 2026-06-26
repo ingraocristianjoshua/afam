@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.afam.client.boundary.gestiscicontenuti.FormModificheBnd"
+      spacing="14" prefWidth="400" styleClass="root">
+    <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+    <Label text="Modifica" style="-fx-font-size:16px; -fx-font-weight:bold;"/>
+
+    <Label text="Titolo"/>
+    <TextField fx:id="fieldTitolo" promptText="Titolo"/>
+
+    <Label text="Visibilità"/>
+    <ComboBox fx:id="comboVisibilita" maxWidth="Infinity"/>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Annulla" onAction="#onAnnulla"/>
+        <Button text="Salva"   onAction="#onSalva" styleClass="button-primary"/>
+    </HBox>
+</VBox>

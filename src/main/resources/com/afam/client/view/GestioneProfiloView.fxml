@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.afam.client.controller.GestioneProfiloViewController">
+    <VBox alignment="CENTER" spacing="15.0" styleClass="main-box" maxWidth="400" maxHeight="450">
+        <Label styleClass="title-label" text="Gestione Profilo" textAlignment="CENTER" />
+        <Button styleClass="button" fx:id="btnCreaPortfolio" mnemonicParsing="false" onAction="#handleCreaPortfolio" text="CREA PORTFOLIO" />
+        <Button styleClass="button" fx:id="btnGestionePortfolio" mnemonicParsing="false" onAction="#handleGestionePortfolio" text="GESTIONE PORTFOLIO" />
+        <Button styleClass="button" fx:id="btnGestioneContenuti" mnemonicParsing="false" onAction="#handleGestioneContenuti" text="GESTIONE CONTENUTI" />
+        <Button styleClass="button" fx:id="btnGestioneCondivisione" mnemonicParsing="false" onAction="#handleGestioneCondivisione" text="GESTIONE CONDIVISIONE" />
+        <Button styleClass="button" fx:id="btnIndietro" mnemonicParsing="false" onAction="#handleIndietro" text="INDIETRO" />
+    </VBox>
+</StackPane>

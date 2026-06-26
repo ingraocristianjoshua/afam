@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.afam.client.boundary.autenticati.AuthPageBnd"
+           prefWidth="800" prefHeight="600"
+           styleClass="root-pane">
+
+    <VBox alignment="CENTER" spacing="18" maxWidth="440" maxHeight="560"
+          styleClass="card">
+
+        <padding><Insets top="30" right="40" bottom="30" left="40"/></padding>
+
+        <!-- Logo Monogram Vector -->
+        <StackPane fx:id="logoContainer" prefWidth="120" prefHeight="120" maxWidth="120" maxHeight="120" styleClass="logo-badge">
+            <ImageView fitWidth="100" fitHeight="100" preserveRatio="true">
+                <image><Image url="@/images/logo.png"/></image>
+            </ImageView>
+        </StackPane>
+
+        <!-- Titoli -->
+        <VBox alignment="CENTER" spacing="6">
+            <Label fx:id="labelTitolo" styleClass="label-title" wrapText="true" textAlignment="CENTER" maxWidth="380"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+            <Label text="Gestore di Identità Digitale e Portfolio Studenti"
+                   styleClass="label-subtitle" textAlignment="CENTER" wrapText="true" maxWidth="380"/>
+            <Label text="&quot;Il primo passo indispensabile per ottenere dalla vita ciò che si vuole: decidere cosa si vuole&quot;"
+                   styleClass="label-subtitle" textAlignment="CENTER" wrapText="true" maxWidth="380"
+                   style="-fx-font-style: italic; -fx-opacity: 0.75;"/>
+        </VBox>
+
+        <Separator/>
+
+        <!-- Gruppo Accesso Standard -->
+        <VBox spacing="10" alignment="CENTER" maxWidth="Infinity">
+            <Button text="Accedi con Email e Password"
+                    onAction="#onAccedi" maxWidth="Infinity" styleClass="button"/>
+            <Button text="Crea un nuovo account"
+                    onAction="#onRegistrati" maxWidth="Infinity" styleClass="button-secondary"/>
+        </VBox>
+
+        <Separator/>
+
+        <!-- Gruppo ID Provider -->
+        <VBox spacing="8" alignment="CENTER" maxWidth="Infinity">
+            <Label text="Accesso tramite identità digitale istituzionale:"
+                   styleClass="label-subtitle" style="-fx-font-weight: bold;"/>
+            <Button text="Accedi con SPID / eIDAS  (prossimamente)"
+                    onAction="#onSpid" maxWidth="Infinity"
+                    styleClass="button" disable="true" opacity="0.4"/>
+        </VBox>
+
+        <Separator/>
+
+        <!-- Gruppo Ospite -->
+        <Button text="Entra come Ospite (sfoglia portfolio)"
+                onAction="#onEntraComeOspite" maxWidth="Infinity" styleClass="button-secondary"/>
+
+    </VBox>
+</StackPane>

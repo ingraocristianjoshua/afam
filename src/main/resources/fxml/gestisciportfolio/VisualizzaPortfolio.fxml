@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.afam.client.boundary.gestisciportfolio.VisualizzaPortfolioBnd"
+            prefWidth="850" prefHeight="550"
+            styleClass="root">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header-bar">
+            <Label fx:id="labelNomePortfolio" styleClass="label-title"/>
+        </HBox>
+    </top>
+
+    <center>
+        <HBox spacing="16">
+            <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+
+            <!-- Contenuti -->
+            <VBox spacing="8" HBox.hgrow="ALWAYS" styleClass="card">
+                <Label text="Contenuti nel portfolio" styleClass="label-subtitle"/>
+                <ListView fx:id="listViewContenuti" VBox.vgrow="ALWAYS"/>
+                <HBox spacing="8" alignment="CENTER_RIGHT">
+                    <Button text="Aggiungi contenuto" onAction="#onAggiungiContenuto" styleClass="button"/>
+                    <Button text="Rimuovi"            onAction="#onRimuoviContenuto" styleClass="button-danger"/>
+                    <Button text="Sposta giù"         onAction="#onSposta" styleClass="button-secondary"/>
+                </HBox>
+            </VBox>
+
+            <!-- Raccolte -->
+            <VBox spacing="8" prefWidth="280" styleClass="card">
+                <Label text="Raccolte" styleClass="label-subtitle"/>
+                <ListView fx:id="listViewRaccolte" VBox.vgrow="ALWAYS"/>
+                <VBox spacing="8">
+                    <HBox spacing="8" alignment="CENTER_RIGHT">
+                        <Button text="Nuova raccolta" onAction="#onCreaRaccolta" styleClass="button"/>
+                        <Button text="Apri"           onAction="#onApriRaccolta" styleClass="button-primary"/>
+                    </HBox>
+                    <HBox spacing="8" alignment="CENTER_RIGHT">
+                        <Button text="Rinomina"       onAction="#onRinominaRaccolta" styleClass="button-secondary"/>
+                        <Button text="Elimina"        onAction="#onEliminaRaccolta" styleClass="button-danger"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>

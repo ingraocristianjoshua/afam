@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.afam</groupId>
+    <artifactId>afam</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>AFAM – Alta Formazione Artistica, Musicale e Coreutica</name>
+
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- versioni librerie — verificare su MVN Repository prima del rilascio -->
+        <!-- JDK installato sul sistema: 25. Il codice è compatibile con Java 21+. -->
+        <javafx.version>21</javafx.version>
+        <jersey.version>3.1.3</jersey.version>
+        <jackson.version>2.16.1</jackson.version>
+        <postgresql.version>42.7.3</postgresql.version>
+        <jbcrypt.version>0.4</jbcrypt.version>
+        <angusmail.version>2.0.3</angusmail.version>
+        <slf4j.version>2.0.9</slf4j.version>
+        <logback.version>1.4.14</logback.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- ══════════════════════════════════════════════════════════
+             LIVELLO CLIENT — JavaFX 21
+             ══════════════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <!-- ══════════════════════════════════════════════════════════
+             LIVELLO SERVER — Jersey 3.x (Jakarta EE 10) + Grizzly
+             ══════════════════════════════════════════════════════════ -->
+        <!-- Container HTTP embedded (Grizzly) -->
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-grizzly2-http</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <!-- DI framework richiesto da Jersey 3.x -->
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <!-- Supporto JSON via Jackson in Jersey -->
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+        <!-- ══════════════════════════════════════════════════════════
+             JACKSON — serializzazione/deserializzazione JSON
+             ══════════════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <!-- Supporto java.time.* (LocalDateTime, OffsetDateTime, …) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <!-- ══════════════════════════════════════════════════════════
+             DATABASE — PostgreSQL JDBC
+             ══════════════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+        </dependency>
+
+        <!-- ══════════════════════════════════════════════════════════
+             SICUREZZA — jBCrypt per hashing password
+             ══════════════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>${jbcrypt.version}</version>
+        </dependency>
+
+        <!-- ══════════════════════════════════════════════════════════
+             EMAIL — Jakarta Mail 2.1 (Angus Mail, implementazione RI)
+             angus-mail implementa l'API jakarta.mail 2.1
+             ══════════════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>angus-mail</artifactId>
+            <version>${angusmail.version}</version>
+        </dependency>
+
+        <!-- ══════════════════════════════════════════════════════════
+             LOGGING — SLF4J + Logback
+             ══════════════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <!-- ── Compilatore Java 21 ── -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.12.1</version>
+                <configuration>
+                    <!-- target 21 per rispettare la spec; source 21 compatibile con JDK 25 -->
+                    <release>21</release>
+                </configuration>
+            </plugin>
+
+            <!-- ── JavaFX Maven Plugin — avvia il CLIENT ──
+                 Uso: mvn javafx:run
+            -->
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>com.afam.client.ClientMain</mainClass>
+                    <!-- Aggiunge automaticamente javafx.* al module-path -->
+                </configuration>
+            </plugin>
+
+            <!-- ── Exec Plugin — avvia il SERVER ──
+                 Uso: mvn exec:java -Dexec.mainClass=com.afam.server.ServerMain
+                 (o semplicemente: mvn exec:java  ← usa il default sotto)
+            -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <mainClass>com.afam.server.ServerMain</mainClass>
+                </configuration>
+            </plugin>
+
+            <!-- ── Shade Plugin — produce un fat-JAR eseguibile del server ──
+                 Uso: mvn package  →  target/afam-1.0-SNAPSHOT-server.jar
+                 Produce anche il fat-JAR del client ospite:
+                       target/afam-1.0-SNAPSHOT-ospite.jar
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version>
+                <executions>
+
+                    <execution>
+                        <id>shade-server</id>
+                        <phase>package</phase>
+                        <goals><goal>shade</goal></goals>
+                        <configuration>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>server</shadedClassifierName>
+                            <transformers>
+                                <transformer implementation=
+                                    "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.afam.server.ServerMain</mainClass>
+                                </transformer>
+                                <transformer implementation=
+                                    "org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>org.openjfx:*</exclude>
+                                </excludes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+
+                    <!-- Fat-JAR del client ospite; JavaFX va fornita esternamente via module-path -->
+                    <execution>
+                        <id>shade-ospite</id>
+                        <phase>package</phase>
+                        <goals><goal>shade</goal></goals>
+                        <configuration>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>ospite</shadedClassifierName>
+                            <transformers>
+                                <transformer implementation=
+                                    "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.afam.client.ClientOspiteMain</mainClass>
+                                </transformer>
+                                <transformer implementation=
+                                    "org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                            <!-- JavaFX va fornita esternamente via module-path -->
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>org.openjfx:*</exclude>
+                                    <!-- esclude le dipendenze server non necessarie al client -->
+                                    <exclude>org.glassfish.jersey.containers:*</exclude>
+                                    <exclude>org.glassfish.jersey.inject:*</exclude>
+                                    <exclude>org.glassfish.jersey.media:*</exclude>
+                                    <exclude>org.glassfish.grizzly:*</exclude>
+                                    <exclude>org.postgresql:*</exclude>
+                                    <exclude>org.mindrot:*</exclude>
+                                    <exclude>org.eclipse.angus:*</exclude>
+                                </excludes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

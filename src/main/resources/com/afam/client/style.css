@@ -1,0 +1,58 @@
+.root {
+    /* Sfondo sfumato premium scuro/viola/blu */
+    -fx-background-color: linear-gradient(to bottom right, #1a0b2e, #432c7a, #6c88c4);
+    -fx-font-family: 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+
+.title-label {
+    -fx-font-size: 38px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.6), 10, 0, 0, 3);
+}
+
+/* Stile Glassmorphism per il contenitore centrale */
+.main-box {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-background-radius: 25px;
+    -fx-padding: 50px;
+    -fx-spacing: 20px;
+    -fx-border-color: rgba(255, 255, 255, 0.25);
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 25px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 25, 0, 0, 10);
+}
+
+/* Pulsanti moderni arrotondati */
+.button {
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #f2f2f2);
+    -fx-text-fill: #2b1055;
+    -fx-font-size: 15px;
+    -fx-font-weight: 900;
+    -fx-padding: 15px 30px;
+    -fx-background-radius: 30px;
+    -fx-border-radius: 30px;
+    -fx-border-color: rgba(255,255,255,0.8);
+    -fx-border-width: 1px;
+    -fx-cursor: hand;
+    -fx-min-width: 280px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 4);
+    -fx-transition-duration: 0.3s;
+}
+
+/* Effetto interattivo al passaggio del mouse */
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #ffffff);
+    -fx-text-fill: #432c7a;
+    -fx-scale-x: 1.04;
+    -fx-scale-y: 1.04;
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.5), 15, 0, 0, 5);
+}
+
+/* Effetto di click */
+.button:pressed {
+    -fx-background-color: #e6e6e6;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+    -fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}

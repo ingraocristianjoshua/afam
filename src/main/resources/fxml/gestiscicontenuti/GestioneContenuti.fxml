@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.afam.client.boundary.gestiscicontenuti.GestioneContenutiBnd"
+            prefWidth="900" prefHeight="600"
+            styleClass="root">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="header-bar">
+            <padding><Insets top="14" right="20" bottom="14" left="20"/></padding>
+            <Label text="Gestisci Contenuti" styleClass="label-title" HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+            <VBox fx:id="boxContenuti" spacing="10" styleClass="card">
+                <padding><Insets top="16" right="20" bottom="16" left="20"/></padding>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="card">
+            <padding><Insets top="12" right="20" bottom="12" left="20"/></padding>
+            <Button text="CHIUDI" onAction="#chiudi" styleClass="button-secondary"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="CARICA CONTENUTO" onAction="#onCaricaContenuto" styleClass="button-primary"/>
+        </HBox>
+    </bottom>
+</BorderPane>
