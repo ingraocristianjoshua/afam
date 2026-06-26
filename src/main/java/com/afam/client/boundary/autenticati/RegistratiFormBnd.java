@@ -1,11 +1,12 @@
 package com.afam.client.boundary.autenticati;
 
-import com.afam.client.boundary.dialog.MessErrBnd;
 import com.afam.client.boundary.dialog.MessSuccessoBnd;
 import com.afam.client.rest.RestClient;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -16,11 +17,6 @@ import java.util.Map;
 
 /**
  * RegistratiFormBnd – form di registrazione nuovo account.
- *
- * Flusso (sequence): getDati → POST /auth/registra → visualizza esito.
- * Se il server risponde 409 (email già in uso): visualizza messaggio specifico
- * e lascia il form aperto (loop sui dati non validi come da spec).
- * Se il server risponde 400 (dati non validi): mostra l'errore e lascia aperto.
  * @author Cristian Joshua Ingrao (0780672)
  */
 public class RegistratiFormBnd {
@@ -32,6 +28,7 @@ public class RegistratiFormBnd {
     @FXML private PasswordField campoConfermaPassword;
     @FXML private TextField     campoTelefono;
     @FXML private Label         labelErrore;
+    @FXML private Button        btnRegistrati;
 
     private final RestClient rest = RestClient.getInstance();
 
@@ -41,65 +38,53 @@ public class RegistratiFormBnd {
         labelErrore.setManaged(false);
     }
 
-    // ── Raccolta input ────────────────────────────────────────────────────────
-
     public Map<String, Object> getDati() {
         Map<String, Object> dati = new HashMap<>();
-        dati.put("nome",            campoNome.getText().trim());
-        dati.put("cognome",         campoCognome.getText().trim());
-        dati.put("email",           campoEmail.getText().trim());
-        dati.put("password",        campoPassword.getText());
-        dati.put("numeroTelefono",  campoTelefono.getText().trim());
+        dati.put("nome",           campoNome.getText().trim());
+        dati.put("cognome",        campoCognome.getText().trim());
+        dati.put("email",          campoEmail.getText().trim());
+        dati.put("password",       campoPassword.getText());
+        dati.put("numeroTelefono", campoTelefono.getText().trim());
         return dati;
     }
 
-    public String getEmail() {
-        return campoEmail.getText().trim();
-    }
-
-    // ── Handler pulsante Registrati ───────────────────────────────────────────
+    public String getEmail() { return campoEmail.getText().trim(); }
 
     @FXML
     public void onRegistrati() {
-        labelErrore.setVisible(false);
-        labelErrore.setManaged(false);
-
-        // controllo locale: conferma password (non è logica di dominio)
+        nascondErrore();
         if (!campoPassword.getText().equals(campoConfermaPassword.getText())) {
             visualizzaErrore("Le password non coincidono.");
             return;
         }
-
         Map<String, Object> dati = getDati();
+        if (btnRegistrati != null) btnRegistrati.setDisable(true);
 
-        try {
-            Map<String, Object> resp = rest.post("auth/registra", dati);
-            // successo → torna al login
-            visualizza("Account creato con successo! Ora puoi accedere.");
-            apriSchermata("/fxml/autenticati/AccediForm.fxml", "Accedi");
-
-        } catch (RestClient.RestException e) {
-            if (e.getStatusCode() == 409) {
-                // email già in uso: loop aperto come da spec
-                visualizzaErrore("Email già in uso. Scegli un indirizzo diverso o accedi.");
-            } else if (e.isConnectionError()) {
-                visualizzaErrore("Server non raggiungibile. Controlla la connessione.");
-            } else {
-                // dati non validi: loop aperto come da spec
-                visualizzaErrore(e.getMessage());
+        new Thread(() -> {
+            try {
+                rest.post("auth/registra", dati);
+                Platform.runLater(() -> {
+                    MessSuccessoBnd.create("Account creato con successo! Ora puoi accedere.");
+                    apriSchermata("/fxml/autenticati/AccediForm.fxml", "Accedi");
+                });
+            } catch (RestClient.RestException e) {
+                Platform.runLater(() -> {
+                    if (btnRegistrati != null) btnRegistrati.setDisable(false);
+                    if (e.getStatusCode() == 409) {
+                        visualizzaErrore("Email già in uso. Scegli un indirizzo diverso o accedi.");
+                    } else if (e.isConnectionError()) {
+                        visualizzaErrore("Server non raggiungibile. Controlla la connessione.");
+                    } else {
+                        visualizzaErrore(e.getMessage());
+                    }
+                });
             }
-        }
+        }, "registra").start();
     }
 
     @FXML
     public void onIndietro() {
         apriSchermata("/fxml/autenticati/AuthPage.fxml", "Benvenuto");
-    }
-
-    // ── Visualizzazione ───────────────────────────────────────────────────────
-
-    public void visualizza(String messaggio) {
-        MessSuccessoBnd.create(messaggio);
     }
 
     public void visualizzaErrore(String messaggio) {
@@ -108,12 +93,15 @@ public class RegistratiFormBnd {
         labelErrore.setManaged(true);
     }
 
+    private void nascondErrore() {
+        labelErrore.setVisible(false);
+        labelErrore.setManaged(false);
+    }
+
     public void chiudi() {
         Stage stage = (Stage) campoEmail.getScene().getWindow();
         stage.close();
     }
-
-    // ── Helper ───────────────────────────────────────────────────────────────
 
     private void apriSchermata(String path, String titolo) {
         try {

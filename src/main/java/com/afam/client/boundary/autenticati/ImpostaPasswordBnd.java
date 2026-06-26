@@ -2,6 +2,7 @@ package com.afam.client.boundary.autenticati;
 
 import com.afam.client.boundary.dialog.MessSuccessoBnd;
 import com.afam.client.rest.RestClient;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -13,9 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * ReimpostaPasswordBnd – form per impostare la nuova password.
- * Usato nel flusso unauthenticated di recupero password, dopo la verifica OTP.
- * Riceve email, otp e scadenza dal chiamante via configura().
+ * ImpostaPasswordBnd – form per impostare la nuova password nel flusso di recupero.
  * @author Cristian Joshua Ingrao (0780672)
  */
 public class ImpostaPasswordBnd {
@@ -32,9 +31,9 @@ public class ImpostaPasswordBnd {
     @FXML
     public void initialize() {
         labelErrore.setVisible(false);
+        labelErrore.setManaged(false);
     }
 
-    /** Chiamato da FormOTPBnd dopo la verifica OTP. */
     public void configura(String email, String otp, String scadenza) {
         this.email    = email;
         this.otp      = otp;
@@ -43,32 +42,32 @@ public class ImpostaPasswordBnd {
 
     public Map<String, Object> getDati() {
         Map<String, Object> dati = new HashMap<>();
-        dati.put("email",          email);
-        dati.put("otp",            otp);
-        dati.put("scadenza",       scadenza);
-        dati.put("nuovaPassword",  campoNuovaPassword.getText());
+        dati.put("email",         email);
+        dati.put("otp",           otp);
+        dati.put("scadenza",      scadenza);
+        dati.put("nuovaPassword", campoNuovaPassword.getText());
         return dati;
     }
 
     @FXML
     public void onConferma() {
-        labelErrore.setVisible(false);
+        nascondErrore();
+        String nuova = campoNuovaPassword.getText();
+        if (nuova.isBlank()) { visualizzaErrore("Inserisci una password valida."); return; }
 
-        String nuova   = campoNuovaPassword.getText();
-        if (nuova.isBlank()) {
-            visualizzaErrore("Inserisci una password valida.");
-            return;
-        }
-
-        try {
-            rest.post("auth/recupera-password/reimposta", getDati());
-            MessSuccessoBnd.create("Password reimpostata con successo.");
-            apriSchermata("/fxml/autenticati/AccediForm.fxml", "Accedi");
-        } catch (RestClient.RestException e) {
-            visualizzaErrore(e.isConnectionError()
-                    ? "Server non raggiungibile."
-                    : e.getMessage());
-        }
+        new Thread(() -> {
+            try {
+                rest.post("auth/recupera-password/reimposta", getDati());
+                Platform.runLater(() -> {
+                    MessSuccessoBnd.create("Password reimpostata con successo.");
+                    apriSchermata("/fxml/autenticati/AccediForm.fxml", "Accedi");
+                });
+            } catch (RestClient.RestException e) {
+                Platform.runLater(() -> visualizzaErrore(e.isConnectionError()
+                        ? "Server non raggiungibile."
+                        : e.getMessage()));
+            }
+        }, "reimposta-password").start();
     }
 
     @FXML
@@ -79,6 +78,12 @@ public class ImpostaPasswordBnd {
     public void visualizzaErrore(String messaggio) {
         labelErrore.setText(messaggio);
         labelErrore.setVisible(true);
+        labelErrore.setManaged(true);
+    }
+
+    private void nascondErrore() {
+        labelErrore.setVisible(false);
+        labelErrore.setManaged(false);
     }
 
     public void chiudi() {

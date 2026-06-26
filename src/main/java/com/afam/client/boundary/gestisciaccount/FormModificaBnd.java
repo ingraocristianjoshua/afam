@@ -3,6 +3,7 @@ package com.afam.client.boundary.gestisciaccount;
 import com.afam.client.boundary.dialog.MessErrBnd;
 import com.afam.client.boundary.dialog.MessSuccessoBnd;
 import com.afam.client.rest.RestClient;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -16,7 +17,6 @@ import java.util.Map;
 /**
  * FormModificaBnd – form modifica nome e cognome.
  * L'email è in sola lettura; il cambio email avviene tramite flusso OTP dedicato.
- * Il numero di telefono si gestisce tramite "Valida numero".
  * @author Cristian Joshua Ingrao (0780672)
  */
 public class FormModificaBnd {
@@ -32,19 +32,25 @@ public class FormModificaBnd {
     @FXML
     public void initialize() {
         labelErrore.setVisible(false);
-        caricaDatiAttuali();
+        labelErrore.setManaged(false);
+        new Thread(this::caricaDatiAttuali, "carica-profilo-modifica").start();
     }
 
     private void caricaDatiAttuali() {
         try {
             Map<String, Object> resp = rest.get("account/profilo");
-            campoNome.setText((String) resp.getOrDefault("nome", ""));
-            campoCognome.setText((String) resp.getOrDefault("cognome", ""));
-            campoEmail.setText((String) resp.getOrDefault("email", ""));
-            String dn = (String) resp.get("dataNascita");
-            campoDataNascita.setText(dn != null ? dn : "");
+            String nome    = (String) resp.getOrDefault("nome", "");
+            String cognome = (String) resp.getOrDefault("cognome", "");
+            String email   = (String) resp.getOrDefault("email", "");
+            String dn      = (String) resp.get("dataNascita");
+            Platform.runLater(() -> {
+                campoNome.setText(nome);
+                campoCognome.setText(cognome);
+                campoEmail.setText(email);
+                campoDataNascita.setText(dn != null ? dn : "");
+            });
         } catch (RestClient.RestException e) {
-            mostraErrore("Impossibile caricare i dati: " + e.getMessage());
+            Platform.runLater(() -> mostraErrore("Impossibile caricare i dati: " + e.getMessage()));
         }
     }
 
@@ -58,13 +64,20 @@ public class FormModificaBnd {
     @FXML
     public void onSalva() {
         labelErrore.setVisible(false);
-        try {
-            rest.put("account/modifica", getDati());
-            MessSuccessoBnd.create("Informazioni aggiornate.");
-            chiudi();
-        } catch (RestClient.RestException e) {
-            mostraErrore(e.getMessage());
-        }
+        labelErrore.setManaged(false);
+        Map<String, Object> dati = getDati();
+
+        new Thread(() -> {
+            try {
+                rest.put("account/modifica", dati);
+                Platform.runLater(() -> {
+                    MessSuccessoBnd.create("Informazioni aggiornate.");
+                    chiudi();
+                });
+            } catch (RestClient.RestException e) {
+                Platform.runLater(() -> mostraErrore(e.getMessage()));
+            }
+        }, "salva-modifica").start();
     }
 
     @FXML
@@ -78,7 +91,7 @@ public class FormModificaBnd {
             stage.getScene().getStylesheets().add(
                     getClass().getResource("/css/application.css").toExternalForm());
             stage.showAndWait();
-            caricaDatiAttuali();
+            new Thread(this::caricaDatiAttuali, "ricarica-profilo-modifica").start();
         } catch (Exception e) {
             MessErrBnd.create("Impossibile aprire la schermata: " + e.getMessage());
         }
@@ -86,6 +99,11 @@ public class FormModificaBnd {
 
     @FXML public void onAnnulla() { chiudi(); }
 
-    public void mostraErrore(String msg) { labelErrore.setText(msg); labelErrore.setVisible(true); }
+    public void mostraErrore(String msg) {
+        labelErrore.setText(msg);
+        labelErrore.setVisible(true);
+        labelErrore.setManaged(true);
+    }
+
     public void chiudi() { ((Stage) campoNome.getScene().getWindow()).close(); }
 }

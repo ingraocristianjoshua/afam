@@ -145,13 +145,17 @@ public class GestioneContenutiBnd {
 
     private void onEliminaContenuto(Map<String, Object> c) {
         if (!MessConfermaBnd.create("Eliminare il contenuto \"" + c.get("titolo") + "\"?")) return;
-        try {
-            rest.delete("contenuti/" + c.get("idContenuto"));
-            MessSuccessoBnd.create("Contenuto eliminato con successo.");
-            caricaContenuti();
-        } catch (RestClient.RestException e) {
-            MessErrBnd.create("Eliminazione fallita: " + e.getMessage());
-        }
+        new Thread(() -> {
+            try {
+                rest.delete("contenuti/" + c.get("idContenuto"));
+                Platform.runLater(() -> {
+                    MessSuccessoBnd.create("Contenuto eliminato con successo.");
+                    caricaContenuti();
+                });
+            } catch (RestClient.RestException e) {
+                Platform.runLater(() -> MessErrBnd.create("Eliminazione fallita: " + e.getMessage()));
+            }
+        }, "elimina-contenuto").start();
     }
 
     private void onCambiaVisibilita(Map<String, Object> c) {

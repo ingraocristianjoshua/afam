@@ -61,12 +61,13 @@ public class GestioneAccountBnd {
             String telefono = (String) p.getOrDefault("numeroTelefono", "");
             boolean emailVal  = Boolean.TRUE.equals(p.get("emailValidata"));
             boolean numeroVal = Boolean.TRUE.equals(p.get("numeroValidato"));
-            boolean fa2       = Boolean.TRUE.equals(p.get("flag2fa"));
+            boolean fa2       = Boolean.TRUE.equals(p.get("stato2FA"));
+            String  dataNascita = (String) p.get("dataNascita");
 
             Platform.runLater(() -> {
                 campoNomeRO.setText(nome);
                 campoCognomeRO.setText(cognome);
-                campoDataNascitaRO.setText("");
+                campoDataNascitaRO.setText(dataNascita != null ? dataNascita : "");
                 campoEmailRO.setText(email);
                 campoTelefonoRO.setText(telefono != null ? telefono : "");
 

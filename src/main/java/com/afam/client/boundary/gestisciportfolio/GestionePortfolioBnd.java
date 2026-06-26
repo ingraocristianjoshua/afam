@@ -212,14 +212,19 @@ public class GestionePortfolioBnd {
         if (portfolioCorrente == null) return;
         String nome = (String) portfolioCorrente.get("nome");
         if (!MessConfermaBnd.create("Eliminare il portfolio \"" + nome + "\"?\nTutti i contenuti verranno rimossi dal portfolio.")) return;
-        try {
-            rest.delete("portfolio/" + portfolioCorrente.get("idPortfolio"));
-            MessSuccessoBnd.create("Portfolio eliminato con successo.");
-            portfolioCorrente = null;
-            caricaPortfolio();
-        } catch (RestClient.RestException e) {
-            MessErrBnd.create("Eliminazione fallita: " + e.getMessage());
-        }
+        Object idP = portfolioCorrente.get("idPortfolio");
+        new Thread(() -> {
+            try {
+                rest.delete("portfolio/" + idP);
+                Platform.runLater(() -> {
+                    MessSuccessoBnd.create("Portfolio eliminato con successo.");
+                    portfolioCorrente = null;
+                    caricaPortfolio();
+                });
+            } catch (RestClient.RestException e) {
+                Platform.runLater(() -> MessErrBnd.create("Eliminazione fallita: " + e.getMessage()));
+            }
+        }, "elimina-portfolio").start();
     }
 
     @FXML
@@ -274,13 +279,18 @@ public class GestionePortfolioBnd {
     private void onEliminaRaccolta(Map<String, Object> raccolta) {
         String nome = (String) raccolta.get("nome");
         if (!MessConfermaBnd.create("Eliminare la raccolta \"" + nome + "\"?\nI contenuti non verranno cancellati dal portfolio.")) return;
-        try {
-            rest.delete("portfolio/" + portfolioCorrente.get("idPortfolio") + "/raccolte/" + raccolta.get("idRaccolta"));
-            MessSuccessoBnd.create("Raccolta eliminata con successo.");
-            aggiornaDati();
-        } catch (RestClient.RestException e) {
-            MessErrBnd.create("Eliminazione fallita: " + e.getMessage());
-        }
+        String url = "portfolio/" + portfolioCorrente.get("idPortfolio") + "/raccolte/" + raccolta.get("idRaccolta");
+        new Thread(() -> {
+            try {
+                rest.delete(url);
+                Platform.runLater(() -> {
+                    MessSuccessoBnd.create("Raccolta eliminata con successo.");
+                    aggiornaDati();
+                });
+            } catch (RestClient.RestException e) {
+                Platform.runLater(() -> MessErrBnd.create("Eliminazione fallita: " + e.getMessage()));
+            }
+        }, "elimina-raccolta").start();
     }
 
     // ── Azioni Contenuti ──────────────────────────────────────────────────────
@@ -289,85 +299,99 @@ public class GestionePortfolioBnd {
     @SuppressWarnings("unchecked")
     public void onAggiungiContenuto() {
         if (portfolioCorrente == null) return;
-        try {
-            Map<String, Object> resp = rest.get("contenuti");
-            List<Map<String, Object>> tutti;
-            Object raw = resp.get("contenuti");
-            if (raw == null) {
-                Map<String, Object> data = (Map<String, Object>) resp.get("data");
-                tutti = data != null ? (List<Map<String, Object>>) data.get("contenuti") : null;
-            } else {
-                tutti = (List<Map<String, Object>>) raw;
-            }
-
-            if (tutti == null || tutti.isEmpty()) {
-                MessErrBnd.create("Non hai ancora caricato nessun contenuto.\nVai nella sezione 'Gestione contenuti' per caricarne.");
-                return;
-            }
-
-            List<String> titoli = tutti.stream().map(m -> (String) m.get("titolo")).toList();
-            javafx.scene.control.ChoiceDialog<String> dialog = new javafx.scene.control.ChoiceDialog<>(titoli.get(0), titoli);
-            dialog.setTitle("Aggiungi Contenuto");
-            dialog.setHeaderText("Seleziona il contenuto da aggiungere al portfolio:");
-            dialog.setContentText("Contenuto:");
-            dialog.showAndWait().ifPresent(titoloScelto -> {
-                tutti.stream().filter(m -> titoloScelto.equals(m.get("titolo"))).findFirst().ifPresent(scelto -> {
-                    try {
-                        rest.post("portfolio/" + portfolioCorrente.get("idPortfolio") + "/contenuti",
-                                Map.of("idContenuto", scelto.get("idContenuto")));
-                        aggiornaDati();
-                    } catch (RestClient.RestException e) {
-                        MessErrBnd.create("Aggiunta fallita: " + e.getMessage());
+        new Thread(() -> {
+            try {
+                Map<String, Object> resp = rest.get("contenuti");
+                List<Map<String, Object>> tutti;
+                Object raw = resp.get("contenuti");
+                if (raw == null) {
+                    Map<String, Object> data = (Map<String, Object>) resp.get("data");
+                    tutti = data != null ? (List<Map<String, Object>>) data.get("contenuti") : null;
+                } else {
+                    tutti = (List<Map<String, Object>>) raw;
+                }
+                final List<Map<String, Object>> listaFinale = tutti;
+                Platform.runLater(() -> {
+                    if (listaFinale == null || listaFinale.isEmpty()) {
+                        MessErrBnd.create("Non hai ancora caricato nessun contenuto.\nVai nella sezione 'Gestione contenuti' per caricarne.");
+                        return;
                     }
+                    List<String> titoli = listaFinale.stream().map(m -> (String) m.get("titolo")).toList();
+                    javafx.scene.control.ChoiceDialog<String> dialog = new javafx.scene.control.ChoiceDialog<>(titoli.get(0), titoli);
+                    dialog.setTitle("Aggiungi Contenuto");
+                    dialog.setHeaderText("Seleziona il contenuto da aggiungere al portfolio:");
+                    dialog.setContentText("Contenuto:");
+                    dialog.showAndWait().ifPresent(titoloScelto ->
+                        listaFinale.stream().filter(m -> titoloScelto.equals(m.get("titolo"))).findFirst().ifPresent(scelto -> {
+                            String url = "portfolio/" + portfolioCorrente.get("idPortfolio") + "/contenuti";
+                            Map<String, Object> body = Map.of("idContenuto", scelto.get("idContenuto"));
+                            new Thread(() -> {
+                                try {
+                                    rest.post(url, body);
+                                    Platform.runLater(this::aggiornaDati);
+                                } catch (RestClient.RestException e) {
+                                    Platform.runLater(() -> MessErrBnd.create("Aggiunta fallita: " + e.getMessage()));
+                                }
+                            }, "aggiungi-contenuto").start();
+                        })
+                    );
                 });
-            });
-        } catch (RestClient.RestException e) {
-            MessErrBnd.create("Impossibile caricare i contenuti: " + e.getMessage());
-        }
+            } catch (RestClient.RestException e) {
+                Platform.runLater(() -> MessErrBnd.create("Impossibile caricare i contenuti: " + e.getMessage()));
+            }
+        }, "carica-contenuti-portfolio").start();
     }
 
     private void onAggiungiAllaRaccolta(Map<String, Object> contenuto) {
-        // sceglie raccolta e vi aggiunge il contenuto
-        try {
-            Map<String, Object> resp = rest.get("portfolio/" + portfolioCorrente.get("idPortfolio"));
-            @SuppressWarnings("unchecked")
-            Map<String, Object> data = (Map<String, Object>) resp.get("data");
-            @SuppressWarnings("unchecked")
-            List<Map<String, Object>> raccolte = (List<Map<String, Object>>) data.get("raccolte");
-
-            if (raccolte == null || raccolte.isEmpty()) {
-                MessErrBnd.create("Non hai ancora creato nessuna raccolta."); return;
-            }
-            List<String> nomi = raccolte.stream().map(r -> (String) r.get("nome")).toList();
-            javafx.scene.control.ChoiceDialog<String> dialog = new javafx.scene.control.ChoiceDialog<>(nomi.get(0), nomi);
-            dialog.setTitle("Aggiungi alla raccolta");
-            dialog.setHeaderText("In quale raccolta vuoi aggiungere \"" + contenuto.get("titolo") + "\"?");
-            dialog.setContentText("Raccolta:");
-            dialog.showAndWait().ifPresent(nomeRaccolta -> {
-                raccolte.stream().filter(r -> nomeRaccolta.equals(r.get("nome"))).findFirst().ifPresent(r -> {
-                    try {
-                        rest.post("portfolio/" + portfolioCorrente.get("idPortfolio") +
-                                  "/raccolte/" + r.get("idRaccolta") + "/contenuti",
-                                  Map.of("idContenuto", contenuto.get("idContenuto")));
-                        MessSuccessoBnd.create("Contenuto aggiunto alla raccolta con successo.");
-                    } catch (RestClient.RestException e) {
-                        MessErrBnd.create("Aggiunta alla raccolta fallita: " + e.getMessage());
+        new Thread(() -> {
+            try {
+                Map<String, Object> resp = rest.get("portfolio/" + portfolioCorrente.get("idPortfolio"));
+                @SuppressWarnings("unchecked")
+                Map<String, Object> data = (Map<String, Object>) resp.get("data");
+                @SuppressWarnings("unchecked")
+                List<Map<String, Object>> raccolte = (List<Map<String, Object>>) data.get("raccolte");
+                Platform.runLater(() -> {
+                    if (raccolte == null || raccolte.isEmpty()) {
+                        MessErrBnd.create("Non hai ancora creato nessuna raccolta."); return;
                     }
+                    List<String> nomi = raccolte.stream().map(r -> (String) r.get("nome")).toList();
+                    javafx.scene.control.ChoiceDialog<String> dialog = new javafx.scene.control.ChoiceDialog<>(nomi.get(0), nomi);
+                    dialog.setTitle("Aggiungi alla raccolta");
+                    dialog.setHeaderText("In quale raccolta vuoi aggiungere \"" + contenuto.get("titolo") + "\"?");
+                    dialog.setContentText("Raccolta:");
+                    dialog.showAndWait().ifPresent(nomeRaccolta ->
+                        raccolte.stream().filter(r -> nomeRaccolta.equals(r.get("nome"))).findFirst().ifPresent(r -> {
+                            String url = "portfolio/" + portfolioCorrente.get("idPortfolio") +
+                                         "/raccolte/" + r.get("idRaccolta") + "/contenuti";
+                            Map<String, Object> body = Map.of("idContenuto", contenuto.get("idContenuto"));
+                            new Thread(() -> {
+                                try {
+                                    rest.post(url, body);
+                                    Platform.runLater(() -> MessSuccessoBnd.create("Contenuto aggiunto alla raccolta con successo."));
+                                } catch (RestClient.RestException e) {
+                                    Platform.runLater(() -> MessErrBnd.create("Aggiunta alla raccolta fallita: " + e.getMessage()));
+                                }
+                            }, "aggiungi-a-raccolta").start();
+                        })
+                    );
                 });
-            });
-        } catch (RestClient.RestException e) {
-            MessErrBnd.create("Errore: " + e.getMessage());
-        }
+            } catch (RestClient.RestException e) {
+                Platform.runLater(() -> MessErrBnd.create("Errore: " + e.getMessage()));
+            }
+        }, "carica-raccolte").start();
     }
 
     private void onRimuoviContenuto(Map<String, Object> contenuto) {
         if (!MessConfermaBnd.create("Rimuovere \"" + contenuto.get("titolo") + "\" dal portfolio?")) return;
-        try {
-            rest.delete("portfolio/" + portfolioCorrente.get("idPortfolio") + "/contenuti/" + contenuto.get("idContenuto"));
-            aggiornaDati();
-        } catch (RestClient.RestException e) {
-            MessErrBnd.create("Rimozione fallita: " + e.getMessage());
-        }
+        String url = "portfolio/" + portfolioCorrente.get("idPortfolio") + "/contenuti/" + contenuto.get("idContenuto");
+        new Thread(() -> {
+            try {
+                rest.delete(url);
+                Platform.runLater(this::aggiornaDati);
+            } catch (RestClient.RestException e) {
+                Platform.runLater(() -> MessErrBnd.create("Rimozione fallita: " + e.getMessage()));
+            }
+        }, "rimuovi-contenuto").start();
     }
 
     private void onSpostaSu(List<Map<String, Object>> lista, int idx) {
@@ -381,14 +405,18 @@ public class GestionePortfolioBnd {
     }
 
     private void scambiaPosizione(Map<String, Object> c1, Map<String, Object> c2) {
-        try {
-            rest.post("portfolio/" + portfolioCorrente.get("idPortfolio") + "/ordina",
-                    Map.of("idContenuto1", c1.get("idContenuto"),
-                           "idContenuto2", c2.get("idContenuto")));
-            aggiornaDati();
-        } catch (RestClient.RestException e) {
-            MessErrBnd.create("Spostamento fallito: " + e.getMessage());
-        }
+        String url = "portfolio/" + portfolioCorrente.get("idPortfolio") + "/ordina";
+        Map<String, Object> body = Map.of(
+                "idContenuto1", c1.get("idContenuto"),
+                "idContenuto2", c2.get("idContenuto"));
+        new Thread(() -> {
+            try {
+                rest.post(url, body);
+                Platform.runLater(this::aggiornaDati);
+            } catch (RestClient.RestException e) {
+                Platform.runLater(() -> MessErrBnd.create("Spostamento fallito: " + e.getMessage()));
+            }
+        }, "sposta-contenuto").start();
     }
 
     // ── Navigazione ───────────────────────────────────────────────────────────

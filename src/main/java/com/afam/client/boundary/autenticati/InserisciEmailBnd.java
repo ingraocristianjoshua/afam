@@ -1,6 +1,7 @@
 package com.afam.client.boundary.autenticati;
 
 import com.afam.client.rest.RestClient;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -8,13 +9,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * InserisciEmailBnd – form per la richiesta di recupero password.
- * L'utente inserisce la propria email; il server invia un OTP via email.
- * Dopo l'invio, la schermata naviga a FormOTP in modalità recupero password.
  * @author Cristian Joshua Ingrao (0780672)
  */
 public class InserisciEmailBnd {
@@ -27,28 +25,27 @@ public class InserisciEmailBnd {
     @FXML
     public void initialize() {
         labelErrore.setVisible(false);
-    }
-
-    public Map<String, Object> getDati() {
-        Map<String, Object> dati = new HashMap<>();
-        dati.put("email", campoEmail.getText().trim());
-        return dati;
+        labelErrore.setManaged(false);
     }
 
     @FXML
     public void onInviaOTP() {
-        labelErrore.setVisible(false);
-        Map<String, Object> dati = getDati();
+        nascondErrore();
+        String email = campoEmail.getText().trim();
+        if (email.isBlank()) { visualizzaErrore("Inserisci la tua email."); return; }
 
-        try {
-            Map<String, Object> resp = rest.post("auth/recupera-password/richiedi", dati);
-            String scadenza = (String) resp.get("scadenza");
-            apriFormOTP(scadenza, (String) dati.get("email"));
-        } catch (RestClient.RestException e) {
-            visualizzaErrore(e.isConnectionError()
-                    ? "Server non raggiungibile."
-                    : e.getMessage());
-        }
+        new Thread(() -> {
+            try {
+                Map<String, Object> resp = rest.post("auth/recupera-password/richiedi",
+                        Map.of("email", email));
+                String scadenza = (String) resp.get("scadenza");
+                Platform.runLater(() -> apriFormOTP(scadenza, email));
+            } catch (RestClient.RestException e) {
+                Platform.runLater(() -> visualizzaErrore(e.isConnectionError()
+                        ? "Server non raggiungibile."
+                        : e.getMessage()));
+            }
+        }, "richiedi-otp").start();
     }
 
     @FXML
@@ -59,6 +56,12 @@ public class InserisciEmailBnd {
     public void visualizzaErrore(String messaggio) {
         labelErrore.setText(messaggio);
         labelErrore.setVisible(true);
+        labelErrore.setManaged(true);
+    }
+
+    private void nascondErrore() {
+        labelErrore.setVisible(false);
+        labelErrore.setManaged(false);
     }
 
     public void chiudi() {

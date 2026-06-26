@@ -1,35 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.afam.client.boundary.autenticati.InserisciEmailBnd"
-      alignment="CENTER" prefWidth="350" prefHeight="200"
-      styleClass="dialog-pane">
+      spacing="0" prefWidth="380" styleClass="root">
 
-    <!-- Header Panel -->
-    <HBox alignment="CENTER" styleClass="header-panel" prefHeight="40">
-        <Label text="Recupera Password" />
-    </HBox>
+    <VBox spacing="16" styleClass="card">
+        <padding><Insets top="30" right="36" bottom="30" left="36"/></padding>
 
-    <!-- Content Panel -->
-    <VBox alignment="CENTER" spacing="16" VBox.vgrow="ALWAYS" styleClass="content">
-        <padding><Insets top="20" right="30" bottom="20" left="30"/></padding>
+        <Label text="Recupera password" styleClass="label-title"/>
+        <Label text="Inserisci la tua email per ricevere il codice di recupero."
+               styleClass="label-subtitle" wrapText="true"/>
 
-        <Label text="Inserisci la mail per recuperare la password" styleClass="label-subtitle" wrapText="true" maxWidth="320"/>
+        <VBox spacing="4">
+            <Label text="Email" styleClass="label"/>
+            <TextField fx:id="campoEmail" promptText="mario.rossi@istituzione.it"
+                       maxWidth="Infinity" styleClass="text-field"/>
+        </VBox>
 
-        <TextField fx:id="campoEmail" promptText="" maxWidth="Infinity"/>
+        <Label fx:id="labelErrore" styleClass="label-error" wrapText="true"
+               managed="false" visible="false"/>
 
-        <Label fx:id="labelErrore" styleClass="label-error" wrapText="true" visible="false"/>
-
-        <HBox alignment="CENTER" spacing="20" styleClass="button-bar">
-            <Button text="ANNULLA" onAction="#onIndietro" prefWidth="120" />
-            <Button text="INVIA CODICE" onAction="#onInviaOTP" prefWidth="120" />
+        <HBox alignment="CENTER_RIGHT" spacing="12" style="-fx-padding: 4 0 0 0;">
+            <Button text="ANNULLA"     onAction="#onIndietro"  styleClass="button-secondary"/>
+            <Button text="INVIA CODICE" onAction="#onInviaOTP" styleClass="button"/>
         </HBox>
     </VBox>
 </VBox>

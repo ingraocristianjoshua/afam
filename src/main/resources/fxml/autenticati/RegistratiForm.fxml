@@ -59,7 +59,7 @@
 
         <HBox alignment="CENTER_RIGHT" spacing="12" style="-fx-padding: 6 0 0 0;">
             <Button text="INDIETRO"   onAction="#onIndietro"   styleClass="button-secondary"/>
-            <Button text="REGISTRATI" onAction="#onRegistrati" styleClass="button"/>
+            <Button fx:id="btnRegistrati" text="REGISTRATI" onAction="#onRegistrati" styleClass="button"/>
         </HBox>
     </VBox>
 </VBox>
