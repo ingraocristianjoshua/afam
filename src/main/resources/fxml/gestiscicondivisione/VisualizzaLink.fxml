@@ -24,10 +24,4 @@
         </ScrollPane>
     </center>
 
-    <bottom>
-        <HBox spacing="10" alignment="CENTER_RIGHT" styleClass="card">
-            <padding><Insets top="12" right="20" bottom="12" left="20"/></padding>
-            <Button text="CHIUDI" onAction="#chiudi" styleClass="button-secondary"/>
-        </HBox>
-    </bottom>
 </BorderPane>

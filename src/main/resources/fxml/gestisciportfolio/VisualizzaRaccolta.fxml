@@ -38,8 +38,6 @@
             <padding><Insets top="12" right="20" bottom="12" left="20"/></padding>
             <Button text="AGGIUNGI ALLA RACCOLTA" onAction="#onAggiungiAllaRaccolta"
                     style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Button text="CHIUDI" onAction="#chiudi" styleClass="button-secondary"/>
         </HBox>
     </bottom>
 </BorderPane>

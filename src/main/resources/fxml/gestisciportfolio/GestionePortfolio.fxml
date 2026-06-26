@@ -63,8 +63,6 @@
                     <padding><Insets top="6"/></padding>
                     <Button text="AGGIUNGI CONTENUTO" onAction="#onAggiungiContenuto"
                             styleClass="button-secondary"/>
-                    <Region HBox.hgrow="ALWAYS"/>
-                    <Button text="CHIUDI" onAction="#chiudi" styleClass="button-secondary"/>
                 </HBox>
             </VBox>
         </ScrollPane>

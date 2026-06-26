@@ -29,7 +29,6 @@
                 maxWidth="Infinity" styleClass="button-secondary"/>
 
         <HBox alignment="CENTER_RIGHT" spacing="12" style="-fx-padding: 4 0 0 0;">
-            <Button text="ANNULLA"  onAction="#chiudi"     styleClass="button-secondary"/>
             <Button fx:id="btnConferma" text="CONFERMA" onAction="#onVerifica" styleClass="button"/>
         </HBox>
     </VBox>

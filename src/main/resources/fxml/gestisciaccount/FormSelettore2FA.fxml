@@ -22,8 +22,7 @@
         </VBox>
         <Label fx:id="labelErrore" styleClass="label-error" wrapText="true" maxWidth="340"/>
         <HBox spacing="10" alignment="CENTER_RIGHT">
-            <Button text="ANNULLA" onAction="#onAnnulla" styleClass="button-secondary"/>
-            <Button text="SALVA"   onAction="#onSalva"   styleClass="button-primary"/>
+            <Button text="SALVA" onAction="#onSalva" styleClass="button-primary"/>
         </HBox>
     </VBox>
 </VBox>

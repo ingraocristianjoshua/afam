@@ -35,8 +35,7 @@
         </VBox>
 
         <HBox spacing="10" alignment="CENTER_RIGHT">
-            <Button text="ANNULLA" onAction="#onAnnulla" styleClass="button-secondary"/>
-            <Button text="CARICA"  onAction="#onCarica"  styleClass="button"/>
+            <Button text="CARICA" onAction="#onCarica" styleClass="button"/>
         </HBox>
     </VBox>
 </VBox>

@@ -39,7 +39,5 @@
         <Label fx:id="labelErrore" styleClass="label-error" wrapText="true"
                visible="false" managed="false"/>
 
-        <Button text="ANNULLA" onAction="#onAnnulla"
-                maxWidth="Infinity" styleClass="button-secondary"/>
     </VBox>
 </VBox>

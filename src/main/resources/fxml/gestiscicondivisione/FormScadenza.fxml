@@ -24,7 +24,6 @@
     <Region VBox.vgrow="ALWAYS"/>
 
     <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button text="ANNULLA" onAction="#onAnnulla" styleClass="button-secondary"/>
         <Button fx:id="btnSalva" text="SALVA" onAction="#onSalva" styleClass="button"/>
     </HBox>
 </VBox>
