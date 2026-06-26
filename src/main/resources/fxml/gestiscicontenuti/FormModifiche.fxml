@@ -6,19 +6,27 @@
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.afam.client.boundary.gestiscicontenuti.FormModificheBnd"
-      spacing="14" prefWidth="400" styleClass="root">
-    <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+      spacing="0" prefWidth="440" styleClass="root">
 
-    <Label text="Modifica" style="-fx-font-size:16px; -fx-font-weight:bold;"/>
+    <VBox spacing="16" styleClass="card">
+        <padding><Insets top="30" right="36" bottom="30" left="36"/></padding>
 
-    <Label text="Titolo"/>
-    <TextField fx:id="fieldTitolo" promptText="Titolo"/>
+        <Label text="Modifica contenuto" styleClass="label-title"/>
 
-    <Label text="Visibilità"/>
-    <ComboBox fx:id="comboVisibilita" maxWidth="Infinity"/>
+        <VBox spacing="4">
+            <Label text="Titolo" styleClass="label"/>
+            <TextField fx:id="fieldTitolo" promptText="Titolo del contenuto"
+                       maxWidth="Infinity" styleClass="text-field"/>
+        </VBox>
 
-    <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button text="Annulla" onAction="#onAnnulla"/>
-        <Button text="Salva"   onAction="#onSalva" styleClass="button-primary"/>
-    </HBox>
+        <VBox spacing="4">
+            <Label text="Visibilità" styleClass="label"/>
+            <ComboBox fx:id="comboVisibilita" maxWidth="Infinity"/>
+        </VBox>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="ANNULLA" onAction="#onAnnulla" styleClass="button-secondary"/>
+            <Button text="SALVA"   onAction="#onSalva"   styleClass="button"/>
+        </HBox>
+    </VBox>
 </VBox>

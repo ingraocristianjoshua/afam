@@ -38,6 +38,7 @@ public class RegistratiFormBnd {
     @FXML
     public void initialize() {
         labelErrore.setVisible(false);
+        labelErrore.setManaged(false);
     }
 
     // ── Raccolta input ────────────────────────────────────────────────────────
@@ -61,6 +62,7 @@ public class RegistratiFormBnd {
     @FXML
     public void onRegistrati() {
         labelErrore.setVisible(false);
+        labelErrore.setManaged(false);
 
         // controllo locale: conferma password (non è logica di dominio)
         if (!campoPassword.getText().equals(campoConfermaPassword.getText())) {
@@ -103,6 +105,7 @@ public class RegistratiFormBnd {
     public void visualizzaErrore(String messaggio) {
         labelErrore.setText(messaggio);
         labelErrore.setVisible(true);
+        labelErrore.setManaged(true);
     }
 
     public void chiudi() {

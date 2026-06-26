@@ -6,26 +6,37 @@
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.afam.client.boundary.gestiscicontenuti.CompilaFormBnd"
-      spacing="14" prefWidth="420" styleClass="root">
-    <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+      spacing="0" prefWidth="460" styleClass="root">
 
-    <Label text="Compila form" style="-fx-font-size:16px; -fx-font-weight:bold;"/>
+    <VBox spacing="16" styleClass="card">
+        <padding><Insets top="30" right="36" bottom="30" left="36"/></padding>
 
-    <Label text="Titolo"/>
-    <TextField fx:id="fieldTitolo" promptText="Titolo del contenuto"/>
+        <Label text="Carica contenuto" styleClass="label-title"/>
 
-    <Label text="File"/>
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Label fx:id="labelFile" text="Nessun file selezionato"
-               style="-fx-font-style:italic; -fx-text-fill:gray;" HBox.hgrow="ALWAYS"/>
-        <Button text="Sfoglia…" onAction="#onSfoglia"/>
-    </HBox>
+        <VBox spacing="4">
+            <Label text="Titolo" styleClass="label"/>
+            <TextField fx:id="fieldTitolo" promptText="Titolo del contenuto"
+                       maxWidth="Infinity" styleClass="text-field"/>
+        </VBox>
 
-    <Label text="Visibilità"/>
-    <ComboBox fx:id="comboVisibilita" maxWidth="Infinity"/>
+        <VBox spacing="4">
+            <Label text="File" styleClass="label"/>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="labelFile" editable="false"
+                           text="Nessun file selezionato"
+                           styleClass="text-field" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                <Button text="SFOGLIA…" onAction="#onSfoglia" styleClass="button-secondary"/>
+            </HBox>
+        </VBox>
 
-    <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button text="Annulla" onAction="#onAnnulla"/>
-        <Button text="Carica"  onAction="#onCarica" styleClass="button-primary"/>
-    </HBox>
+        <VBox spacing="4">
+            <Label text="Visibilità" styleClass="label"/>
+            <ComboBox fx:id="comboVisibilita" maxWidth="Infinity"/>
+        </VBox>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="ANNULLA" onAction="#onAnnulla" styleClass="button-secondary"/>
+            <Button text="CARICA"  onAction="#onCarica"  styleClass="button"/>
+        </HBox>
+    </VBox>
 </VBox>

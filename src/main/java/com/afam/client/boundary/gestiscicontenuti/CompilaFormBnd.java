@@ -6,7 +6,6 @@ import com.afam.client.rest.RestClient;
 import com.afam.utils.Constants;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -22,8 +21,8 @@ import java.util.Map;
  */
 public class CompilaFormBnd {
 
-    @FXML private TextField  fieldTitolo;
-    @FXML private Label      labelFile;
+    @FXML private TextField        fieldTitolo;
+    @FXML private TextField        labelFile;
     @FXML private ComboBox<String> comboVisibilita;
 
     private final RestClient rest = RestClient.getInstance();

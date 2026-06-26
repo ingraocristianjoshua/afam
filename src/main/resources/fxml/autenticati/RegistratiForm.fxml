@@ -1,53 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.afam.client.boundary.autenticati.RegistratiFormBnd"
-      alignment="CENTER" spacing="10" prefWidth="460" prefHeight="600"
-      styleClass="card">
+      spacing="0" prefWidth="500" styleClass="root">
 
-    <padding><Insets top="30" right="50" bottom="30" left="50"/></padding>
+    <VBox spacing="14" styleClass="card">
+        <padding><Insets top="32" right="40" bottom="32" left="40"/></padding>
 
-    <Label text="Crea account" styleClass="label-title"/>
-    <Label text="Compila tutti i campi obbligatori (*)" styleClass="label-subtitle"/>
+        <Label text="Crea account" styleClass="label-title"/>
+        <Label text="Compila tutti i campi obbligatori (*)" styleClass="label-subtitle"/>
 
-    <HBox spacing="10">
-        <VBox spacing="4" HBox.hgrow="ALWAYS">
-            <Label text="Nome"/>
-            <TextField fx:id="campoNome" promptText=""/>
+        <HBox spacing="12">
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="Nome *" styleClass="label"/>
+                <TextField fx:id="campoNome" promptText="Mario" maxWidth="Infinity" styleClass="text-field"/>
+            </VBox>
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="Cognome *" styleClass="label"/>
+                <TextField fx:id="campoCognome" promptText="Rossi" maxWidth="Infinity" styleClass="text-field"/>
+            </VBox>
+        </HBox>
+
+        <VBox spacing="4">
+            <Label text="Data di nascita" styleClass="label"/>
+            <DatePicker fx:id="campoDataNascita" maxWidth="Infinity" promptText="Seleziona la tua data di nascita"/>
         </VBox>
-        <VBox spacing="4" HBox.hgrow="ALWAYS">
-            <Label text="Cognome"/>
-            <TextField fx:id="campoCognome" promptText=""/>
+
+        <VBox spacing="4">
+            <Label text="Email *" styleClass="label"/>
+            <TextField fx:id="campoEmail" promptText="mario.rossi@istituzione.it"
+                       maxWidth="Infinity" styleClass="text-field"/>
         </VBox>
-    </HBox>
 
-    <Label text="Data di nascita" styleClass="label"/>
-    <DatePicker fx:id="campoDataNascita" promptText="dd/MM/yyyy" maxWidth="Infinity"/>
+        <VBox spacing="4">
+            <Label text="Password *" styleClass="label"/>
+            <PasswordField fx:id="campoPassword" promptText="Min 8 car., maiusc., cifra, simbolo"
+                          maxWidth="Infinity" styleClass="text-field"/>
+        </VBox>
 
-    <Label text="Email *" styleClass="label"/>
-    <TextField fx:id="campoEmail" promptText="mario.rossi@istituzione.it" maxWidth="Infinity"/>
+        <VBox spacing="4">
+            <Label text="Conferma password *" styleClass="label"/>
+            <PasswordField fx:id="campoConfermaPassword" promptText="Ripeti la password"
+                          maxWidth="Infinity" styleClass="text-field"/>
+        </VBox>
 
-    <Label text="Password *" styleClass="label"/>
-    <PasswordField fx:id="campoPassword" promptText="Min 8 car., maiusc., cifra, simbolo"
-                  maxWidth="Infinity"/>
+        <VBox spacing="4">
+            <Label text="Numero di telefono (facoltativo)" styleClass="label"/>
+            <TextField fx:id="campoTelefono" promptText="+39 333 1234567"
+                       maxWidth="Infinity" styleClass="text-field"/>
+        </VBox>
 
-    <Label text="Conferma password *" styleClass="label"/>
-    <PasswordField fx:id="campoConfermaPassword" promptText="Ripeti la password"
-                  maxWidth="Infinity"/>
+        <Label fx:id="labelErrore" styleClass="label-error" wrapText="true" maxWidth="400"
+               managed="false" visible="false"/>
 
-    <Label text="Numero di telefono (facoltativo)" styleClass="label"/>
-    <TextField fx:id="campoTelefono" promptText="+39 333 1234567" maxWidth="Infinity"/>
-
-    <Label fx:id="labelErrore" styleClass="label-error" wrapText="true" maxWidth="360"/>
-
-    <HBox alignment="CENTER" spacing="20" style="-fx-padding: 10 0 0 0;">
-        <Button text="ANNULLA" onAction="#onIndietro" prefWidth="120" styleClass="button-secondary"/>
-        <Button text="REGISTRATI" onAction="#onRegistrati" prefWidth="120" styleClass="button-secondary"/>
-    </HBox>
-
+        <HBox alignment="CENTER_RIGHT" spacing="12" style="-fx-padding: 6 0 0 0;">
+            <Button text="INDIETRO"   onAction="#onIndietro"   styleClass="button-secondary"/>
+            <Button text="REGISTRATI" onAction="#onRegistrati" styleClass="button"/>
+        </HBox>
+    </VBox>
 </VBox>
