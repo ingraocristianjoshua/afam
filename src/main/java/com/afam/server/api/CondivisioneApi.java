@@ -150,7 +150,7 @@ public class CondivisioneApi {
             ctrl.setLink(link);
             UUID idLink = ctrl.getIdLink();
             ctrl.recuperaScadenza(idLink);
-            OffsetDateTime nuovaScadenza = data.containsKey("scadenza") && data.get("scadenza") != null
+            OffsetDateTime nuovaScadenza = (data != null && data.containsKey("scadenza") && data.get("scadenza") != null)
                     ? OffsetDateTime.parse((String) data.get("scadenza"))
                     : null;
             ctrl.aggiornaScadenza(nuovaScadenza, idLink);
@@ -179,7 +179,7 @@ public class CondivisioneApi {
             ctrl.setLink(link);
             UUID   idLink  = ctrl.getIdLink();
             String attuale = ctrl.recuperaVisibilitaLink(idLink);
-            String nuova   = data.containsKey("visibilita")
+            String nuova   = (data != null && data.containsKey("visibilita"))
                                 ? (String) data.get("visibilita")
                                 : ctrl.alternaVisibilita(attuale);
             ctrl.aggiornaVisibilitaLink(nuova, idLink);

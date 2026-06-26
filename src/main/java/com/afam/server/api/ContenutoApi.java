@@ -173,7 +173,7 @@ public class ContenutoApi {
             ctrl.setContenuto(c);
             UUID   id         = ctrl.getIdContenuto();
             String attuale    = ctrl.recuperaVisibilita(id);
-            String nuova      = data.containsKey("visibilita")
+            String nuova      = (data != null && data.containsKey("visibilita"))
                                     ? (String) data.get("visibilita")
                                     : ctrl.alternaVisibilita(attuale);
             ctrl.aggiornaLivelloVisibilita(id, nuova);
