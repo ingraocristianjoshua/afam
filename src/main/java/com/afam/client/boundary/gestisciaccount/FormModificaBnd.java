@@ -6,12 +6,10 @@ import com.afam.client.rest.RestClient;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,11 +21,11 @@ import java.util.Map;
  */
 public class FormModificaBnd {
 
-    @FXML private TextField  campoNome;
-    @FXML private TextField  campoCognome;
-    @FXML private DatePicker campoDataNascita;
-    @FXML private TextField  campoEmail;
-    @FXML private Label      labelErrore;
+    @FXML private TextField campoNome;
+    @FXML private TextField campoCognome;
+    @FXML private TextField campoDataNascita;
+    @FXML private TextField campoEmail;
+    @FXML private Label     labelErrore;
 
     private final RestClient rest = RestClient.getInstance();
 
@@ -44,10 +42,7 @@ public class FormModificaBnd {
             campoCognome.setText((String) resp.getOrDefault("cognome", ""));
             campoEmail.setText((String) resp.getOrDefault("email", ""));
             String dn = (String) resp.get("dataNascita");
-            if (dn != null && !dn.isBlank()) {
-                try { campoDataNascita.setValue(LocalDate.parse(dn)); }
-                catch (Exception ignored) {}
-            }
+            campoDataNascita.setText(dn != null ? dn : "");
         } catch (RestClient.RestException e) {
             mostraErrore("Impossibile caricare i dati: " + e.getMessage());
         }
@@ -55,10 +50,8 @@ public class FormModificaBnd {
 
     public Map<String, Object> getDati() {
         Map<String, Object> d = new HashMap<>();
-        d.put("nome",        campoNome.getText().trim());
-        d.put("cognome",     campoCognome.getText().trim());
-        LocalDate dn = campoDataNascita.getValue();
-        d.put("dataNascita", dn != null ? dn.toString() : null);
+        d.put("nome",    campoNome.getText().trim());
+        d.put("cognome", campoCognome.getText().trim());
         return d;
     }
 

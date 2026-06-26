@@ -25,7 +25,7 @@
 
         <VBox spacing="4">
             <Label text="Data di nascita" styleClass="label"/>
-            <DatePicker fx:id="campoDataNascita" maxWidth="Infinity" promptText="gg/mm/aaaa"/>
+            <TextField fx:id="campoDataNascita" maxWidth="Infinity" editable="false" styleClass="text-field"/>
         </VBox>
 
         <VBox spacing="4">
