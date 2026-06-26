@@ -155,15 +155,23 @@ public class GestioneContenutiBnd {
     }
 
     private void onCambiaVisibilita(Map<String, Object> c) {
-        try {
-            Map<String, Object> resp = rest.patch("contenuti/" + c.get("idContenuto") + "/visibilita", Map.of());
-            @SuppressWarnings("unchecked")
-            Map<String, Object> data = (Map<String, Object>) resp.get("data");
-            MessSuccessoBnd.create("Visibilità aggiornata: " + (data != null ? data.get("visibilita") : ""));
-            caricaContenuti();
-        } catch (RestClient.RestException e) {
-            MessErrBnd.create("Errore: " + e.getMessage());
-        }
+        Object idContenuto = c.get("idContenuto");
+        if (idContenuto == null) { MessErrBnd.create("ID contenuto non disponibile."); return; }
+        new Thread(() -> {
+            try {
+                Map<String, Object> resp = rest.patch("contenuti/" + idContenuto + "/visibilita", Map.of());
+                @SuppressWarnings("unchecked")
+                Map<String, Object> data = (Map<String, Object>) resp.get("data");
+                String nuova = data != null ? (String) data.get("visibilita") : "?";
+                Platform.runLater(() -> {
+                    caricaContenuti();
+                    MessSuccessoBnd.create("Visibilità aggiornata: " + nuova);
+                });
+            } catch (RestClient.RestException e) {
+                System.err.println("[GestioneContenuti] visibilita error: " + e.getMessage());
+                Platform.runLater(() -> MessErrBnd.create("Errore visibilità: " + e.getMessage()));
+            }
+        }, "cambia-visibilita-contenuto").start();
     }
 
     @FXML
