@@ -7,11 +7,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +27,7 @@ public class RegistratiFormBnd {
 
     @FXML private TextField     campoNome;
     @FXML private TextField     campoCognome;
+    @FXML private DatePicker    campoDataNascita;
     @FXML private TextField     campoEmail;
     @FXML private PasswordField campoPassword;
     @FXML private PasswordField campoConfermaPassword;
@@ -30,12 +35,21 @@ public class RegistratiFormBnd {
     @FXML private Label         labelErrore;
     @FXML private Button        btnRegistrati;
 
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final RestClient rest = RestClient.getInstance();
 
     @FXML
     public void initialize() {
         labelErrore.setVisible(false);
         labelErrore.setManaged(false);
+        campoDataNascita.setConverter(new StringConverter<>() {
+            @Override public String toString(LocalDate d)   { return d != null ? FMT.format(d) : ""; }
+            @Override public LocalDate fromString(String s) {
+                try { return (s != null && !s.isBlank()) ? LocalDate.parse(s, FMT) : null; }
+                catch (Exception e) { return null; }
+            }
+        });
+        campoDataNascita.setPromptText("gg/mm/aaaa");
     }
 
     public Map<String, Object> getDati() {
@@ -45,10 +59,10 @@ public class RegistratiFormBnd {
         dati.put("email",          campoEmail.getText().trim());
         dati.put("password",       campoPassword.getText());
         dati.put("numeroTelefono", campoTelefono.getText().trim());
+        LocalDate dn = campoDataNascita.getValue();
+        if (dn != null) dati.put("dataNascita", dn.toString()); // ISO yyyy-MM-dd per il server
         return dati;
     }
-
-    public String getEmail() { return campoEmail.getText().trim(); }
 
     @FXML
     public void onRegistrati() {

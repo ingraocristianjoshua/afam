@@ -149,8 +149,8 @@ public class DBMSBnd {
     public void creaAccount(Map<String, Object> data, UUID idUtente) {
         String sql = """
             INSERT INTO utente
-              (id_utente, nome, cognome, email, hash_password, numero_telefono)
-            VALUES (?, ?, ?, ?, ?, ?)
+              (id_utente, nome, cognome, email, hash_password, numero_telefono, data_nascita)
+            VALUES (?, ?, ?, ?, ?, ?, ?::date)
             """;
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
             ps.setObject(1, idUtente);
@@ -159,6 +159,7 @@ public class DBMSBnd {
             ps.setString(4, (String) data.get("email"));
             ps.setString(5, (String) data.get("hashPassword"));
             ps.setString(6, (String) data.get("numeroTelefono"));
+            ps.setString(7, (String) data.get("dataNascita"));
             ps.executeUpdate();
         } catch (SQLException e) {
             lastError = e.getMessage();

@@ -8,9 +8,12 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
+import javafx.util.StringConverter;
+
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,9 +28,23 @@ public class FormScadenzaBnd {
     @FXML private DatePicker datePicker;
     @FXML private Button     btnSalva;
 
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
     private final RestClient rest = RestClient.getInstance();
     private Map<String, Object> link;
     private Runnable onSuccesso;
+
+    @FXML
+    public void initialize() {
+        datePicker.setConverter(new StringConverter<>() {
+            @Override public String toString(LocalDate d)   { return d != null ? FMT.format(d) : ""; }
+            @Override public LocalDate fromString(String s) {
+                try { return (s != null && !s.isBlank()) ? LocalDate.parse(s, FMT) : null; }
+                catch (Exception e) { return null; }
+            }
+        });
+        datePicker.setPromptText("gg/mm/aaaa");
+    }
 
     public void setLink(Map<String, Object> l, Runnable onSuccesso) {
         this.link       = l;
