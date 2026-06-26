@@ -10,14 +10,13 @@
             prefWidth="1000" prefHeight="700" styleClass="root">
 
     <top>
-        <VBox styleClass="header-bar">
-            <HBox alignment="CENTER_LEFT">
-                <Label text="Home" styleClass="label-title"/>
-            </HBox>
+        <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header-bar">
+            <padding><javafx.geometry.Insets top="14" right="20" bottom="14" left="20"/></padding>
+            <Label text="Home" styleClass="label-title"/>
             <Label text="&quot;Il primo passo indispensabile per ottenere dalla vita ciò che si vuole: decidere cosa si vuole&quot;"
-                   wrapText="true" maxWidth="900"
-                   style="-fx-font-style: italic; -fx-font-size: 13px; -fx-text-fill: #c4b5fd; -fx-padding: 4 0 0 0;"/>
-        </VBox>
+                   wrapText="true" HBox.hgrow="ALWAYS"
+                   style="-fx-font-style: italic; -fx-font-size: 13px; -fx-text-fill: #c4b5fd;"/>
+        </HBox>
     </top>
 
     <center>

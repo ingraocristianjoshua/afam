@@ -33,11 +33,12 @@ public class GestioneContenutiBnd {
 
     @FXML
     public void initialize() {
-        new Thread(this::caricaContenuti, "carica-contenuti").start();
+        caricaContenuti();
     }
 
     @SuppressWarnings("unchecked")
     private void caricaContenuti() {
+        new Thread(() -> {
         try {
             Map<String, Object> resp = rest.get("contenuti");
             Map<String, Object> data = (Map<String, Object>) resp.get("data");
@@ -58,6 +59,7 @@ public class GestioneContenutiBnd {
         } catch (RestClient.RestException e) {
             Platform.runLater(() -> MessErrBnd.create("Impossibile caricare i contenuti: " + e.getMessage()));
         }
+        }, "carica-contenuti").start();
     }
 
     private HBox creaRiga(Map<String, Object> c) {

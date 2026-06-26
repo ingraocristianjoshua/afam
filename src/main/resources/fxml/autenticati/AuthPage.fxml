@@ -32,9 +32,6 @@
                    style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
             <Label text="Gestore di Identità Digitale e Portfolio Studenti"
                    styleClass="label-subtitle" textAlignment="CENTER" wrapText="true" maxWidth="380"/>
-            <Label text="&quot;Il primo passo indispensabile per ottenere dalla vita ciò che si vuole: decidere cosa si vuole&quot;"
-                   styleClass="label-subtitle" textAlignment="CENTER" wrapText="true" maxWidth="380"
-                   style="-fx-font-style: italic; -fx-opacity: 0.75;"/>
         </VBox>
 
         <Separator/>
