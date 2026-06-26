@@ -22,6 +22,7 @@ public class EntityUtente {
     private String email;
     private String hashPassword;
     private String numeroTelefono;
+    private String dataNascita;
     private boolean emailValidata;
     private boolean numeroValidato;
     private boolean stato2FA;
@@ -33,15 +34,16 @@ public class EntityUtente {
 
     public EntityUtente(UUID idUtente, String nome, String cognome,
                         String email, String hashPassword,
-                        String numeroTelefono, boolean emailValidata,
-                        boolean numeroValidato, boolean stato2FA,
-                        String statoSessione) {
+                        String numeroTelefono, String dataNascita,
+                        boolean emailValidata, boolean numeroValidato,
+                        boolean stato2FA, String statoSessione) {
         this.idUtente        = idUtente;
         this.nome            = nome;
         this.cognome         = cognome;
         this.email           = email;
         this.hashPassword    = hashPassword;
         this.numeroTelefono  = numeroTelefono;
+        this.dataNascita     = dataNascita;
         this.emailValidata   = emailValidata;
         this.numeroValidato  = numeroValidato;
         this.stato2FA        = stato2FA;
@@ -62,6 +64,7 @@ public class EntityUtente {
     public String  getCognome()       { return cognome; }
     public String  getEmail()         { return email; }
     public String  getHashPassword()  { return hashPassword; }
+    public String  getDataNascita()   { return dataNascita; }
     public boolean isEmailValidata()  { return emailValidata; }
     public boolean isNumeroValidato() { return numeroValidato; }
     public boolean isStato2FA()       { return stato2FA; }

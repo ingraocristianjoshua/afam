@@ -18,7 +18,6 @@ public class FormReimpostaPasswordBnd {
 
     @FXML private PasswordField campoVecchia;
     @FXML private PasswordField campoNuova;
-    @FXML private PasswordField campoConferma;
     @FXML private Label         labelErrore;
 
     private final RestClient rest = RestClient.getInstance();
@@ -35,8 +34,8 @@ public class FormReimpostaPasswordBnd {
     @FXML
     public void onConferma() {
         labelErrore.setVisible(false);
-        if (!campoNuova.getText().equals(campoConferma.getText())) {
-            mostraErrore("Le nuove password non coincidono.");
+        if (campoNuova.getText().isBlank()) {
+            mostraErrore("Inserisci la nuova password.");
             return;
         }
         try {

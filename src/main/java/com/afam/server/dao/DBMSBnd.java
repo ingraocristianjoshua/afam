@@ -285,14 +285,16 @@ public class DBMSBnd {
     public void aggiornaDati(Map<String, Object> data) {
         String sql = """
             UPDATE utente
-            SET nome    = COALESCE(?, nome),
-                cognome = COALESCE(?, cognome)
+            SET nome         = COALESCE(?, nome),
+                cognome      = COALESCE(?, cognome),
+                data_nascita = COALESCE(?::date, data_nascita)
             WHERE id_utente = ?
             """;
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
             ps.setString(1, (String) data.get("nome"));
             ps.setString(2, (String) data.get("cognome"));
-            ps.setObject(3, currentUserId);
+            ps.setString(3, (String) data.get("dataNascita"));
+            ps.setObject(4, currentUserId);
             ps.executeUpdate();
         } catch (SQLException e) {
             lastError = e.getMessage();
@@ -1308,6 +1310,7 @@ public class DBMSBnd {
     // ── Mapper da ResultSet a Entity ──────────────────────────────────────────
 
     private EntityUtente mapUtente(ResultSet rs) throws SQLException {
+        java.sql.Date dn = rs.getDate("data_nascita");
         return new EntityUtente(
             rs.getObject("id_utente", UUID.class),
             rs.getString("nome"),
@@ -1315,6 +1318,7 @@ public class DBMSBnd {
             rs.getString("email"),
             rs.getString("hash_password"),
             rs.getString("numero_telefono"),
+            dn != null ? dn.toString() : null,
             rs.getBoolean("email_validata"),
             rs.getBoolean("numero_validato"),
             rs.getBoolean("stato_2fa"),

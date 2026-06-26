@@ -26,10 +26,14 @@ CREATE TABLE IF NOT EXISTS utente (
     email_validata  boolean         NOT NULL DEFAULT false,
     numero_validato boolean         NOT NULL DEFAULT false,
     stato_2fa       boolean         NOT NULL DEFAULT false,
+    data_nascita    date,
     -- 'aperta' | 'chiusa'
     stato_sessione  text            NOT NULL DEFAULT 'chiusa'
         CHECK (stato_sessione IN ('aperta', 'chiusa'))
 );
+
+-- Aggiunta colonna per DB esistenti
+ALTER TABLE utente ADD COLUMN IF NOT EXISTS data_nascita date;
 
 -- =============================================================================
 -- TABELLA: contenuto

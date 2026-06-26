@@ -314,6 +314,7 @@ public class AccountApi {
             resp.put("cognome",       utente.getCognome());
             resp.put("email",         utente.getEmail());
             resp.put("numeroTelefono",utente.getNumTelefono());
+            resp.put("dataNascita",   utente.getDataNascita());
             resp.put("emailValidata", utente.isEmailValidata());
             resp.put("numeroValidato",utente.isNumeroValidato());
             resp.put("stato2FA",      utente.isStato2FA());
