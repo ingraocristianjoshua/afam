@@ -7,7 +7,7 @@
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.afam.client.boundary.gestiscicondivisione.GestioneCondivisioneBnd"
-            prefWidth="760" prefHeight="520"
+            prefWidth="1000" prefHeight="720"
             styleClass="root">
 
     <top>

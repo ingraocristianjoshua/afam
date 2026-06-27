@@ -5,8 +5,10 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
 
 <StackPane xmlns="http://javafx.com/javafx/21"
            xmlns:fx="http://javafx.com/fxml/1"
@@ -14,15 +16,33 @@
            prefWidth="800" prefHeight="600"
            styleClass="root">
 
+    <!-- ═══ Sfondo decorativo (emoji arte/musica, dietro la card) ═══ -->
+    <Pane fx:id="bgDecor" mouseTransparent="true">
+        <Label text="🎨" layoutX="48"  layoutY="60"  style="-fx-font-size: 52px; -fx-opacity: 0.14;" rotate="-12"/>
+        <Label text="🎵" layoutX="105" layoutY="190" style="-fx-font-size: 34px; -fx-opacity: 0.13;" rotate="8"/>
+        <Label text="🎹" layoutX="28"  layoutY="320" style="-fx-font-size: 48px; -fx-opacity: 0.13;" rotate="-6"/>
+        <Label text="🎻" layoutX="80"  layoutY="450" style="-fx-font-size: 40px; -fx-opacity: 0.12;" rotate="14"/>
+        <Label text="🖌" layoutX="135" layoutY="540" style="-fx-font-size: 34px; -fx-opacity: 0.13;" rotate="-10"/>
+        <Label text="🎼" layoutX="700" layoutY="64"  style="-fx-font-size: 46px; -fx-opacity: 0.14;" rotate="10"/>
+        <Label text="🎤" layoutX="735" layoutY="205" style="-fx-font-size: 36px; -fx-opacity: 0.12;" rotate="-8"/>
+        <Label text="🥁" layoutX="690" layoutY="335" style="-fx-font-size: 46px; -fx-opacity: 0.13;" rotate="6"/>
+        <Label text="🎷" layoutX="725" layoutY="465" style="-fx-font-size: 40px; -fx-opacity: 0.12;" rotate="-14"/>
+        <Label text="🎭" layoutX="648" layoutY="545" style="-fx-font-size: 36px; -fx-opacity: 0.13;" rotate="12"/>
+    </Pane>
+
+    <!-- ═══ Card di accesso ═══ -->
     <VBox alignment="CENTER" spacing="18" maxWidth="440" maxHeight="560"
           styleClass="card">
 
         <padding><Insets top="30" right="40" bottom="30" left="40"/></padding>
 
-        <!-- Logo Monogram Vector -->
+        <!-- Logo Monogram Vector (stondato) -->
         <StackPane fx:id="logoContainer" prefWidth="120" prefHeight="120" maxWidth="120" maxHeight="120" styleClass="logo-badge">
             <ImageView fitWidth="100" fitHeight="100" preserveRatio="true">
                 <image><Image url="@/images/logo.png"/></image>
+                <clip>
+                    <Rectangle width="100" height="100" arcWidth="40" arcHeight="40"/>
+                </clip>
             </ImageView>
         </StackPane>
 

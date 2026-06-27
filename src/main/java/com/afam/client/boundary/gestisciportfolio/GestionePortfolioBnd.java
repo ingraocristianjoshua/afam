@@ -10,9 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -32,40 +30,25 @@ public class GestionePortfolioBnd {
 
     @FXML private VBox      panelVuoto;
     @FXML private VBox      panelPortfolio;
-    @FXML private ComboBox<Map<String, Object>> comboPortfolio;
+    @FXML private VBox      boxPortfolios;
+    @FXML private Label     labelPortfolioSel;
     @FXML private VBox      boxRaccolte;
     @FXML private VBox      boxContenuti;
 
     private final RestClient rest = RestClient.getInstance();
     private Map<String, Object> portfolioCorrente;
-    /** Evita che il listener della combo ricarichi mentre la popoliamo via codice. */
-    private boolean aggiornamentoCombo = false;
+    private final List<Map<String, Object>> portfolios = new java.util.ArrayList<>();
 
     @FXML
     public void initialize() {
-        comboPortfolio.setCellFactory(lv -> portfolioCell());
-        comboPortfolio.setButtonCell(portfolioCell());
-        comboPortfolio.valueProperty().addListener((obs, o, sel) -> {
-            if (aggiornamentoCombo || sel == null) return;
-            new Thread(() -> apriPortfolio(sel), "apri-portfolio-sel").start();
-        });
         new Thread(() -> caricaListaPortfolio(null), "carica-portfolio").start();
     }
 
     // ── Caricamento ───────────────────────────────────────────────────────────
 
-    private ListCell<Map<String, Object>> portfolioCell() {
-        return new ListCell<>() {
-            @Override protected void updateItem(Map<String, Object> item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : (String) item.getOrDefault("nome", ""));
-            }
-        };
-    }
-
     /**
-     * Carica l'elenco dei portfolio nella combo e seleziona quello indicato
-     * (o il primo). La selezione fa scattare il caricamento del dettaglio.
+     * Carica l'elenco dei portfolio, lo mostra come lista verticale e
+     * seleziona quello indicato (o il primo), caricandone il dettaglio.
      */
     @SuppressWarnings("unchecked")
     private void caricaListaPortfolio(String idDaSelezionare) {
@@ -74,14 +57,15 @@ public class GestionePortfolioBnd {
             Map<String, Object> data = (Map<String, Object>) resp.get("data");
             List<Map<String, Object>> lista = (List<Map<String, Object>>) data.get("portfolios");
             Platform.runLater(() -> {
+                portfolios.clear();
                 if (lista == null || lista.isEmpty()) {
-                    aggiornamentoCombo = true;
-                    comboPortfolio.getItems().clear();
-                    aggiornamentoCombo = false;
+                    boxPortfolios.getChildren().clear();
                     portfolioCorrente = null;
                     mostraVuoto();
                     return;
                 }
+                portfolios.addAll(lista);
+
                 Map<String, Object> target = null;
                 if (idDaSelezionare != null) {
                     target = lista.stream()
@@ -90,10 +74,8 @@ public class GestionePortfolioBnd {
                 }
                 if (target == null) target = lista.get(0);
 
-                aggiornamentoCombo = true;
-                comboPortfolio.getItems().setAll(lista);
-                comboPortfolio.getSelectionModel().select(target);
-                aggiornamentoCombo = false;
+                String selId = (String) target.get("idPortfolio");
+                renderListaPortfolios(selId);
 
                 final Map<String, Object> sel = target;
                 new Thread(() -> apriPortfolio(sel), "apri-portfolio-init").start();
@@ -104,6 +86,54 @@ public class GestionePortfolioBnd {
                 mostraVuoto();
             });
         }
+    }
+
+    /** Disegna la lista verticale dei portfolio, evidenziando quello selezionato. */
+    private void renderListaPortfolios(String selId) {
+        boxPortfolios.getChildren().clear();
+        for (Map<String, Object> p : portfolios) {
+            boxPortfolios.getChildren().add(creaRigaPortfolio(p, p.get("idPortfolio").equals(selId)));
+        }
+    }
+
+    private HBox creaRigaPortfolio(Map<String, Object> p, boolean selezionato) {
+        HBox row = new HBox(10);
+        row.setAlignment(Pos.CENTER_LEFT);
+        row.setStyle("-fx-background-color: " + (selezionato ? "#ede9fe" : "#f5f3ff") + ";"
+                + " -fx-background-radius: 10; -fx-padding: 10 14;"
+                + (selezionato ? " -fx-border-color: #6c3fc5; -fx-border-width: 2; -fx-border-radius: 10;" : ""));
+
+        Label icona = new Label("🗂");
+        icona.setStyle("-fx-font-size: 18px;");
+
+        Label nome = new Label((String) p.getOrDefault("nome", ""));
+        nome.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #3d1a78;");
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        if (selezionato) {
+            Label badge = new Label("● selezionato");
+            badge.setStyle("-fx-font-size: 11px; -fx-text-fill: #6c3fc5; -fx-font-weight: bold;");
+            row.getChildren().addAll(icona, nome, spacer, badge);
+        } else {
+            Button btnApri = bottone("APRI", "btn-chip-green");
+            btnApri.setOnAction(e -> onSelezionaPortfolio(p));
+            row.getChildren().addAll(icona, nome, spacer, btnApri);
+        }
+
+        Button btnEl = bottone("ELIMINA", "btn-chip-red");
+        btnEl.setOnAction(e -> onEliminaPortfolio(p));
+        row.getChildren().add(btnEl);
+
+        // L'intera riga è cliccabile per selezionare il portfolio
+        row.setOnMouseClicked(e -> { if (!selezionato) onSelezionaPortfolio(p); });
+        return row;
+    }
+
+    private void onSelezionaPortfolio(Map<String, Object> p) {
+        renderListaPortfolios((String) p.get("idPortfolio"));
+        new Thread(() -> apriPortfolio(p), "apri-portfolio-sel").start();
     }
 
     @SuppressWarnings("unchecked")
@@ -117,6 +147,8 @@ public class GestionePortfolioBnd {
             List<Map<String, Object>> contenuti = (List<Map<String, Object>>) data.get("contenuti");
             Platform.runLater(() -> {
                 portfolioCorrente = pf;
+                if (labelPortfolioSel != null)
+                    labelPortfolioSel.setText("Portfolio selezionato: " + pf.getOrDefault("nome", ""));
                 popolaRaccolte(raccolte);
                 popolaContenuti(contenuti);
                 mostraPortfolio();
@@ -217,9 +249,6 @@ public class GestionePortfolioBnd {
         btnAgg.setOnAction(e -> onAggiungiAllaRaccolta(c));
         btnRim.setOnAction(e -> onRimuoviContenuto(c));
 
-        btnSu.setDisable(i == 0);
-        btnGiu.setDisable(i == lista.size() - 1);
-
         row.getChildren().addAll(icona, nome, spacer, btnSu, btnGiu, btnAgg, btnRim);
         return row;
     }
@@ -257,12 +286,11 @@ public class GestionePortfolioBnd {
         }
     }
 
-    @FXML
-    public void onEliminaPortfolio() {
-        if (portfolioCorrente == null) return;
-        String nome = (String) portfolioCorrente.get("nome");
+    private void onEliminaPortfolio(Map<String, Object> portfolio) {
+        if (portfolio == null) return;
+        String nome = (String) portfolio.get("nome");
         if (!MessConfermaBnd.create("Eliminare il portfolio \"" + nome + "\"?\nTutti i contenuti verranno rimossi dal portfolio.")) return;
-        Object idP = portfolioCorrente.get("idPortfolio");
+        Object idP = portfolio.get("idPortfolio");
         new Thread(() -> {
             try {
                 rest.delete("portfolio/" + idP);
@@ -444,12 +472,18 @@ public class GestionePortfolioBnd {
     }
 
     private void onSpostaSu(List<Map<String, Object>> lista, int idx) {
-        if (idx <= 0) return;
+        if (idx <= 0) {
+            MessErrBnd.create("Il contenuto è già in cima: non può essere spostato più su.");
+            return;
+        }
         scambiaPosizione(lista.get(idx), lista.get(idx - 1));
     }
 
     private void onSpostaGiu(List<Map<String, Object>> lista, int idx) {
-        if (idx >= lista.size() - 1) return;
+        if (idx >= lista.size() - 1) {
+            MessErrBnd.create("Il contenuto è già in fondo: non può essere spostato più giù.");
+            return;
+        }
         scambiaPosizione(lista.get(idx), lista.get(idx + 1));
     }
 

@@ -138,11 +138,11 @@ public class GestioneAccountBnd {
         }
     }
 
-    @FXML public void onModificaInformazioni() { apri("/fxml/gestisciaccount/FormModifica.fxml",           "Modifica dati"); }
-    @FXML public void onReimpostaPassword()    { apri("/fxml/gestisciaccount/FormReimpostaPassword.fxml",  "Imposta password"); }
-    @FXML public void onGestione2FA()          { apri("/fxml/gestisciaccount/FormSelettore2FA.fxml",        "Selettore 2FA"); }
-    @FXML public void onValidaEmail()          { apri("/fxml/gestisciaccount/ValidaEmail.fxml",             "Valida email"); }
-    @FXML public void onValidaNumero()         { apri("/fxml/gestisciaccount/ValidaNumero.fxml",            "Valida numero"); }
+    @FXML public void onModificaInformazioni() { apriConRefresh("/fxml/gestisciaccount/FormModifica.fxml",           "Modifica dati"); }
+    @FXML public void onReimpostaPassword()    { apriConRefresh("/fxml/gestisciaccount/FormReimpostaPassword.fxml",  "Imposta password"); }
+    @FXML public void onGestione2FA()          { apriConRefresh("/fxml/gestisciaccount/FormSelettore2FA.fxml",        "Selettore 2FA"); }
+    @FXML public void onValidaEmail()          { apriConRefresh("/fxml/gestisciaccount/ValidaEmail.fxml",             "Valida email"); }
+    @FXML public void onValidaNumero()         { apriConRefresh("/fxml/gestisciaccount/ValidaNumero.fxml",            "Valida numero"); }
 
     @FXML
     public void onEliminaAccount() {
@@ -222,6 +222,27 @@ public class GestioneAccountBnd {
             stage.setScene(new Scene(loader.load()));
             stage.getScene().getStylesheets().add(
                     getClass().getResource("/css/application.css").toExternalForm());
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            MessErrBnd.create("Impossibile aprire la vista: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Come {@link #apri}, ma alla chiusura della finestra ricarica il profilo,
+     * così le modifiche (nome, validazioni, 2FA) compaiono subito senza
+     * dover riaprire la schermata.
+     */
+    private void apriConRefresh(String path, String titolo) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
+            Stage stage = new Stage();
+            stage.setTitle("AFAM – " + titolo);
+            stage.setScene(new Scene(loader.load()));
+            stage.getScene().getStylesheets().add(
+                    getClass().getResource("/css/application.css").toExternalForm());
+            stage.setOnHidden(e -> new Thread(this::caricaProfilo, "ricarica-profilo").start());
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();

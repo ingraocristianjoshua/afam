@@ -8,14 +8,14 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.afam.client.boundary.homepage.HomePageBnd"
             fx:id="root"
-            prefWidth="1000" prefHeight="720" styleClass="root">
+            prefWidth="960" prefHeight="760" styleClass="root">
 
     <!-- ═══ Header ═══════════════════════════════════════════════════════════ -->
     <top>
         <HBox alignment="CENTER_LEFT" spacing="18" styleClass="header-bar">
             <padding><Insets top="14" right="20" bottom="14" left="20"/></padding>
             <Label text="Home" styleClass="label-title" style="-fx-font-size: 20px;"/>
-            <Label text="&quot;Il primo passo indispensabile per ottenere dalla vita ciò che si vuole: decidere cosa si vuole&quot;"
+            <Label text="&quot;Il primo passo indispensabile per ottenere dalla vita ciò che si vuole: decidere cosa si vuole&quot; — Ben Stein"
                    wrapText="true" HBox.hgrow="ALWAYS"
                    style="-fx-font-style: italic; -fx-font-size: 13px; -fx-text-fill: #c4b5fd;"/>
         </HBox>
@@ -23,6 +23,21 @@
 
     <!-- ═══ Griglia sezioni ══════════════════════════════════════════════════ -->
     <center>
+      <StackPane>
+        <!-- Sfondo decorativo animato (emoji arte/musica, dietro le card) -->
+        <Pane fx:id="bgDecor" mouseTransparent="true">
+            <Label text="🎨" layoutX="46"  layoutY="90"  style="-fx-font-size: 50px; -fx-opacity: 0.13;" rotate="-12"/>
+            <Label text="🎵" layoutX="110" layoutY="250" style="-fx-font-size: 34px; -fx-opacity: 0.12;" rotate="8"/>
+            <Label text="🎹" layoutX="34"  layoutY="430" style="-fx-font-size: 46px; -fx-opacity: 0.12;" rotate="-6"/>
+            <Label text="🎻" layoutX="100" layoutY="600" style="-fx-font-size: 40px; -fx-opacity: 0.12;" rotate="14"/>
+            <Label text="🖌" layoutX="54"  layoutY="720" style="-fx-font-size: 34px; -fx-opacity: 0.13;" rotate="-10"/>
+            <Label text="🎼" layoutX="900" layoutY="96"  style="-fx-font-size: 46px; -fx-opacity: 0.13;" rotate="10"/>
+            <Label text="🎤" layoutX="932" layoutY="258" style="-fx-font-size: 36px; -fx-opacity: 0.12;" rotate="-8"/>
+            <Label text="🥁" layoutX="868" layoutY="430" style="-fx-font-size: 46px; -fx-opacity: 0.12;" rotate="6"/>
+            <Label text="🎷" layoutX="918" layoutY="600" style="-fx-font-size: 40px; -fx-opacity: 0.12;" rotate="-14"/>
+            <Label text="🎭" layoutX="858" layoutY="720" style="-fx-font-size: 36px; -fx-opacity: 0.13;" rotate="12"/>
+        </Pane>
+
         <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
             <VBox spacing="6">
                 <padding><Insets top="26" right="36" bottom="26" left="36"/></padding>
@@ -104,9 +119,8 @@
 
                     <!-- Profilo pubblico (a tutta larghezza) -->
                     <VBox styleClass="card" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="2"
-                          GridPane.columnSpan="2" prefHeight="150">
+                          GridPane.columnSpan="2" prefHeight="108">
                         <HBox spacing="16" alignment="CENTER_LEFT">
-                            <padding><Insets top="6" bottom="6"/></padding>
                             <StackPane minWidth="54" minHeight="54" maxWidth="54" maxHeight="54"
                                        style="-fx-background-color: linear-gradient(to bottom right,#00f2fe,#4facfe);
                                               -fx-background-radius: 50;
@@ -127,6 +141,7 @@
                 </GridPane>
             </VBox>
         </ScrollPane>
+      </StackPane>
     </center>
 
 </BorderPane>

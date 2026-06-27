@@ -8,7 +8,7 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.afam.client.boundary.gestisciaccount.GestioneAccountBnd"
             fx:id="root"
-            prefWidth="1060" prefHeight="720" styleClass="root">
+            prefWidth="1000" prefHeight="720" styleClass="root">
 
     <!-- ═══ Header ═══════════════════════════════════════════════════════════ -->
     <top>
@@ -67,21 +67,6 @@
             <Button text="📱  Valida Numero"          onAction="#onValidaNumero"
                     styleClass="sidebar-btn" maxWidth="Infinity"/>
             <Button text="📄  Carica CV"              onAction="#onCaricaCV"
-                    styleClass="sidebar-btn" maxWidth="Infinity"/>
-
-            <Separator style="-fx-background-color: rgba(255,255,255,0.07); -fx-padding: 4 0;"/>
-
-            <!-- Sezione SEZIONI -->
-            <Label text="  SEZIONI"
-                   style="-fx-text-fill: #6c3fc5; -fx-font-size: 10px; -fx-font-weight: bold;
-                          -fx-letter-spacing: 1.5px; -fx-padding: 12 4 4 4;"/>
-            <Button text="🗂  Gestisci Portfolio"    onAction="#onVaiPortfolio"
-                    styleClass="sidebar-btn" maxWidth="Infinity"/>
-            <Button text="📁  Gestisci Contenuti"    onAction="#onVaiContenuti"
-                    styleClass="sidebar-btn" maxWidth="Infinity"/>
-            <Button text="🔗  Gestisci Condivisione" onAction="#onVaiCondivisione"
-                    styleClass="sidebar-btn" maxWidth="Infinity"/>
-            <Button text="👤  Profilo Pubblico"      onAction="#onVisualizzaProfilo"
                     styleClass="sidebar-btn" maxWidth="Infinity"/>
 
             <Region VBox.vgrow="ALWAYS"/>

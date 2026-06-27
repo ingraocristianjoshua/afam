@@ -98,9 +98,6 @@ public class VisualizzaRaccoltaBnd {
         btnGiu.setOnAction(e -> sposta(lista, idx,  1));
         btnRim.setOnAction(e -> rimuoviDallaRaccolta(c));
 
-        btnSu.setDisable(i == 0);
-        btnGiu.setDisable(i == lista.size() - 1);
-
         row.getChildren().addAll(icona, info, spacer, btnSu, btnGiu, btnRim);
         return row;
     }
@@ -185,7 +182,14 @@ public class VisualizzaRaccoltaBnd {
 
     private void sposta(List<Map<String, Object>> lista, int idx, int delta) {
         int target = idx + delta;
-        if (target < 0 || target >= lista.size()) return;
+        if (target < 0) {
+            MessErrBnd.create("Il contenuto è già in cima: non può essere spostato più su.");
+            return;
+        }
+        if (target >= lista.size()) {
+            MessErrBnd.create("Il contenuto è già in fondo: non può essere spostato più giù.");
+            return;
+        }
         Map<String, Object> c1 = lista.get(idx);
         Map<String, Object> c2 = lista.get(target);
         try {
