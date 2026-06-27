@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.afam.client.boundary.dialog.MessErrBnd"
+           alignment="CENTER"
+           style="-fx-background-color: transparent;">
+    <padding><Insets top="22" right="22" bottom="22" left="22"/></padding>
+
+    <!-- Finestra flottante stondata -->
+    <VBox spacing="0" maxWidth="440"
+          style="-fx-background-color: #1e1040;
+                 -fx-background-radius: 26; -fx-border-radius: 26;
+                 -fx-border-color: rgba(167,139,250,0.40); -fx-border-width: 1.2;
+                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 30, 0, 0, 10);">
+
+        <!-- Accent header rosso -->
+        <HBox alignment="CENTER_LEFT" spacing="14"
+              style="-fx-background-color: linear-gradient(to right, #991b1b, #ef4444);
+                     -fx-background-radius: 26 26 0 0; -fx-padding: 16 24 16 24;">
+            <StackPane minWidth="36" minHeight="36"
+                       style="-fx-background-color: rgba(255,255,255,0.18);
+                              -fx-background-radius: 50;">
+                <Label text="✕"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            </StackPane>
+            <Label text="Errore"
+                   style="-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+        </HBox>
+
+        <!-- Corpo -->
+        <VBox spacing="22" style="-fx-padding: 26 26 22 26;">
+            <Label fx:id="labelMessaggio" wrapText="true"
+                   style="-fx-text-fill: #e2d9f3; -fx-font-size: 14px; -fx-line-spacing: 4;"/>
+            <Separator style="-fx-background-color: rgba(255,255,255,0.08);"/>
+            <HBox alignment="CENTER_RIGHT">
+                <Button text="CHIUDI" styleClass="button-danger" onAction="#onChiudi"/>
+            </HBox>
+        </VBox>
+    </VBox>
+
+</StackPane>

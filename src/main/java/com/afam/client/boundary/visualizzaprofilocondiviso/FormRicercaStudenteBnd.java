@@ -106,8 +106,7 @@ public class FormRicercaStudenteBnd {
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         Button btn = new Button("VISUALIZZA PROFILO");
-        btn.setStyle("-fx-background-color: #6c3fc5; -fx-text-fill: white; -fx-font-weight: bold;" +
-                     "-fx-font-size: 12px; -fx-background-radius: 8; -fx-padding: 7 14;");
+        btn.getStyleClass().addAll("btn-chip", "btn-chip-purple");
         btn.setOnAction(e -> apriProfilo(s));
 
         row.getChildren().addAll(avatar, info, spacer, btn);

@@ -24,10 +24,9 @@ public class ClientOspiteMain extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        try {
-            var logoStream = getClass().getResourceAsStream("/images/logo.png");
-            if (logoStream != null) primaryStage.getIcons().add(new Image(logoStream));
-        } catch (Exception ignored) {}
+        com.afam.client.util.AppIcon.applyDockIcon();
+        Image icon = com.afam.client.util.AppIcon.fxIcon();
+        if (icon != null) primaryStage.getIcons().add(icon);
 
         String token = System.getProperty("afam.token");
         if (token != null && !token.isBlank()) {

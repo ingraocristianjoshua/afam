@@ -18,13 +18,20 @@ public class CampoNomePortfolioBnd {
     @FXML private TextField fieldNome;
 
     private final RestClient rest = RestClient.getInstance();
+    private String idCreato;
+
+    /** Id del portfolio appena creato (null se non creato). */
+    public String getIdCreato() { return idCreato; }
 
     @FXML
+    @SuppressWarnings("unchecked")
     public void onCrea() {
         String nome = fieldNome.getText().trim();
         if (nome.isEmpty()) { MessErrBnd.create("Inserisci un nome per il portfolio."); return; }
         try {
-            rest.post("portfolio", Map.of("nomePortfolio", nome));
+            Map<String, Object> resp = rest.post("portfolio", Map.of("nomePortfolio", nome));
+            Map<String, Object> data = (Map<String, Object>) resp.get("data");
+            idCreato = data != null ? (String) data.get("idPortfolio") : null;
             MessSuccessoBnd.create("Portfolio \"" + nome + "\" creato.");
             chiudi();
         } catch (RestClient.RestException e) {

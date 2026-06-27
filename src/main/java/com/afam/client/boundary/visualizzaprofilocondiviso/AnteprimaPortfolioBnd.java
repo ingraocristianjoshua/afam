@@ -1,10 +1,13 @@
 package com.afam.client.boundary.visualizzaprofilocondiviso;
 
 import com.afam.client.boundary.dialog.MessErrBnd;
+import com.afam.client.boundary.gestiscicontenuti.AnteprimaContenutoBnd;
 import com.afam.client.rest.RestClient;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -100,8 +103,30 @@ public class AnteprimaPortfolioBnd {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        row.getChildren().addAll(icona, info, spacer);
+        Button btnAnt = new Button("👁  ANTEPRIMA");
+        btnAnt.getStyleClass().addAll("btn-chip", "btn-chip-blue");
+        btnAnt.setOnAction(e -> onAnteprima(c));
+
+        row.getChildren().addAll(icona, info, spacer, btnAnt);
         return row;
+    }
+
+    private void onAnteprima(Map<String, Object> c) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/fxml/gestiscicontenuti/AnteprimaContenuto.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("AFAM – Anteprima – " + c.getOrDefault("titolo", ""));
+            Scene scene = new Scene(loader.load());
+            scene.getStylesheets().add(
+                    getClass().getResource("/css/application.css").toExternalForm());
+            stage.setScene(scene);
+            AnteprimaContenutoBnd ctrl = loader.getController();
+            stage.show();
+            ctrl.setContenuto(c);
+        } catch (Exception e) {
+            MessErrBnd.create("Impossibile aprire l'anteprima: " + e.getMessage());
+        }
     }
 
     private String iconaPer(String tipo) {

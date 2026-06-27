@@ -12,7 +12,7 @@
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.afam.client.boundary.autenticati.AuthPageBnd"
            prefWidth="800" prefHeight="600"
-           styleClass="root-pane">
+           styleClass="root">
 
     <VBox alignment="CENTER" spacing="18" maxWidth="440" maxHeight="560"
           styleClass="card">

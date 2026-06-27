@@ -81,8 +81,7 @@ public class VisualizzaProfiloBnd {
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         Button btn = new Button("VISUALIZZA PORTFOLIO");
-        btn.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; " +
-                     "-fx-font-weight: bold; -fx-font-size: 12px; -fx-background-radius: 8; -fx-padding: 7 14;");
+        btn.getStyleClass().addAll("btn-chip", "btn-chip-green");
         btn.setOnAction(e -> apriPortfolio(p));
 
         row.getChildren().addAll(info, spacer, btn);
@@ -103,6 +102,22 @@ public class VisualizzaProfiloBnd {
             stage.show();
         } catch (Exception e) {
             MessErrBnd.create("Impossibile aprire: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onCercaStudenti() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/fxml/visualizzaprofilocondiviso/FormRicercaStudente.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("AFAM – Ricerca studenti");
+            stage.setScene(new Scene(loader.load()));
+            stage.getScene().getStylesheets().add(
+                    getClass().getResource("/css/application.css").toExternalForm());
+            stage.show();
+        } catch (Exception e) {
+            MessErrBnd.create("Impossibile aprire la ricerca: " + e.getMessage());
         }
     }
 

@@ -10,8 +10,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.ListCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -31,31 +32,72 @@ public class GestionePortfolioBnd {
 
     @FXML private VBox      panelVuoto;
     @FXML private VBox      panelPortfolio;
-    @FXML private TextField fieldTitolo;
+    @FXML private ComboBox<Map<String, Object>> comboPortfolio;
     @FXML private VBox      boxRaccolte;
     @FXML private VBox      boxContenuti;
 
     private final RestClient rest = RestClient.getInstance();
     private Map<String, Object> portfolioCorrente;
+    /** Evita che il listener della combo ricarichi mentre la popoliamo via codice. */
+    private boolean aggiornamentoCombo = false;
 
     @FXML
     public void initialize() {
-        new Thread(this::caricaPortfolio, "carica-portfolio").start();
+        comboPortfolio.setCellFactory(lv -> portfolioCell());
+        comboPortfolio.setButtonCell(portfolioCell());
+        comboPortfolio.valueProperty().addListener((obs, o, sel) -> {
+            if (aggiornamentoCombo || sel == null) return;
+            new Thread(() -> apriPortfolio(sel), "apri-portfolio-sel").start();
+        });
+        new Thread(() -> caricaListaPortfolio(null), "carica-portfolio").start();
     }
 
     // ── Caricamento ───────────────────────────────────────────────────────────
 
+    private ListCell<Map<String, Object>> portfolioCell() {
+        return new ListCell<>() {
+            @Override protected void updateItem(Map<String, Object> item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : (String) item.getOrDefault("nome", ""));
+            }
+        };
+    }
+
+    /**
+     * Carica l'elenco dei portfolio nella combo e seleziona quello indicato
+     * (o il primo). La selezione fa scattare il caricamento del dettaglio.
+     */
     @SuppressWarnings("unchecked")
-    private void caricaPortfolio() {
+    private void caricaListaPortfolio(String idDaSelezionare) {
         try {
             Map<String, Object> resp = rest.get("portfolio");
             Map<String, Object> data = (Map<String, Object>) resp.get("data");
             List<Map<String, Object>> lista = (List<Map<String, Object>>) data.get("portfolios");
-            if (lista == null || lista.isEmpty()) {
-                Platform.runLater(this::mostraVuoto);
-                return;
-            }
-            apriPortfolio(lista.get(0));
+            Platform.runLater(() -> {
+                if (lista == null || lista.isEmpty()) {
+                    aggiornamentoCombo = true;
+                    comboPortfolio.getItems().clear();
+                    aggiornamentoCombo = false;
+                    portfolioCorrente = null;
+                    mostraVuoto();
+                    return;
+                }
+                Map<String, Object> target = null;
+                if (idDaSelezionare != null) {
+                    target = lista.stream()
+                            .filter(p -> idDaSelezionare.equals(p.get("idPortfolio")))
+                            .findFirst().orElse(null);
+                }
+                if (target == null) target = lista.get(0);
+
+                aggiornamentoCombo = true;
+                comboPortfolio.getItems().setAll(lista);
+                comboPortfolio.getSelectionModel().select(target);
+                aggiornamentoCombo = false;
+
+                final Map<String, Object> sel = target;
+                new Thread(() -> apriPortfolio(sel), "apri-portfolio-init").start();
+            });
         } catch (RestClient.RestException e) {
             Platform.runLater(() -> {
                 MessErrBnd.create("Impossibile caricare i portfolio: " + e.getMessage());
@@ -75,7 +117,6 @@ public class GestionePortfolioBnd {
             List<Map<String, Object>> contenuti = (List<Map<String, Object>>) data.get("contenuti");
             Platform.runLater(() -> {
                 portfolioCorrente = pf;
-                fieldTitolo.setText((String) pf.getOrDefault("nome", ""));
                 popolaRaccolte(raccolte);
                 popolaContenuti(contenuti);
                 mostraPortfolio();
@@ -119,13 +160,13 @@ public class GestionePortfolioBnd {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Button btnVis = bottone("VISUALIZZA RACCOLTA", "#27ae60");
+        Button btnVis = bottone("VISUALIZZA RACCOLTA", "btn-chip-green");
         btnVis.setOnAction(e -> onVisualizzaRaccolta(r));
 
-        Button btnRin = bottone("RINOMINA RACCOLTA", "#f39c12");
+        Button btnRin = bottone("RINOMINA RACCOLTA", "btn-chip-orange");
         btnRin.setOnAction(e -> onRinominaRaccolta(r));
 
-        Button btnEl = bottone("ELIMINA RACCOLTA", "#e74c3c");
+        Button btnEl = bottone("ELIMINA RACCOLTA", "btn-chip-red");
         btnEl.setOnAction(e -> onEliminaRaccolta(r));
 
         row.getChildren().addAll(icona, nome, spacer, btnVis, btnRin, btnEl);
@@ -163,10 +204,12 @@ public class GestionePortfolioBnd {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Button btnSu   = bottone("SPOSTA SÙ",  "#6c3fc5");
-        Button btnGiu  = bottone("SPOSTA GIÙ", "#6c3fc5");
-        Button btnAgg  = bottone("AGGIUNGI ALLA RACCOLTA", "#f39c12");
-        Button btnRim  = bottone("RIMUOVI CONTENUTO",      "#e74c3c");
+        Button btnSu   = bottone("↑", "btn-chip-purple");
+        Button btnGiu  = bottone("↓", "btn-chip-purple");
+        btnSu.setTooltip(new javafx.scene.control.Tooltip("Sposta su"));
+        btnGiu.setTooltip(new javafx.scene.control.Tooltip("Sposta giù"));
+        Button btnAgg  = bottone("AGGIUNGI ALLA RACCOLTA", "btn-chip-orange");
+        Button btnRim  = bottone("RIMUOVI CONTENUTO",      "btn-chip-red");
 
         final int idx = i;
         btnSu.setOnAction(e  -> onSpostaSu(lista, idx));
@@ -191,11 +234,9 @@ public class GestionePortfolioBnd {
         };
     }
 
-    private Button bottone(String testo, String colore) {
+    private Button bottone(String testo, String classeColore) {
         Button b = new Button(testo);
-        b.setStyle("-fx-background-color: " + colore + "; -fx-text-fill: white; " +
-                   "-fx-font-weight: bold; -fx-font-size: 11px; -fx-background-radius: 6; " +
-                   "-fx-padding: 5 10;");
+        b.getStyleClass().addAll("btn-chip", classeColore);
         return b;
     }
 
@@ -203,8 +244,17 @@ public class GestionePortfolioBnd {
 
     @FXML
     public void onCreaPortfolio() {
-        apri("/fxml/gestisciportfolio/CampoNomePortfolio.fxml", "Crea portfolio");
-        caricaPortfolio();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gestisciportfolio/CampoNomePortfolio.fxml"));
+            Stage stage = nuovoStage("Crea portfolio", loader.load());
+            CampoNomePortfolioBnd ctrl = loader.getController();
+            stage.showAndWait();
+            // ricarica e seleziona il portfolio appena creato (se creato)
+            String nuovoId = ctrl.getIdCreato();
+            new Thread(() -> caricaListaPortfolio(nuovoId), "ricarica-dopo-crea").start();
+        } catch (Exception e) {
+            MessErrBnd.create("Impossibile aprire: " + e.getMessage());
+        }
     }
 
     @FXML
@@ -219,7 +269,7 @@ public class GestionePortfolioBnd {
                 Platform.runLater(() -> {
                     MessSuccessoBnd.create("Portfolio eliminato con successo.");
                     portfolioCorrente = null;
-                    caricaPortfolio();
+                    new Thread(() -> caricaListaPortfolio(null), "ricarica-dopo-elimina").start();
                 });
             } catch (RestClient.RestException e) {
                 Platform.runLater(() -> MessErrBnd.create("Eliminazione fallita: " + e.getMessage()));
@@ -229,8 +279,7 @@ public class GestionePortfolioBnd {
 
     @FXML
     public void onAnnulla() {
-        mostraVuoto();
-        portfolioCorrente = null;
+        vai("/fxml/gestisciaccount/GestioneAccount.fxml", "Gestione Account");
     }
 
     // ── Azioni Raccolte ───────────────────────────────────────────────────────
@@ -423,8 +472,8 @@ public class GestionePortfolioBnd {
 
     @FXML
     public void chiudi() {
-        Stage stage = (Stage) panelPortfolio.getScene().getWindow();
-        stage.close();
+        javafx.scene.Node anchor = panelPortfolio.getScene() != null ? panelPortfolio : panelVuoto;
+        ((Stage) anchor.getScene().getWindow()).close();
     }
 
     private void mostraVuoto() {
@@ -447,6 +496,17 @@ public class GestionePortfolioBnd {
             nuovoStage(titolo, loader.load()).showAndWait();
         } catch (Exception e) {
             MessErrBnd.create("Impossibile aprire: " + e.getMessage());
+        }
+    }
+
+    private void vai(String fxml, String titolo) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+            Stage stage = nuovoStage(titolo, loader.load());
+            stage.show();
+            chiudi();
+        } catch (Exception e) {
+            MessErrBnd.create("Impossibile navigare: " + e.getMessage());
         }
     }
 

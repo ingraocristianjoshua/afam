@@ -1,10 +1,14 @@
 package com.afam.client.boundary.dialog;
 
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.DialogPane;
-
-import java.util.Optional;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.Window;
 
 /**
  * MessErrBnd – dialog di errore con tema AFAM.
@@ -12,26 +16,44 @@ import java.util.Optional;
  */
 public class MessErrBnd {
 
-    private Alert alert;
+    @FXML private Label labelMessaggio;
+
+    private Stage stage;
 
     public static void create(String messaggio) {
-        new MessErrBnd().mostra(messaggio);
+        create(messaggio, null);
     }
 
-    public Optional<ButtonType> mostra(String messaggio) {
-        alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("AFAM – Errore");
-        alert.setHeaderText("Si è verificato un errore");
-        alert.setContentText(messaggio);
-        applica(alert);
-        return alert.showAndWait();
+    public static void create(String messaggio, Window owner) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    MessErrBnd.class.getResource("/fxml/dialog/MessErr.fxml"));
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            if (owner != null) stage.initOwner(owner);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            Scene scene = new Scene(loader.load());
+            scene.setFill(Color.TRANSPARENT);
+            scene.getStylesheets().add(
+                    MessErrBnd.class.getResource("/css/application.css").toExternalForm());
+            stage.setScene(scene);
+            MessErrBnd ctrl = loader.getController();
+            ctrl.stage = stage;
+            ctrl.labelMessaggio.setText(messaggio);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public void chiudi()  { if (alert != null) alert.close(); }
-    public void destroy() { chiudi(); alert = null; }
+    @FXML
+    public void onChiudi() {
+        stage.close();
+    }
 
-    static void applica(Alert a) {
-        DialogPane dp = a.getDialogPane();
+    /** Kept for backward compatibility — no longer needed but may be referenced elsewhere. */
+    static void applica(javafx.scene.control.Alert a) {
+        javafx.scene.control.DialogPane dp = a.getDialogPane();
         dp.getStylesheets().add(
             MessErrBnd.class.getResource("/css/application.css").toExternalForm());
         dp.getStyleClass().add("dialog-pane");

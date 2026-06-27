@@ -81,9 +81,9 @@ public class GestioneContenutiBnd {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Button btnMod  = bottone("MODIFICA METADATI CONTENUTO",   "#b8860b");
-        Button btnVis  = bottone("IMPOSTA VISIBILITÀ CONTENUTO",  "#2d6a4f");
-        Button btnElim = bottone("ELIMINA CONTENUTO",             "#e74c3c");
+        Button btnMod  = bottone("MODIFICA METADATI CONTENUTO",   "btn-chip-gold");
+        Button btnVis  = bottone("IMPOSTA VISIBILITÀ CONTENUTO",  "btn-chip-teal");
+        Button btnElim = bottone("ELIMINA CONTENUTO",             "btn-chip-red");
 
         btnMod.setOnAction(e  -> onModificaContenuto(c));
         btnVis.setOnAction(e  -> onCambiaVisibilita(c));
@@ -110,11 +110,9 @@ public class GestioneContenutiBnd {
         return (b / (1024 * 1024)) + " MB";
     }
 
-    private Button bottone(String testo, String colore) {
+    private Button bottone(String testo, String classeColore) {
         Button b = new Button(testo);
-        b.setStyle("-fx-background-color: " + colore + "; -fx-text-fill: white; " +
-                   "-fx-font-weight: bold; -fx-font-size: 11px; -fx-background-radius: 8; " +
-                   "-fx-padding: 6 12;");
+        b.getStyleClass().addAll("btn-chip", classeColore);
         return b;
     }
 
@@ -174,7 +172,6 @@ public class GestioneContenutiBnd {
                     MessSuccessoBnd.create("Visibilità aggiornata: " + nuova);
                 });
             } catch (RestClient.RestException e) {
-                System.err.println("[GestioneContenuti] visibilita error: " + e.getMessage());
                 Platform.runLater(() -> MessErrBnd.create("Errore visibilità: " + e.getMessage()));
             }
         }, "cambia-visibilita-contenuto").start();

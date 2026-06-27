@@ -10,9 +10,10 @@
             styleClass="root">
 
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="header-bar">
+        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="header-bar">
             <padding><Insets top="14" right="20" bottom="14" left="20"/></padding>
-            <Label text="Visualizza Link" styleClass="label-title"/>
+            <Label text="📋" style="-fx-font-size: 18px;"/>
+            <Label text="I tuoi link di condivisione" styleClass="label-title" style="-fx-font-size: 20px;"/>
         </HBox>
     </top>
 

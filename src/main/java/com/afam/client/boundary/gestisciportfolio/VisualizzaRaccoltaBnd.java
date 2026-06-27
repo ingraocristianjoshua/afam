@@ -87,9 +87,11 @@ public class VisualizzaRaccoltaBnd {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Button btnSu  = bottone("SPOSTA SÙ",  "#6c3fc5");
-        Button btnGiu = bottone("SPOSTA GIÙ", "#6c3fc5");
-        Button btnRim = bottone("RIMUOVI DALLA RACCOLTA", "#e74c3c");
+        Button btnSu  = bottone("↑", "btn-chip-purple");
+        Button btnGiu = bottone("↓", "btn-chip-purple");
+        btnSu.setTooltip(new javafx.scene.control.Tooltip("Sposta su"));
+        btnGiu.setTooltip(new javafx.scene.control.Tooltip("Sposta giù"));
+        Button btnRim = bottone("RIMUOVI DALLA RACCOLTA", "btn-chip-red");
 
         final int idx = i;
         btnSu.setOnAction(e  -> sposta(lista, idx, -1));
@@ -112,11 +114,9 @@ public class VisualizzaRaccoltaBnd {
         };
     }
 
-    private Button bottone(String testo, String colore) {
+    private Button bottone(String testo, String classeColore) {
         Button b = new Button(testo);
-        b.setStyle("-fx-background-color: " + colore + "; -fx-text-fill: white; " +
-                   "-fx-font-weight: bold; -fx-font-size: 11px; -fx-background-radius: 6; " +
-                   "-fx-padding: 5 10;");
+        b.getStyleClass().addAll("btn-chip", classeColore);
         return b;
     }
 

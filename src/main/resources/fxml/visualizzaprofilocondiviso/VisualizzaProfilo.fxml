@@ -6,13 +6,17 @@
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.afam.client.boundary.visualizzaprofilocondiviso.VisualizzaProfiloBnd"
-            prefWidth="660" prefHeight="540" styleClass="root-pane">
+            prefWidth="660" prefHeight="540" styleClass="root">
 
     <top>
         <VBox styleClass="header-bar" spacing="4">
             <padding><Insets top="16" right="24" bottom="16" left="24"/></padding>
-            <Label text="Visualizza profilo condiviso" styleClass="label-title"
-                   style="-fx-text-fill: white; -fx-font-size: 20px;"/>
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <Label text="Visualizza profilo condiviso" styleClass="label-title"
+                       style="-fx-text-fill: white; -fx-font-size: 20px;" HBox.hgrow="ALWAYS"/>
+                <Button text="🔍 CERCA ALTRI STUDENTI" onAction="#onCercaStudenti"
+                        styleClass="button-secondary"/>
+            </HBox>
             <HBox spacing="20">
                 <Label fx:id="labelNome" style="-fx-text-fill: #c4b5fd; -fx-font-size: 14px; -fx-font-weight: bold;"/>
                 <Label fx:id="labelEmail" style="-fx-text-fill: #c4b5fd; -fx-font-size: 13px;"/>

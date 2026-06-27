@@ -14,7 +14,8 @@
 
     <VBox spacing="8">
         <Label text="Data di scadenza" style="-fx-text-fill: #c4b5fd; -fx-font-size: 13px; -fx-font-weight: bold;"/>
-        <DatePicker fx:id="datePicker" maxWidth="Infinity" promptText="Seleziona una data…"/>
+        <DatePicker fx:id="datePicker" maxWidth="Infinity"
+                    promptText="Seleziona una data…" showWeekNumbers="false"/>
         <Label text="Lascia vuoto e clicca SALVA per rimuovere la scadenza."
                style="-fx-font-size: 11px; -fx-text-fill: #7c3aed;"/>
     </VBox>

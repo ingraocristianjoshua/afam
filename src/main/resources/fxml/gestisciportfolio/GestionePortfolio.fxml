@@ -11,9 +11,10 @@
 
     <!-- Header -->
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="header-bar">
+        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="header-bar">
             <padding><Insets top="14" right="20" bottom="14" left="20"/></padding>
-            <Label text="Gestisci Portfolio" styleClass="label-title" HBox.hgrow="ALWAYS"/>
+            <Label text="🗂" style="-fx-font-size: 18px;"/>
+            <Label text="Gestisci Portfolio" styleClass="label-title" style="-fx-font-size: 20px;" HBox.hgrow="ALWAYS"/>
             <Button text="CREA PORTFOLIO" onAction="#onCreaPortfolio" styleClass="button-primary"/>
         </HBox>
     </top>
@@ -36,14 +37,12 @@
             <VBox fx:id="panelPortfolio" spacing="14" styleClass="card"
                   managed="false" visible="false">
 
-                <!-- Titolo + pulsanti portfolio -->
+                <!-- Selettore portfolio + pulsanti -->
                 <HBox spacing="10" alignment="CENTER_LEFT">
-                    <TextField fx:id="fieldTitolo" editable="false" focusTraversable="false"
-                               HBox.hgrow="ALWAYS"
-                               style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <Label text="Portfolio:" style="-fx-text-fill: #a78bfa; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                    <ComboBox fx:id="comboPortfolio" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
                     <Button text="ANNULLA" onAction="#onAnnulla" styleClass="button-secondary"/>
-                    <Button text="ELIMINA PORTFOLIO" onAction="#onEliminaPortfolio"
-                            style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"/>
+                    <Button text="ELIMINA PORTFOLIO" onAction="#onEliminaPortfolio" styleClass="button-danger"/>
                 </HBox>
 
                 <!-- Sezione Raccolte -->

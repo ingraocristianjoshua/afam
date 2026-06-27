@@ -11,6 +11,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -39,14 +40,21 @@ public class GestioneAccountBnd {
     @FXML private TextField campoTelefonoRO;
     @FXML private TextField campoEmailRO;
 
-    // Header card
+    // Hero card
     @FXML private Label labelNomeCompleto;
     @FXML private Label labelEmailHeader;
+    @FXML private Label labelAvatar;
+
+    // Sidebar
+    @FXML private Label labelAvatarSidebar;
+    @FXML private Label labelNomeSidebar;
 
     // Stato validazioni
     @FXML private Label labelStatoEmail;
     @FXML private Label labelStatoNumero;
     @FXML private Label labelStato2FA;
+    @FXML private Button btnValidaEmail;
+    @FXML private Button btnValidaNumero;
 
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -70,6 +78,7 @@ public class GestioneAccountBnd {
             String  dataNascitaRaw = (String) p.get("dataNascita");
             String  dataNascita = formatData(dataNascitaRaw);
 
+            String iniziali = iniziali(nome, cognome);
             Platform.runLater(() -> {
                 campoNomeRO.setText(nome);
                 campoCognomeRO.setText(cognome);
@@ -80,14 +89,26 @@ public class GestioneAccountBnd {
 
                 labelNomeCompleto.setText(nome + " " + cognome);
                 labelEmailHeader.setText(email);
+                if (labelAvatar        != null) labelAvatar.setText(iniziali);
+                if (labelAvatarSidebar != null) labelAvatarSidebar.setText(iniziali);
+                if (labelNomeSidebar   != null) labelNomeSidebar.setText(nome + " " + cognome);
 
                 labelStatoEmail.setText(emailVal ? "✓ Validata" : "✗ Non validata");
                 labelStatoEmail.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: "
                         + (emailVal ? "#27ae60;" : "#e74c3c;"));
+                // Pulsante "Valida ora" solo se NON validata (ricompare se l'email cambia)
+                if (btnValidaEmail != null) {
+                    btnValidaEmail.setVisible(!emailVal);
+                    btnValidaEmail.setManaged(!emailVal);
+                }
 
                 labelStatoNumero.setText(numeroVal ? "✓ Validato" : "✗ Non validato");
                 labelStatoNumero.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: "
                         + (numeroVal ? "#27ae60;" : "#e74c3c;"));
+                if (btnValidaNumero != null) {
+                    btnValidaNumero.setVisible(!numeroVal);
+                    btnValidaNumero.setManaged(!numeroVal);
+                }
 
                 labelStato2FA.setText(fa2 ? "✓ Attiva" : "✗ Non attiva");
                 labelStato2FA.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: "
@@ -172,6 +193,12 @@ public class GestioneAccountBnd {
         rest.logout();
         chiudi();
         apri("/fxml/autenticati/AuthPage.fxml", "AFAM");
+    }
+
+    private static String iniziali(String nome, String cognome) {
+        String n = (nome    != null && !nome.isBlank())    ? String.valueOf(nome.charAt(0)).toUpperCase()    : "";
+        String c = (cognome != null && !cognome.isBlank()) ? String.valueOf(cognome.charAt(0)).toUpperCase() : "";
+        return n.isEmpty() && c.isEmpty() ? "?" : n + c;
     }
 
     private String formatData(String iso) {

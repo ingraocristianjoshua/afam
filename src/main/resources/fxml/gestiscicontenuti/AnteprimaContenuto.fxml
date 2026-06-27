@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.afam.client.boundary.gestiscicontenuti.AnteprimaContenutoBnd"
+            styleClass="root"
+            minWidth="800" minHeight="600">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="header-bar">
+            <padding><Insets top="14" right="20" bottom="14" left="20"/></padding>
+            <Label fx:id="labelTitolo" text="Anteprima" styleClass="label-title"/>
+        </HBox>
+    </top>
+
+    <center>
+        <StackPane fx:id="areaAnteprima" styleClass="card">
+            <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+        </StackPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" spacing="10">
+            <padding><Insets top="12" right="20" bottom="16" left="20"/></padding>
+            <Button text="CHIUDI" styleClass="button" onAction="#onChiudi"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

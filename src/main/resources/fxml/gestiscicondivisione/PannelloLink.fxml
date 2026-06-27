@@ -18,8 +18,6 @@
     <Label text="Visibilità"/>
     <ComboBox fx:id="comboVisibilita" maxWidth="Infinity"/>
 
-    <CheckBox fx:id="checkAperto" text="Accessibile senza autenticazione (link aperto)"/>
-
     <Label text="Invia link via email (opzionale)"/>
     <TextField fx:id="fieldEmail" promptText="email@esempio.it"/>
 

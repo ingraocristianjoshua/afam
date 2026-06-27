@@ -189,6 +189,36 @@ public class CondivisioneApi {
         }
     }
 
+    // ── Invio via email di un link esistente ────────────────────────────────────
+
+    /**
+     * POST /api/condivisione/links/{idLink}/invia
+     * Body: { email } – invia via email un link già generato.
+     */
+    @POST
+    @Path("/links/{idLink}/invia")
+    public Response inviaLinkEmail(@HeaderParam("X-User-Id") String userId,
+                                   @PathParam("idLink") String idLinkStr,
+                                   Map<String, Object> data) {
+        impostaUtente(userId);
+        try {
+            EntityLink link = recuperaLinkONotFound(idLinkStr);
+            if (link == null) return notFound("Link non trovato.");
+            String email = data != null ? (String) data.get("email") : null;
+            if (email == null || email.isBlank()) return server("Indirizzo email mancante.");
+
+            EntityUtente studente = db.recuperaUtente(db.getCurrentUserId());
+            String nomeStudente = studente != null
+                    ? studente.getNome() + " " + studente.getCognome()
+                    : "Uno studente AFAM";
+
+            new GeneraLinkCtrl().inviaLink(email, link.getLink(), nomeStudente);
+            return ok(Map.of("email", email));
+        } catch (Exception e) {
+            return server(e.getMessage());
+        }
+    }
+
     // ── Helper ────────────────────────────────────────────────────────────────
 
     private void impostaUtente(String userId) {

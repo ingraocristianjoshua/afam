@@ -6,7 +6,7 @@
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.afam.client.boundary.visualizzaprofilocondiviso.AnteprimaPortfolioBnd"
-            prefWidth="660" prefHeight="520" styleClass="root-pane">
+            prefWidth="660" prefHeight="520" styleClass="root">
 
     <top>
         <VBox styleClass="header-bar" spacing="4">
@@ -16,6 +16,7 @@
             <HBox spacing="20">
                 <Label fx:id="labelStudente"
                        style="-fx-text-fill: #c4b5fd; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                <Label text="👁" style="-fx-font-size: 13px;"/>
                 <Label fx:id="labelVisualizzazioni"
                        style="-fx-text-fill: #a78bfa; -fx-font-size: 12px;"/>
             </HBox>

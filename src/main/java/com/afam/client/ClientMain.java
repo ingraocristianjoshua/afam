@@ -1,9 +1,11 @@
 package com.afam.client;
 
+import com.afam.client.util.AppIcon;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -12,6 +14,7 @@ public class ClientMain extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        AppIcon.applyDockIcon();
         URL resource = getClass().getResource("/fxml/autenticati/AuthPage.fxml");
         if (resource == null) {
             throw new IllegalStateException("Cannot find AuthPage.fxml. Make sure it is in src/main/resources/fxml/autenticati/");
@@ -23,6 +26,9 @@ public class ClientMain extends Application {
         if (cssResource != null) {
             scene.getStylesheets().add(cssResource.toExternalForm());
         }
+
+        Image icon = AppIcon.fxIcon();
+        if (icon != null) primaryStage.getIcons().add(icon);
 
         primaryStage.setTitle("AFAM - Identità Digitale");
         primaryStage.setScene(scene);

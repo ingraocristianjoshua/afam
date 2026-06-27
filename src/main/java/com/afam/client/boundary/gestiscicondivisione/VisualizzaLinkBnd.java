@@ -11,6 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -88,7 +89,7 @@ public class VisualizzaLinkBnd {
         lUrl.setWrapText(false);
         lUrl.setMaxWidth(460);
         HBox.setHgrow(lUrl, Priority.ALWAYS);
-        Button btnCopia = bottone("📋 COPIA", "#6c3fc5");
+        Button btnCopia = bottone("📋 COPIA", "btn-chip-purple");
         btnCopia.setOnAction(e -> {
             ClipboardContent cc = new ClipboardContent();
             cc.putString(linkUrl);
@@ -100,7 +101,7 @@ public class VisualizzaLinkBnd {
             }).start();
         });
         String urlToken = (String) link.getOrDefault("urlToken", "");
-        Button btnApri = bottone("👁 ANTEPRIMA", "#1d4ed8");
+        Button btnApri = bottone("👁 ANTEPRIMA", "btn-chip-indigo");
         btnApri.setOnAction(e -> onApriAnteprima(urlToken, btnApri));
         urlRow.getChildren().addAll(lUrl, btnCopia, btnApri);
 
@@ -112,18 +113,21 @@ public class VisualizzaLinkBnd {
         // Pulsanti azione
         HBox btnRow = new HBox(8);
         btnRow.setAlignment(Pos.CENTER_LEFT);
-        Button btnScad = bottone("SCADENZA",   "#b8860b");
-        Button btnVis  = bottone("VISIBILITÀ", "#2d6a4f");
-        Button btnRev  = bottone("REVOCA",     "#e74c3c");
-        btnScad.setOnAction(e -> onScadenza(link));
-        btnVis.setOnAction(e  -> onVisibilita(link, btnVis));
-        btnRev.setOnAction(e  -> onRevoca(link, btnRev));
+        Button btnScad  = bottone("SCADENZA",     "btn-chip-gold");
+        Button btnVis   = bottone("VISIBILITÀ",   "btn-chip-teal");
+        Button btnEmail = bottone("✉ INVIA EMAIL", "btn-chip-blue");
+        Button btnRev   = bottone("REVOCA",       "btn-chip-red");
+        btnScad.setOnAction(e  -> onScadenza(link));
+        btnVis.setOnAction(e   -> onVisibilita(link, btnVis));
+        btnEmail.setOnAction(e -> onInviaEmail(link, btnEmail));
+        btnRev.setOnAction(e   -> onRevoca(link, btnRev));
         if (!attivo) {
             btnScad.setDisable(true);
             btnVis.setDisable(true);
+            btnEmail.setDisable(true);
             btnRev.setDisable(true);
         }
-        btnRow.getChildren().addAll(btnScad, btnVis, btnRev);
+        btnRow.getChildren().addAll(btnScad, btnVis, btnEmail, btnRev);
 
         card.getChildren().addAll(urlRow, lInfo, btnRow);
 
@@ -133,11 +137,9 @@ public class VisualizzaLinkBnd {
         return row;
     }
 
-    private Button bottone(String testo, String colore) {
+    private Button bottone(String testo, String classeColore) {
         Button b = new Button(testo);
-        b.setStyle("-fx-background-color: " + colore + "; -fx-text-fill: white; " +
-                   "-fx-font-weight: bold; -fx-font-size: 11px; -fx-background-radius: 8; " +
-                   "-fx-padding: 6 12; -fx-cursor: hand;");
+        b.getStyleClass().addAll("btn-chip", classeColore);
         return b;
     }
 
@@ -199,6 +201,42 @@ public class VisualizzaLinkBnd {
         }
     }
 
+    private void onInviaEmail(Map<String, Object> link, Button btn) {
+        Object idLink = link.get("idLink");
+        if (idLink == null) {
+            MessErrBnd.create("ID link non disponibile.");
+            return;
+        }
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("AFAM – Invia link via email");
+        dialog.setHeaderText("Invia il link di condivisione");
+        dialog.setContentText("Indirizzo email del destinatario:");
+        dialog.initOwner(boxLinks.getScene().getWindow());
+        dialog.getDialogPane().getStylesheets().add(
+                getClass().getResource("/css/application.css").toExternalForm());
+        dialog.getDialogPane().getStyleClass().add("dialog-pane");
+
+        dialog.showAndWait().ifPresent(email -> {
+            String dest = email.trim();
+            if (dest.isEmpty()) { MessErrBnd.create("Inserisci un indirizzo email."); return; }
+            btn.setDisable(true);
+            new Thread(() -> {
+                try {
+                    rest.post("condivisione/links/" + idLink + "/invia", Map.of("email", dest));
+                    Platform.runLater(() -> {
+                        btn.setDisable(false);
+                        MessSuccessoBnd.create("Link inviato a " + dest + ".");
+                    });
+                } catch (RestClient.RestException e) {
+                    Platform.runLater(() -> {
+                        btn.setDisable(false);
+                        MessErrBnd.create("Invio email fallito: " + e.getMessage());
+                    });
+                }
+            }, "invia-link-email").start();
+        });
+    }
+
     private void onVisibilita(Map<String, Object> link, Button btn) {
         Object idLink = link.get("idLink");
         if (idLink == null) {
@@ -218,7 +256,6 @@ public class VisualizzaLinkBnd {
                     MessSuccessoBnd.create("Visibilità aggiornata: " + nuova);
                 });
             } catch (RestClient.RestException e) {
-                System.err.println("[VisualizzaLink] visibilita error: " + e.getMessage());
                 Platform.runLater(() -> {
                     btn.setDisable(false);
                     MessErrBnd.create("Errore visibilità: " + e.getMessage());

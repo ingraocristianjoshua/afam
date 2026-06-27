@@ -25,7 +25,6 @@ public class PannelloLinkBnd {
 
     @FXML private ComboBox<Map<String, Object>> comboPortfolio;
     @FXML private ComboBox<String>              comboVisibilita;
-    @FXML private CheckBox                      checkAperto;
     @FXML private TextField                     fieldEmail;
     @FXML private Label                         labelLink;
     @FXML private Button                        btnCopia;
@@ -65,7 +64,6 @@ public class PannelloLinkBnd {
         Map<String, Object> body = new HashMap<>();
         body.put("idPortfolio", sel.get("idPortfolio"));
         body.put("visibilita",  comboVisibilita.getValue());
-        body.put("flagAperto",  checkAperto.isSelected());
 
         String email = fieldEmail.getText().trim();
         if (!email.isEmpty()) body.put("emailDestinatario", email);

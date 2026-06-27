@@ -37,7 +37,11 @@ public class RestClient {
     private String currentUserId;
 
     private RestClient() {
+        // HTTP/1.1 forzato: il server Grizzly va in stallo sulle richieste PATCH
+        // quando il client tenta la negoziazione HTTP/2 (upgrade h2c), causando
+        // un timeout su cambio visibilità, scadenza e revoca dei link.
         http = HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_1_1)
                 .connectTimeout(Duration.ofSeconds(5))
                 .build();
         mapper = new ObjectMapper().registerModule(new JavaTimeModule());

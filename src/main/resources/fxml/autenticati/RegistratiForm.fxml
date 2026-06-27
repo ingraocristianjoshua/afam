@@ -1,65 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx/21"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.afam.client.boundary.autenticati.RegistratiFormBnd"
-      spacing="0" prefWidth="500" styleClass="root">
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.afam.client.boundary.autenticati.RegistratiFormBnd"
+           styleClass="root" alignment="CENTER"
+           prefWidth="540" prefHeight="700">
 
-    <VBox spacing="14" styleClass="card">
-        <padding><Insets top="32" right="40" bottom="32" left="40"/></padding>
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+        <VBox alignment="CENTER">
+            <padding><Insets top="24" right="20" bottom="24" left="20"/></padding>
 
-        <Label text="Crea account" styleClass="label-title"/>
-        <Label text="Compila tutti i campi obbligatori (*)" styleClass="label-subtitle"/>
+            <VBox spacing="0" styleClass="card" maxWidth="460"
+                  style="-fx-padding: 0; -fx-background-radius: 26; -fx-border-radius: 26;">
 
-        <HBox spacing="12">
-            <VBox spacing="4" HBox.hgrow="ALWAYS">
-                <Label text="Nome *" styleClass="label"/>
-                <TextField fx:id="campoNome" promptText="Mario" maxWidth="Infinity" styleClass="text-field"/>
+                <!-- Intestazione con icona -->
+                <VBox alignment="CENTER" spacing="10" style="-fx-padding: 30 32 16 32;">
+                    <StackPane minWidth="64" minHeight="64" maxWidth="64" maxHeight="64"
+                               style="-fx-background-color: linear-gradient(to bottom right,#8b5cf6,#4c1d95);
+                                      -fx-background-radius: 50;
+                                      -fx-effect: dropshadow(gaussian,rgba(139,92,246,0.5),16,0,0,4);">
+                        <Label text="📝" style="-fx-font-size: 28px;"/>
+                    </StackPane>
+                    <Label text="Crea il tuo account"
+                           style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                    <Label text="Compila i campi obbligatori (*)"
+                           style="-fx-font-size: 13px; -fx-text-fill: #a78bfa;"/>
+                </VBox>
+
+                <!-- Corpo -->
+                <VBox spacing="13" style="-fx-padding: 4 32 28 32;">
+
+                    <HBox spacing="12">
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label text="NOME *" styleClass="form-label"/>
+                            <TextField fx:id="campoNome" promptText="Mario" maxWidth="Infinity" styleClass="text-field"/>
+                        </VBox>
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label text="COGNOME *" styleClass="form-label"/>
+                            <TextField fx:id="campoCognome" promptText="Rossi" maxWidth="Infinity" styleClass="text-field"/>
+                        </VBox>
+                    </HBox>
+
+                    <VBox spacing="5">
+                        <Label text="DATA DI NASCITA" styleClass="form-label"/>
+                        <DatePicker fx:id="campoDataNascita" maxWidth="Infinity"
+                                    promptText="gg/mm/aaaa" showWeekNumbers="false"/>
+                    </VBox>
+
+                    <VBox spacing="5">
+                        <Label text="EMAIL *" styleClass="form-label"/>
+                        <TextField fx:id="campoEmail" promptText="mario.rossi@istituzione.it"
+                                   maxWidth="Infinity" styleClass="text-field"/>
+                    </VBox>
+
+                    <VBox spacing="5">
+                        <Label text="PASSWORD *" styleClass="form-label"/>
+                        <PasswordField fx:id="campoPassword" promptText="Min 8 car., maiusc., cifra, simbolo"
+                                       maxWidth="Infinity" styleClass="text-field"/>
+                    </VBox>
+
+                    <VBox spacing="5">
+                        <Label text="CONFERMA PASSWORD *" styleClass="form-label"/>
+                        <PasswordField fx:id="campoConfermaPassword" promptText="Ripeti la password"
+                                       maxWidth="Infinity" styleClass="text-field"/>
+                    </VBox>
+
+                    <VBox spacing="5">
+                        <Label text="NUMERO DI TELEFONO (facoltativo)" styleClass="form-label"/>
+                        <TextField fx:id="campoTelefono" promptText="+39 333 1234567"
+                                   maxWidth="Infinity" styleClass="text-field"/>
+                    </VBox>
+
+                    <Label fx:id="labelErrore" styleClass="label-error" wrapText="true" maxWidth="400"
+                           managed="false" visible="false"/>
+
+                    <Button fx:id="btnRegistrati" text="REGISTRATI" onAction="#onRegistrati"
+                            maxWidth="Infinity" styleClass="button"/>
+
+                    <HBox alignment="CENTER" style="-fx-padding: 2 0 0 0;">
+                        <Button text="← Indietro" onAction="#onIndietro"
+                                style="-fx-background-color: transparent; -fx-text-fill: #a78bfa;
+                                       -fx-font-size: 12px; -fx-font-weight: bold;
+                                       -fx-cursor: hand; -fx-padding: 4 8;"/>
+                    </HBox>
+                </VBox>
             </VBox>
-            <VBox spacing="4" HBox.hgrow="ALWAYS">
-                <Label text="Cognome *" styleClass="label"/>
-                <TextField fx:id="campoCognome" promptText="Rossi" maxWidth="Infinity" styleClass="text-field"/>
-            </VBox>
-        </HBox>
-
-        <VBox spacing="4">
-            <Label text="Data di nascita" styleClass="label"/>
-            <DatePicker fx:id="campoDataNascita" maxWidth="Infinity" promptText="Seleziona la tua data di nascita"/>
         </VBox>
-
-        <VBox spacing="4">
-            <Label text="Email *" styleClass="label"/>
-            <TextField fx:id="campoEmail" promptText="mario.rossi@istituzione.it"
-                       maxWidth="Infinity" styleClass="text-field"/>
-        </VBox>
-
-        <VBox spacing="4">
-            <Label text="Password *" styleClass="label"/>
-            <PasswordField fx:id="campoPassword" promptText="Min 8 car., maiusc., cifra, simbolo"
-                          maxWidth="Infinity" styleClass="text-field"/>
-        </VBox>
-
-        <VBox spacing="4">
-            <Label text="Conferma password *" styleClass="label"/>
-            <PasswordField fx:id="campoConfermaPassword" promptText="Ripeti la password"
-                          maxWidth="Infinity" styleClass="text-field"/>
-        </VBox>
-
-        <VBox spacing="4">
-            <Label text="Numero di telefono (facoltativo)" styleClass="label"/>
-            <TextField fx:id="campoTelefono" promptText="+39 333 1234567"
-                       maxWidth="Infinity" styleClass="text-field"/>
-        </VBox>
-
-        <Label fx:id="labelErrore" styleClass="label-error" wrapText="true" maxWidth="400"
-               managed="false" visible="false"/>
-
-        <HBox alignment="CENTER_RIGHT" spacing="12" style="-fx-padding: 6 0 0 0;">
-            <Button text="INDIETRO"   onAction="#onIndietro"   styleClass="button-secondary"/>
-            <Button fx:id="btnRegistrati" text="REGISTRATI" onAction="#onRegistrati" styleClass="button"/>
-        </HBox>
-    </VBox>
-</VBox>
+    </ScrollPane>
+</StackPane>

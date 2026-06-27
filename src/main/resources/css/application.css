@@ -48,23 +48,20 @@
 
 /* ---------- bottoni moderni premium (capsule style) ------------------------- */
 .button {
-    -fx-background-color: linear-gradient(to right, #8b5cf6, #6d28d9);
+    -fx-background-color: linear-gradient(to bottom right, #9168f0, #6d28d9);
     -fx-text-fill: white;
-    -fx-padding: 8 20 8 20;
-    -fx-background-radius: 25px;
-    -fx-border-radius: 25px;
+    -fx-padding: 9 24 9 24;
+    -fx-background-radius: 24px;
+    -fx-border-radius: 24px;
     -fx-cursor: hand;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.3), 6, 0, 0, 2);
 }
 .button:hover {
-    -fx-background-color: linear-gradient(to right, #a78bfa, #7c3aed);
-    -fx-effect: dropshadow(gaussian, rgba(167, 139, 250, 0.5), 10, 0, 0, 3);
+    -fx-background-color: linear-gradient(to bottom right, #a78bfa, #7c3aed);
 }
 .button:pressed {
-    -fx-background-color: linear-gradient(to right, #5b21b6, #4c1d95);
-    -fx-effect: none;
+    -fx-background-color: linear-gradient(to bottom right, #5b21b6, #4c1d95);
 }
 .button:disabled {
     -fx-background-color: rgba(255, 255, 255, 0.08);
@@ -74,60 +71,57 @@
 }
 
 .button-primary {
-    -fx-background-color: linear-gradient(to right, #00f2fe, #4facfe);
+    -fx-background-color: linear-gradient(to bottom right, #00f2fe, #4facfe);
     -fx-text-fill: #0c1b33;
-    -fx-padding: 8 20 8 20;
-    -fx-background-radius: 25px;
-    -fx-border-radius: 25px;
+    -fx-padding: 9 24 9 24;
+    -fx-background-radius: 24px;
+    -fx-border-radius: 24px;
     -fx-cursor: hand;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, rgba(79, 172, 254, 0.4), 6, 0, 0, 2);
 }
 .button-primary:hover {
-    -fx-background-color: linear-gradient(to right, #33f4ff, #66b5ff);
-    -fx-effect: dropshadow(gaussian, rgba(79, 172, 254, 0.6), 10, 0, 0, 3);
+    -fx-background-color: linear-gradient(to bottom right, #33f4ff, #66b5ff);
 }
 .button-primary:pressed {
-    -fx-background-color: linear-gradient(to right, #00c2cb, #3b8ecb);
+    -fx-background-color: linear-gradient(to bottom right, #00c2cb, #3b8ecb);
 }
 
 .button-secondary {
-    -fx-background-color: rgba(255, 255, 255, 0.04);
-    -fx-border-color: rgba(255, 255, 255, 0.22);
+    -fx-background-color: rgba(255, 255, 255, 0.06);
+    -fx-border-color: rgba(167, 139, 250, 0.45);
     -fx-border-width: 1.2px;
     -fx-text-fill: white;
-    -fx-background-radius: 25px;
-    -fx-border-radius: 25px;
+    -fx-background-radius: 24px;
+    -fx-border-radius: 24px;
     -fx-cursor: hand;
-    -fx-padding: 8 20 8 20;
+    -fx-padding: 9 24 9 24;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
 }
 .button-secondary:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.12);
-    -fx-border-color: rgba(255, 255, 255, 0.4);
+    -fx-background-color: rgba(167, 139, 250, 0.18);
+    -fx-border-color: rgba(167, 139, 250, 0.7);
 }
 .button-secondary:pressed {
-    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-color: rgba(167, 139, 250, 0.28);
 }
 
 .button-danger {
-    -fx-background-color: linear-gradient(to right, #ef4444, #dc2626);
+    -fx-background-color: linear-gradient(to bottom right, #f05252, #dc2626);
     -fx-text-fill: white;
-    -fx-background-radius: 25px;
-    -fx-border-radius: 25px;
+    -fx-background-radius: 24px;
+    -fx-border-radius: 24px;
     -fx-cursor: hand;
-    -fx-padding: 8 20 8 20;
+    -fx-padding: 9 24 9 24;
     -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.3), 6, 0, 0, 2);
+    -fx-font-size: 13px;
 }
 .button-danger:hover {
-    -fx-background-color: linear-gradient(to right, #f87171, #ef4444);
-    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.5), 10, 0, 0, 3);
+    -fx-background-color: linear-gradient(to bottom right, #f87171, #ef4444);
 }
 .button-danger:pressed {
-    -fx-background-color: linear-gradient(to right, #b91c1c, #991b1b);
+    -fx-background-color: linear-gradient(to bottom right, #b91c1c, #991b1b);
 }
 
 /* ---------- campi di testo – sfondo scuro opaco, sempre leggibili ------------ */
@@ -176,6 +170,12 @@
 .label-subtitle {
     -fx-font-size: 13px;
     -fx-text-fill: rgba(255, 255, 255, 0.55);
+}
+/* Etichetta campo form (accent viola, maiuscoletto) */
+.form-label {
+    -fx-text-fill: #a78bfa;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
 }
 .label-error {
     -fx-text-fill: #f87171;
@@ -329,86 +329,119 @@
 }
 /* Popup del calendario */
 .date-picker-popup {
-    -fx-background-color: #160a2c;
-    -fx-border-color: rgba(167, 139, 250, 0.3);
+    -fx-background-color: #1e1040;
+    -fx-border-color: rgba(167, 139, 250, 0.45);
     -fx-border-width: 1.2px;
-    -fx-border-radius: 12px;
-    -fx-background-radius: 12px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 20, 0, 0, 6);
+    -fx-border-radius: 14px;
+    -fx-background-radius: 14px;
+    -fx-padding: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.65), 26, 0, 0, 8);
 }
-/* Header con mese/anno e frecce */
-.date-picker-popup > * > .month-year-pane {
-    -fx-background-color: linear-gradient(to right, #2d1354, #3d1a78);
-    -fx-padding: 8 12;
-    -fx-background-radius: 10px 10px 0 0;
+/* Header con mese/anno e frecce.
+   Selettore "discendente" (non > * >): in alcune versioni di JavaFX il
+   month-year-pane è figlio diretto del popup e il path stretto non combaciava,
+   lasciando la barra col colore chiaro di default. */
+.date-picker-popup .month-year-pane {
+    -fx-background-color: linear-gradient(to right, #4c1d95, #7c3aed);
+    -fx-padding: 10 14;
+    -fx-background-radius: 13px 13px 0 0;
 }
 .date-picker-popup .spinner {
-    -fx-background-color: transparent;
-}
-.date-picker-popup .spinner .button {
-    -fx-background-color: rgba(255, 255, 255, 0.08);
-    -fx-background-radius: 6px;
-    -fx-text-fill: #c4b5fd;
-    -fx-padding: 4 8;
-}
-.date-picker-popup .spinner .button:hover {
-    -fx-background-color: rgba(167, 139, 250, 0.25);
+    -fx-spacing: 6px;
+    -fx-alignment: center;
 }
 .date-picker-popup .spinner .label {
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
 }
-/* Intestazioni giorni settimana */
-.date-picker-popup .calendar-grid .day-name-cell {
-    -fx-text-fill: #a78bfa;
-    -fx-font-weight: bold;
-    -fx-font-size: 12px;
-    -fx-padding: 4 0;
-}
-/* Celle giorno */
-.date-picker-popup .calendar-grid .day-cell {
-    -fx-background-color: transparent;
-    -fx-text-fill: #e2d9f3;
-    -fx-font-size: 13px;
-    -fx-alignment: center;
+.date-picker-popup .spinner .button {
+    -fx-background-color: rgba(255, 255, 255, 0.14);
     -fx-background-radius: 6px;
-    -fx-padding: 4;
+    -fx-padding: 5 9;
 }
-.date-picker-popup .calendar-grid .day-cell:hover {
-    -fx-background-color: rgba(167, 139, 250, 0.2);
-    -fx-text-fill: white;
+.date-picker-popup .spinner .button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.32);
 }
-.date-picker-popup .calendar-grid .day-cell:selected,
-.date-picker-popup .calendar-grid .day-cell.selected {
-    -fx-background-color: #7c3aed;
-    -fx-text-fill: white;
-    -fx-effect: dropshadow(gaussian, rgba(124, 58, 237, 0.5), 6, 0, 0, 0);
+/* Frecce di navigazione mese/anno: senza colore esplicito restano invisibili */
+.date-picker-popup .spinner .left-arrow,
+.date-picker-popup .spinner .right-arrow {
+    -fx-background-color: white;
 }
-.date-picker-popup .calendar-grid .today {
-    -fx-border-color: #a78bfa;
-    -fx-border-width: 1.5px;
-    -fx-border-radius: 6px;
+
+/* Griglia del calendario (sfondo proprio: senza, mostra il bianco di default) */
+.date-picker-popup .calendar-grid {
+    -fx-background-color: #1e1040;
+    -fx-padding: 8px;
+    -fx-background-radius: 0 0 13px 13px;
+}
+
+/* Intestazioni giorni settimana (lun, mar, …) */
+.date-picker-popup .day-name-cell {
     -fx-text-fill: #c4b5fd;
     -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-padding: 6 0;
+    -fx-min-width: 38px;
 }
-.date-picker-popup .calendar-grid .previous-month,
-.date-picker-popup .calendar-grid .next-month {
-    -fx-text-fill: rgba(196, 181, 253, 0.3);
+/* Numeri di settimana (di norma disabilitati via FXML; stile di sicurezza
+   per non mostrare i riquadri bianchi di default qualora venissero riattivati) */
+.date-picker-popup .week-number-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(196, 181, 253, 0.45);
+    -fx-font-size: 11px;
 }
-/* Pulsante "Oggi" */
+
+/* Celle giorno – più ampie e leggibili */
+.date-picker-popup .day-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #f5f3ff;
+    -fx-font-size: 13px;
+    -fx-alignment: center;
+    -fx-background-radius: 8px;
+    -fx-padding: 7px;
+    -fx-min-width: 38px;
+    -fx-min-height: 34px;
+}
+.date-picker-popup .day-cell:hover {
+    -fx-background-color: rgba(167, 139, 250, 0.28);
+    -fx-text-fill: white;
+}
+.date-picker-popup .selected,
+.date-picker-popup .day-cell:selected {
+    -fx-background-color: #7c3aed;
+    -fx-text-fill: white;
+}
+.date-picker-popup .today {
+    -fx-background-color: rgba(167, 139, 250, 0.18);
+    -fx-border-color: #a78bfa;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 8px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+.date-picker-popup .today:selected {
+    -fx-background-color: #7c3aed;
+}
+.date-picker-popup .previous-month,
+.date-picker-popup .next-month {
+    -fx-text-fill: rgba(196, 181, 253, 0.35);
+}
+
+/* Pulsante "Oggi" in fondo al popup */
 .date-picker-popup .today-button,
 .date-picker-popup .button {
     -fx-background-color: transparent;
-    -fx-text-fill: #a78bfa;
+    -fx-text-fill: #c4b5fd;
     -fx-border-color: transparent;
-    -fx-padding: 4 8;
+    -fx-padding: 6 10;
 }
 .date-picker-popup .today-button:hover,
 .date-picker-popup .button:hover {
     -fx-text-fill: white;
-    -fx-background-color: rgba(167, 139, 250, 0.15);
-    -fx-background-radius: 6px;
+    -fx-background-color: rgba(167, 139, 250, 0.2);
+    -fx-background-radius: 8px;
 }
 
 /* ---------- check box --------------------------------------------------------- */
@@ -476,3 +509,49 @@
 .dialog-pane .button-bar .button:hover {
     -fx-background-color: rgba(255, 255, 255, 0.2);
 }
+
+/* ---------- bottoni-chip azione inline (righe liste) ------------------------- */
+/* Base condivisa da tutti i piccoli pulsanti d'azione costruiti via codice.
+   Il colore è dato da una classe modificatore (.btn-chip-*) per centralizzare
+   la palette ed evitare hex sparsi nei boundary. */
+.btn-chip {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+    -fx-background-radius: 10px;
+    -fx-padding: 7 14 7 14;
+    -fx-cursor: hand;
+}
+.btn-chip:disabled { -fx-opacity: 0.4; }
+
+.btn-chip-purple          { -fx-background-color: #6c3fc5; }
+.btn-chip-purple:hover    { -fx-background-color: #7c4fd5; }
+.btn-chip-purple:pressed  { -fx-background-color: #5a2fb0; }
+
+.btn-chip-green           { -fx-background-color: #27ae60; }
+.btn-chip-green:hover     { -fx-background-color: #2ecc71; }
+.btn-chip-green:pressed   { -fx-background-color: #1f8f4f; }
+
+.btn-chip-teal            { -fx-background-color: #2d6a4f; }
+.btn-chip-teal:hover      { -fx-background-color: #357f5e; }
+.btn-chip-teal:pressed    { -fx-background-color: #245741; }
+
+.btn-chip-orange          { -fx-background-color: #f39c12; }
+.btn-chip-orange:hover    { -fx-background-color: #f5ac32; }
+.btn-chip-orange:pressed  { -fx-background-color: #d98a0c; }
+
+.btn-chip-gold            { -fx-background-color: #b8860b; }
+.btn-chip-gold:hover      { -fx-background-color: #d39e1a; }
+.btn-chip-gold:pressed    { -fx-background-color: #9c7109; }
+
+.btn-chip-red             { -fx-background-color: #e74c3c; }
+.btn-chip-red:hover       { -fx-background-color: #ec6052; }
+.btn-chip-red:pressed     { -fx-background-color: #c93f31; }
+
+.btn-chip-blue            { -fx-background-color: #4a6fa5; }
+.btn-chip-blue:hover      { -fx-background-color: #5a82bd; }
+.btn-chip-blue:pressed    { -fx-background-color: #3d5d8a; }
+
+.btn-chip-indigo          { -fx-background-color: #1d4ed8; }
+.btn-chip-indigo:hover    { -fx-background-color: #2f60e8; }
+.btn-chip-indigo:pressed  { -fx-background-color: #1740b5; }
