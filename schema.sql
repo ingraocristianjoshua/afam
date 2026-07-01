@@ -85,8 +85,8 @@ CREATE TABLE IF NOT EXISTS raccolta (
 --       getIdPortfolio(idLink) legge da lì.
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS link (
+    -- id_link è anche l'identificatore condivisibile del link (nessun token separato)
     id_link     uuid        PRIMARY KEY,
-    url_token   text        NOT NULL UNIQUE,
     scadenza    timestamptz,                    -- NULL = nessuna scadenza
     -- 'attivo' | 'revocato' | 'scaduto'
     stato       text        NOT NULL DEFAULT 'attivo'

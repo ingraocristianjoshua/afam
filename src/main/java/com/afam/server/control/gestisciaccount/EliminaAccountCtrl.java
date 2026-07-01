@@ -14,15 +14,16 @@ import java.util.UUID;
  * La verifica della password prima dell'eliminazione è un controllo
  * di sicurezza obbligatorio: impedisce eliminazioni accidentali o
  * da sessioni non autorizzate.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class EliminaAccountCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
 
     private boolean valid        = true;
     private String  errorMessage = "";
 
+    // ── Metodi ──────────────────
     public UUID getIdUtente() {
         return db.getCurrentUserId();
     }
@@ -51,6 +52,7 @@ public class EliminaAccountCtrl {
         return true;
     }
 
+    /** Check valid. */
     public boolean checkValid() {
         if (!valid) throw new IllegalStateException(errorMessage);
         return true;
@@ -64,8 +66,11 @@ public class EliminaAccountCtrl {
         db.eliminaUtente(idUtente);
     }
 
+    /** Indica se valid. */
     public boolean isValid()         { return valid; }
+    /** Restituisce error message. */
     public String  getErrorMessage() { return errorMessage; }
 
+    /** Fail. */
     private boolean fail(String msg) { valid = false; errorMessage = msg; return false; }
 }

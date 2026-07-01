@@ -11,11 +11,9 @@ import java.util.UUID;
  * i campi privati senza richiedere setter.
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-/**
- * @author Cristian Joshua Ingrao (0780672)
- */
 public class EntityUtente {
 
+    // ── Campi ──────────────────
     private UUID   idUtente;
     private String nome;
     private String cognome;
@@ -29,6 +27,7 @@ public class EntityUtente {
     /** "aperta" | "chiusa" */
     private String statoSessione;
 
+    // ── Costruttori ──────────────────
     /** Costruttore no-arg richiesto da Jackson per la deserializzazione JSON. */
     public EntityUtente() {}
 
@@ -61,12 +60,20 @@ public class EntityUtente {
     // ── getter aggiuntivi per le control ──────────────────────────────────────
 
     public String  getNome()          { return nome; }
+    /** Restituisce cognome. */
     public String  getCognome()       { return cognome; }
+    /** Restituisce email. */
     public String  getEmail()         { return email; }
+    /** Restituisce hash password. */
     public String  getHashPassword()  { return hashPassword; }
+    /** Restituisce data nascita. */
     public String  getDataNascita()   { return dataNascita; }
+    /** Indica se email validata. */
     public boolean isEmailValidata()  { return emailValidata; }
+    /** Indica se numero validato. */
     public boolean isNumeroValidato() { return numeroValidato; }
+    /** Indica se stato2 fa. */
     public boolean isStato2FA()       { return stato2FA; }
+    /** Restituisce stato sessione. */
     public String  getStatoSessione() { return statoSessione; }
 }

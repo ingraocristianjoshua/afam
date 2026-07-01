@@ -3,28 +3,30 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx/21"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.afam.client.boundary.gestiscicondivisione.FormScadenzaBnd"
-      spacing="20" prefWidth="440" prefHeight="320" styleClass="root">
-    <padding><Insets top="32" right="32" bottom="32" left="32"/></padding>
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.afam.client.boundary.gestiscicondivisione.FormScadenzaBnd"
+           styleClass="root" alignment="CENTER" prefWidth="500" prefHeight="360">
+    <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
 
-    <Label text="Imposta scadenza link" styleClass="label-title"/>
-    <Label fx:id="labelToken" styleClass="label-subtitle" wrapText="true"/>
+    <VBox spacing="20" styleClass="card" maxWidth="460">
+        <padding><Insets top="28" right="28" bottom="28" left="28"/></padding>
 
-    <VBox spacing="8">
-        <Label text="Data di scadenza" style="-fx-text-fill: #c4b5fd; -fx-font-size: 13px; -fx-font-weight: bold;"/>
-        <DatePicker fx:id="datePicker" maxWidth="Infinity"
-                    promptText="Seleziona una data…" showWeekNumbers="false"/>
-        <Label text="Lascia vuoto e clicca SALVA per rimuovere la scadenza."
-               style="-fx-font-size: 11px; -fx-text-fill: #7c3aed;"/>
+        <Label text="Imposta scadenza link" styleClass="label-title"/>
+        <Label fx:id="labelToken" styleClass="label-subtitle" wrapText="true"/>
+
+        <VBox spacing="8">
+            <Label text="Data di scadenza" style="-fx-text-fill: #c4b5fd; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+            <DatePicker fx:id="datePicker" maxWidth="Infinity"
+                        promptText="Seleziona una data…" showWeekNumbers="false"/>
+            <Label text="Lascia vuoto e clicca SALVA per rimuovere la scadenza."
+                   style="-fx-font-size: 11px; -fx-text-fill: #7c3aed;"/>
+        </VBox>
+
+        <Label fx:id="labelErrore" styleClass="label-error" wrapText="true" managed="false" visible="false"/>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button fx:id="btnSalva" text="SALVA" onAction="#onSalva" styleClass="button"/>
+        </HBox>
     </VBox>
-
-    <Label fx:id="labelErrore" styleClass="label-error" wrapText="true" managed="false" visible="false"/>
-
-    <Region VBox.vgrow="ALWAYS"/>
-
-    <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button fx:id="btnSalva" text="SALVA" onAction="#onSalva" styleClass="button"/>
-    </HBox>
-</VBox>
+</StackPane>

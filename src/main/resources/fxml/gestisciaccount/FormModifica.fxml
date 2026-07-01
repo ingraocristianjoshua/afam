@@ -6,9 +6,9 @@
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.afam.client.boundary.gestisciaccount.FormModificaBnd"
-      spacing="0" prefWidth="440" styleClass="root">
+      spacing="0" prefWidth="440" styleClass="root" alignment="CENTER">
 
-    <VBox spacing="14" styleClass="card">
+    <VBox spacing="14" styleClass="card" maxWidth="480">
         <padding><Insets top="30" right="36" bottom="30" left="36"/></padding>
 
         <Label text="Modifica dati" styleClass="label-title"/>

@@ -12,21 +12,23 @@ import java.util.UUID;
 /**
  * Sequence: getIdPortfolio → getIdUtente → generaLink(idPortfolio, idUtente)
  *           → salvaNuovoLink(link) → [inviaLink(email, link)]
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class GeneraLinkCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd      db   = DBMSBnd.getInstance();
     private final MailServerBnd mail = MailServerBnd.getInstance();
 
     private EntityPortfolio portfolio;
     private EntityLink      linkGenerato;
 
+    // ── Metodi ──────────────────
     public void setPortfolio(EntityPortfolio p) {
         this.portfolio = p;
         db.setCurrentPortfolio(p.getIdPortfolio());
     }
 
+    /** Restituisce id portfolio. */
     public UUID getIdPortfolio() {
         return portfolio != null ? portfolio.getIdPortfolio() : null;
     }
@@ -37,7 +39,8 @@ public class GeneraLinkCtrl {
     }
 
     /**
-     * Genera un nuovo EntityLink con token univoco.
+     * Genera un nuovo EntityLink. L'identificatore condivisibile del link è il
+     * suo stesso id_link (UUID): non viene usato alcun token separato.
      * @param idPortfolio portfolio da condividere
      * @param idUtente    utente proprietario
      * @param visibilita  Constants.VIS_PRIVATO | VIS_PUBBLICO
@@ -47,28 +50,29 @@ public class GeneraLinkCtrl {
     public EntityLink generaLink(UUID idPortfolio, UUID idUtente,
                                  String visibilita, OffsetDateTime scadenza,
                                  boolean flagAperto) {
-        UUID   idLink    = UUID.randomUUID();
-        String urlToken  = UUID.randomUUID().toString().replace("-", "");
+        UUID idLink = UUID.randomUUID();
         linkGenerato = new EntityLink(
-                idLink, urlToken, scadenza,
+                idLink, scadenza,
                 Constants.LINK_ATTIVO, flagAperto, visibilita,
                 idUtente, idPortfolio);
         return linkGenerato;
     }
 
+    /** Salva nuovo link. */
     public void salvaNuovoLink(EntityLink link) {
         db.salvaNuovoLink(link);
     }
 
     /** Invia il link via email al destinatario. */
-    public void inviaLink(String email, String urlToken) {
-        mail.inviaLink(email, urlToken, "Uno studente AFAM");
+    public void inviaLink(String email, String link) {
+        mail.inviaLink(email, link, "Uno studente AFAM");
     }
 
     /** Invia il link via email al destinatario con nome mittente. */
-    public void inviaLink(String email, String urlToken, String nomeMittente) {
-        mail.inviaLink(email, urlToken, nomeMittente);
+    public void inviaLink(String email, String link, String nomeMittente) {
+        mail.inviaLink(email, link, nomeMittente);
     }
 
+    /** Restituisce link generato. */
     public EntityLink getLinkGenerato() { return linkGenerato; }
 }

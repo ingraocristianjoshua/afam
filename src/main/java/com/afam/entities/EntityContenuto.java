@@ -21,11 +21,9 @@ import java.util.UUID;
  * il punto di chiamata, non perché influenzi il risultato.
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-/**
- * @author Cristian Joshua Ingrao (0780672)
- */
 public class EntityContenuto {
 
+    // ── Campi ──────────────────
     private UUID   idContenuto;
     private String titolo;
     private String tipoFile;
@@ -35,6 +33,7 @@ public class EntityContenuto {
     private String visibilita;
     private UUID   idUtente;
 
+    // ── Costruttori ──────────────────
     public EntityContenuto() {}
 
     public EntityContenuto(UUID idContenuto, String titolo, String tipoFile,
@@ -64,9 +63,14 @@ public class EntityContenuto {
     // ── getter aggiuntivi per le control ──────────────────────────────────────
 
     public String getTitolo()          { return titolo; }
+    /** Restituisce tipo file. */
     public String getTipoFile()        { return tipoFile; }
+    /** Restituisce dimensione. */
     public long   getDimensione()      { return dimensione; }
+    /** Restituisce percorso storage. */
     public String getPercorsoStorage() { return percorsoStorage; }
+    /** Restituisce visibilita. */
     public String getVisibilita()      { return visibilita; }
+    /** Restituisce id utente. */
     public UUID   getIdUtente()        { return idUtente; }
 }

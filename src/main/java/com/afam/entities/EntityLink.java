@@ -15,17 +15,14 @@ import java.util.UUID;
  *
  * Getter dal sequence diagram:
  *   – getIdLink()              → uuid del link
- *   – getLink()                → url_token (il token condivisibile)
+ *   – getLink()                → l'id del link in forma di stringa (identificatore condivisibile)
  *   – getIdPortfolio(idLink)   → id del portfolio collegato (caricato via JOIN)
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-/**
- * @author Cristian Joshua Ingrao (0780672)
- */
 public class EntityLink {
 
+    // ── Campi ──────────────────
     private UUID           idLink;
-    private String         urlToken;
     private OffsetDateTime scadenza;     // null = nessuna scadenza
     /** "attivo" | "revocato" | "scaduto" */
     private String         stato;
@@ -41,13 +38,13 @@ public class EntityLink {
      */
     private UUID idPortfolio;
 
+    // ── Costruttori ──────────────────
     public EntityLink() {}
 
-    public EntityLink(UUID idLink, String urlToken, OffsetDateTime scadenza,
+    public EntityLink(UUID idLink, OffsetDateTime scadenza,
                       String stato, boolean flagAperto, String visibilita,
                       UUID idUtente, UUID idPortfolio) {
         this.idLink      = idLink;
-        this.urlToken    = urlToken;
         this.scadenza    = scadenza;
         this.stato       = stato;
         this.flagAperto  = flagAperto;
@@ -60,8 +57,8 @@ public class EntityLink {
 
     public UUID getIdLink() { return idLink; }
 
-    /** Restituisce il token del link (campo url_token), usato come URL condivisibile. */
-    public String getLink() { return urlToken; }
+    /** Restituisce l'identificatore condivisibile del link: l'id_link in forma di stringa. */
+    public String getLink() { return idLink != null ? idLink.toString() : null; }
 
     /**
      * Restituisce l'id del portfolio associato al link (letto dalla memoria,
@@ -73,9 +70,14 @@ public class EntityLink {
     // ── getter aggiuntivi ─────────────────────────────────────────────────────
 
     public OffsetDateTime getScadenza()   { return scadenza; }
+    /** Restituisce stato. */
     public String         getStato()      { return stato; }
+    /** Indica se flag aperto. */
     public boolean        isFlagAperto()  { return flagAperto; }
+    /** Restituisce visibilita. */
     public String         getVisibilita() { return visibilita; }
+    /** Restituisce id utente. */
     public UUID           getIdUtente()   { return idUtente; }
+    /** Restituisce id portfolio. */
     public UUID           getIdPortfolio(){ return idPortfolio; }
 }

@@ -11,19 +11,23 @@ import java.util.UUID;
  *
  * Nota: la firma aggiornaVisibilitaLink(visibilita, idLink) ha l'ordine dei parametri
  * della spec (visibilita prima, idLink secondo) — stesso dell'overload in DBMSBnd.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class VisibilitaLinkCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
+
     private EntityLink link;
 
+    // ── Metodi ──────────────────
     public void setLink(EntityLink l) { this.link = l; }
 
+    /** Restituisce id link. */
     public UUID getIdLink() {
         return link != null ? link.getIdLink() : null;
     }
 
+    /** Recupera visibilita link. */
     public String recuperaVisibilitaLink(UUID idLink) {
         return db.recuperaVisibilitaLink(idLink);
     }

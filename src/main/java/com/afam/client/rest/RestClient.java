@@ -22,11 +22,13 @@ import java.util.Properties;
  *
  * Dopo il login, il server restituisce l'id utente che viene memorizzato
  * e incluso automaticamente come header X-User-Id in ogni richiesta successiva.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class RestClient {
 
+    // ── Campi ──────────────────
     private static final RestClient INSTANCE = new RestClient();
+
+    /** Restituisce l'istanza singleton. */
     public  static RestClient getInstance() { return INSTANCE; }
 
     private final HttpClient   http;
@@ -36,6 +38,7 @@ public class RestClient {
     /** Id utente loggato, impostato dopo login riuscito. */
     private String currentUserId;
 
+    // ── Costruttori ──────────────────
     private RestClient() {
         // HTTP/1.1 forzato: il server Grizzly va in stallo sulle richieste PATCH
         // quando il client tenta la negoziazione HTTP/2 (upgrade h2c), causando
@@ -48,6 +51,7 @@ public class RestClient {
         loadConfig();
     }
 
+    // ── Metodi ──────────────────
     private void loadConfig() {
         try (InputStream in = getClass().getClassLoader()
                 .getResourceAsStream("config.properties")) {
@@ -62,10 +66,14 @@ public class RestClient {
 
     // ── Gestione sessione ─────────────────────────────────────────────────────
 
+    /** Memorizza l'id utente restituito dal login (incluso poi in ogni richiesta). */
     public void setCurrentUserId(String id) { this.currentUserId = id; }
+    /** @return l'id dell'utente attualmente loggato (null se non autenticato). */
     public String getCurrentUserId()         { return currentUserId; }
+    /** @return true se è presente una sessione utente attiva. */
     public boolean isLoggedIn()              { return currentUserId != null; }
 
+    /** Termina la sessione locale dimenticando l'id utente. */
     public void logout() { currentUserId = null; }
 
     // ── Metodi HTTP ───────────────────────────────────────────────────────────

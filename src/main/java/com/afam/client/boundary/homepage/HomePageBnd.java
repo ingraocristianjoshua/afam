@@ -20,18 +20,45 @@ import java.util.Map;
 
 /**
  * HomePageBnd – Dashboard principale dell'applicazione.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class HomePageBnd {
 
+    // ── Campi ──────────────────
     @FXML private BorderPane root;
     @FXML private Pane bgDecor;
 
     private final RestClient rest = RestClient.getInstance();
 
+    /** Posizioni in frazione (x,y) delle emoji, distribuite sulle fasce laterali
+     *  così restano ben disposte a qualsiasi dimensione, anche a tutto schermo. */
+    private static final double[][] POS_SFONDO = {
+        {0.05, 0.10}, {0.11, 0.32}, {0.04, 0.55}, {0.09, 0.75}, {0.13, 0.90},
+        {0.91, 0.11}, {0.94, 0.33}, {0.87, 0.55}, {0.93, 0.75}, {0.86, 0.90}
+    };
+
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
         animaSfondo();
+        if (bgDecor != null) {
+            bgDecor.widthProperty().addListener((o, a, b) -> posizionaSfondo());
+            bgDecor.heightProperty().addListener((o, a, b) -> posizionaSfondo());
+            javafx.application.Platform.runLater(this::posizionaSfondo);
+        }
+    }
+
+    /** Dispone le emoji in percentuale rispetto alla dimensione attuale del pannello. */
+    private void posizionaSfondo() {
+        if (bgDecor == null) return;
+        double w = bgDecor.getWidth(), h = bgDecor.getHeight();
+        if (w <= 0 || h <= 0) return;
+        int i = 0;
+        for (Node n : bgDecor.getChildren()) {
+            if (i >= POS_SFONDO.length) break;
+            n.setLayoutX(POS_SFONDO[i][0] * w);
+            n.setLayoutY(POS_SFONDO[i][1] * h);
+            i++;
+        }
     }
 
     /** Anima le emoji decorative dello sfondo (galleggiamento, dondolio, shimmer). */
@@ -74,34 +101,7 @@ public class HomePageBnd {
     @FXML public void onGestisciContenuti() { apri("/fxml/gestiscicontenuti/GestioneContenuti.fxml",   "Gestione Contenuti"); }
     @FXML public void onGestisciLink()      { apri("/fxml/gestiscicondivisione/GestioneCondivisione.fxml", "Gestione Condivisione"); }
 
-    @FXML
-    public void onVisualizzaProfilo() {
-        new Thread(() -> {
-            try {
-                Map<String, Object> profilo = rest.get("account/profilo");
-                Platform.runLater(() -> {
-                    try {
-                        FXMLLoader loader = new FXMLLoader(
-                                getClass().getResource("/fxml/visualizzaprofilocondiviso/VisualizzaProfilo.fxml"));
-                        Stage stage = new Stage();
-                        stage.setTitle("AFAM – Il tuo profilo pubblico");
-                        stage.setScene(new Scene(loader.load()));
-                        stage.getScene().getStylesheets().add(
-                                getClass().getResource("/css/application.css").toExternalForm());
-                        com.afam.client.boundary.visualizzaprofilocondiviso.VisualizzaProfiloBnd ctrl =
-                                loader.getController();
-                        ctrl.setStudente(profilo);
-                        stage.show();
-                    } catch (Exception e) {
-                        MessErrBnd.create("Errore apertura profilo: " + e.getMessage());
-                    }
-                });
-            } catch (RestClient.RestException e) {
-                Platform.runLater(() -> MessErrBnd.create("Impossibile caricare il profilo: " + e.getMessage()));
-            }
-        }, "carica-profilo-pubblico").start();
-    }
-
+    /** Gestisce l'azione «Logout». */
     @FXML
     public void onLogout() {
         try {
@@ -112,11 +112,13 @@ public class HomePageBnd {
         apri("/fxml/autenticati/AuthPage.fxml", "AFAM");
     }
 
+    /** Chiude la finestra corrente. */
     private void chiudi() {
         Stage stage = (Stage) root.getScene().getWindow();
         stage.close();
     }
 
+    /** Apri. */
     private void apri(String path, String titolo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));

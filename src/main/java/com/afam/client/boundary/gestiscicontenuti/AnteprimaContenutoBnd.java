@@ -21,10 +21,10 @@ import java.util.Set;
 /**
  * AnteprimaContenutoBnd – anteprima in-app per immagini, PDF, audio e video.
  * Documenti Office aprono l'app nativa tramite Desktop.open().
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class AnteprimaContenutoBnd {
 
+    // ── Campi ──────────────────
     @FXML private StackPane areaAnteprima;
     @FXML private Label     labelTitolo;
 
@@ -35,6 +35,7 @@ public class AnteprimaContenutoBnd {
 
     private MediaPlayer mediaPlayer;
 
+    // ── Metodi ──────────────────
     public void setContenuto(Map<String, Object> c) {
         String titolo   = (String) c.getOrDefault("titolo", "Contenuto");
         String percorso = (String) c.get("percorsoStorage");
@@ -75,6 +76,7 @@ public class AnteprimaContenutoBnd {
         }
     }
 
+    /** Mostra immagine. */
     private void mostraImmagine(File file) {
         Image img = new Image(file.toURI().toString(), true);
         ImageView iv = new ImageView(img);
@@ -84,6 +86,7 @@ public class AnteprimaContenutoBnd {
         areaAnteprima.getChildren().setAll(iv);
     }
 
+    /** Mostra pdf. */
     private void mostraPdf(File file) {
         WebView wv = new WebView();
         wv.getEngine().load(file.toURI().toString());
@@ -91,6 +94,7 @@ public class AnteprimaContenutoBnd {
         areaAnteprima.getChildren().setAll(wv);
     }
 
+    /** Mostra audio. */
     private void mostraAudio(File file) {
         Media media = new Media(file.toURI().toString());
         mediaPlayer = new MediaPlayer(media);
@@ -137,6 +141,7 @@ public class AnteprimaContenutoBnd {
         stage.setOnCloseRequest(e -> mediaPlayer.dispose());
     }
 
+    /** Mostra video. */
     private void mostraVideo(File file) {
         Media media = new Media(file.toURI().toString());
         mediaPlayer = new MediaPlayer(media);
@@ -166,6 +171,7 @@ public class AnteprimaContenutoBnd {
         stage.setOnCloseRequest(e -> mediaPlayer.dispose());
     }
 
+    /** Apri nativa. */
     private void apriNativa(File file) {
         mostraMessaggio("Apertura con l'applicazione predefinita…\n" + file.getName());
         new Thread(() -> {
@@ -178,6 +184,7 @@ public class AnteprimaContenutoBnd {
         }, "apri-nativa").start();
     }
 
+    /** Mostra messaggio. */
     private void mostraMessaggio(String testo) {
         Label l = new Label(testo);
         l.setStyle("-fx-text-fill: #6c3fc5; -fx-font-size: 14px; -fx-text-alignment: center;");
@@ -185,11 +192,13 @@ public class AnteprimaContenutoBnd {
         areaAnteprima.getChildren().setAll(l);
     }
 
+    /** Estensione. */
     private String estensione(String percorso) {
         int idx = percorso.lastIndexOf('.');
         return idx >= 0 ? percorso.substring(idx + 1).toLowerCase() : "";
     }
 
+    /** Gestisce l'azione «Chiudi». */
     @FXML
     public void onChiudi() {
         if (mediaPlayer != null) mediaPlayer.dispose();

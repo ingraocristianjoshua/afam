@@ -10,11 +10,12 @@ import java.util.UUID;
 /**
  * Sequence: verificaDimensione(dimensione) → isFileInUso(contenuto)
  *           → checkValid → generaIdContenuto → caricaContenuto(contenuto)
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class CaricaContenutoCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
+
     private boolean valid = true;
     private String  errorMessage = "";
 
@@ -23,9 +24,13 @@ public class CaricaContenutoCtrl {
     private long   dimensione;
     private String percorsoStorage;
 
+    // ── Metodi ──────────────────
     public void setTitolo(String titolo)               { this.titolo          = titolo; }
+    /** Imposta tipo file. */
     public void setTipoFile(String tipoFile)           { this.tipoFile        = tipoFile; }
+    /** Imposta dimensione. */
     public void setDimensione(long dimensione)         { this.dimensione      = dimensione; }
+    /** Imposta percorso storage. */
     public void setPercorsoStorage(String percorso)    { this.percorsoStorage = percorso; }
 
     /** Verifica che il file non superi la dimensione massima consentita (50 MB). */
@@ -45,11 +50,13 @@ public class CaricaContenutoCtrl {
         return false;
     }
 
+    /** Check valid. */
     public boolean checkValid() {
         if (!valid) throw new IllegalStateException(errorMessage);
         return true;
     }
 
+    /** Genera id contenuto. */
     public UUID generaIdContenuto() {
         return UUID.randomUUID();
     }
@@ -62,8 +69,11 @@ public class CaricaContenutoCtrl {
         db.caricaContenuto(contenuto);
     }
 
+    /** Indica se valid. */
     public boolean isValid()         { return valid; }
+    /** Restituisce error message. */
     public String  getErrorMessage() { return errorMessage; }
 
+    /** Fail. */
     private boolean fail(String msg) { valid = false; errorMessage = msg; return false; }
 }

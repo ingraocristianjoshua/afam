@@ -3,10 +3,10 @@ package com.afam.utils;
 import java.util.regex.Pattern;
 
 /** Validazioni riusabili condivise tra tutte le control.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public final class Validators {
 
+    // ── Campi ──────────────────
     private static final Pattern EMAIL_RE =
         Pattern.compile("^[\\w.+\\-]+@[\\w\\-]+\\.[a-zA-Z]{2,}$");
 
@@ -26,24 +26,30 @@ public final class Validators {
     private static final Pattern TELEFONO_RE =
         Pattern.compile("^\\+?[0-9]{7,15}$");
 
+    // ── Costruttori ──────────────────
     private Validators() {}
 
+    // ── Metodi ──────────────────
     public static boolean isEmailValida(String email) {
         return email != null && EMAIL_RE.matcher(email.trim()).matches();
     }
 
+    /** Indica se password valida. */
     public static boolean isPasswordValida(String password) {
         return password != null && PASSWORD_RE.matcher(password).matches();
     }
 
+    /** Indica se nome valido. */
     public static boolean isNomeValido(String nome) {
         return nome != null && NOME_RE.matcher(nome.trim()).matches();
     }
 
+    /** Indica se nome raccolta valido. */
     public static boolean isNomeRaccoltaValido(String nome) {
         return nome != null && NOME_RACCOLTA_RE.matcher(nome.trim()).matches();
     }
 
+    /** Indica se telefono valido. */
     public static boolean isTelefonoValido(String numero) {
         return numero != null && TELEFONO_RE.matcher(numero.trim()).matches();
     }

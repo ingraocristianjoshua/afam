@@ -21,10 +21,10 @@ import java.util.Map;
 
 /**
  * AnteprimaPortfolioBnd – visualizzazione pubblica di un portfolio (sola lettura).
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class AnteprimaPortfolioBnd {
 
+    // ── Campi ──────────────────
     @FXML private Label labelNomePortfolio;
     @FXML private Label labelStudente;
     @FXML private Label labelVisualizzazioni;
@@ -32,26 +32,29 @@ public class AnteprimaPortfolioBnd {
 
     private final RestClient rest = RestClient.getInstance();
 
+    // ── Metodi ──────────────────
     public void setPortfolio(Map<String, Object> studente, Map<String, Object> portfolio) {
         labelNomePortfolio.setText((String) portfolio.getOrDefault("nome", "Portfolio"));
         labelStudente.setText(studente.get("cognome") + " " + studente.get("nome"));
         new Thread(() -> caricaContenuti(studente, portfolio), "carica-anteprima").start();
     }
 
+    /** Imposta portfolio condiviso. */
+    @SuppressWarnings("unchecked")
     public void setPortfolioCondiviso(Map<String, Object> data) {
-        @SuppressWarnings("unchecked")
         Map<String, Object> portfolio = (Map<String, Object>) data.get("portfolio");
         if (portfolio != null) labelNomePortfolio.setText((String) portfolio.getOrDefault("nome", "Portfolio"));
         labelStudente.setText("");
-        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> raccolte  = (List<Map<String, Object>>) data.get("raccolte");
         List<Map<String, Object>> contenuti = (List<Map<String, Object>>) data.get("contenuti");
         int vis = portfolio != null
                 ? ((Number) portfolio.getOrDefault("numeroVisualizzazioni", 0)).intValue()
                 : 0;
         labelVisualizzazioni.setText(vis + " visualizzazioni");
-        Platform.runLater(() -> popolaBoxContenuti(contenuti));
+        Platform.runLater(() -> popola(raccolte, contenuti));
     }
 
+    /** Carica contenuti. */
     @SuppressWarnings("unchecked")
     private void caricaContenuti(Map<String, Object> studente, Map<String, Object> portfolio) {
         try {
@@ -59,31 +62,79 @@ public class AnteprimaPortfolioBnd {
                     "pubblico/studenti/" + studente.get("idUtente")
                     + "/portfolio/" + portfolio.get("idPortfolio"));
             Map<String, Object> data = (Map<String, Object>) resp.get("data");
+            List<Map<String, Object>> raccolte  = (List<Map<String, Object>>) data.get("raccolte");
             List<Map<String, Object>> contenuti = (List<Map<String, Object>>) data.get("contenuti");
             Map<String, Object> pf = (Map<String, Object>) data.get("portfolio");
             int vis = pf != null ? ((Number) pf.getOrDefault("numeroVisualizzazioni", 0)).intValue() : 0;
             Platform.runLater(() -> {
                 labelVisualizzazioni.setText(vis + " visualizzazioni");
-                popolaBoxContenuti(contenuti);
+                popola(raccolte, contenuti);
             });
         } catch (RestClient.RestException e) {
             Platform.runLater(() -> MessErrBnd.create("Errore nel caricamento: " + e.getMessage()));
         }
     }
 
-    private void popolaBoxContenuti(List<Map<String, Object>> contenuti) {
+    /** Mostra le raccolte (con i loro contenuti) e i contenuti caricati separatamente. */
+    private void popola(List<Map<String, Object>> raccolte, List<Map<String, Object>> contenuti) {
         boxContenuti.getChildren().clear();
-        if (contenuti == null || contenuti.isEmpty()) {
+
+        boolean nessunaRaccolta  = raccolte  == null || raccolte.isEmpty();
+        boolean nessunContenuto  = contenuti == null || contenuti.isEmpty();
+
+        if (nessunaRaccolta && nessunContenuto) {
             Label vuoto = new Label("Nessun contenuto in questo portfolio.");
             vuoto.setStyle("-fx-text-fill: #9879e0; -fx-font-size: 13px;");
             boxContenuti.getChildren().add(vuoto);
             return;
         }
-        for (Map<String, Object> c : contenuti) {
-            boxContenuti.getChildren().add(creaRiga(c));
+
+        // ── Sezione Raccolte ──
+        if (!nessunaRaccolta) {
+            boxContenuti.getChildren().add(titoloSezione("📚  Raccolte"));
+            for (Map<String, Object> r : raccolte) {
+                boxContenuti.getChildren().add(creaBloccoRaccolta(r));
+            }
+        }
+
+        // ── Sezione Contenuti caricati separatamente ──
+        if (!nessunContenuto) {
+            boxContenuti.getChildren().add(titoloSezione("📄  Contenuti"));
+            for (Map<String, Object> c : contenuti) {
+                boxContenuti.getChildren().add(creaRiga(c));
+            }
         }
     }
 
+    /** Titolo sezione. */
+    private Label titoloSezione(String testo) {
+        Label l = new Label(testo);
+        l.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 8 0 2 2;");
+        return l;
+    }
+
+    /** Crea blocco raccolta. */
+    @SuppressWarnings("unchecked")
+    private VBox creaBloccoRaccolta(Map<String, Object> raccolta) {
+        VBox box = new VBox(8);
+        box.setStyle("-fx-background-color: rgba(255,255,255,0.06); -fx-background-radius: 12; -fx-padding: 12 14;");
+
+        Label nome = new Label("🗂  " + raccolta.getOrDefault("nome", "Raccolta"));
+        nome.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #c4b5fd;");
+        box.getChildren().add(nome);
+
+        List<Map<String, Object>> contenuti = (List<Map<String, Object>>) raccolta.get("contenuti");
+        if (contenuti == null || contenuti.isEmpty()) {
+            Label vuoto = new Label("Raccolta vuota.");
+            vuoto.setStyle("-fx-text-fill: #9879e0; -fx-font-size: 12px; -fx-padding: 0 0 0 4;");
+            box.getChildren().add(vuoto);
+        } else {
+            for (Map<String, Object> c : contenuti) box.getChildren().add(creaRiga(c));
+        }
+        return box;
+    }
+
+    /** Crea riga. */
     private HBox creaRiga(Map<String, Object> c) {
         HBox row = new HBox(12);
         row.setAlignment(Pos.CENTER_LEFT);
@@ -111,6 +162,7 @@ public class AnteprimaPortfolioBnd {
         return row;
     }
 
+    /** Gestisce l'azione «Anteprima». */
     private void onAnteprima(Map<String, Object> c) {
         try {
             FXMLLoader loader = new FXMLLoader(
@@ -129,6 +181,7 @@ public class AnteprimaPortfolioBnd {
         }
     }
 
+    /** Icona per. */
     private String iconaPer(String tipo) {
         if (tipo == null) return "📄";
         return switch (tipo.toLowerCase()) {
@@ -141,6 +194,7 @@ public class AnteprimaPortfolioBnd {
         };
     }
 
+    /** Chiude la finestra corrente. */
     @FXML
     public void chiudi() {
         ((Stage) boxContenuti.getScene().getWindow()).close();

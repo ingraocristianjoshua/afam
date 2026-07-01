@@ -12,32 +12,38 @@ import java.util.UUID;
  *           → aggiornaStatoRaccolta(idRaccolta, idContenuto)
  *
  * Firma identica ad AggiungiAllaRaccoltaCtrl per la stessa operazione toggle del DB.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class RimuoviDallaRaccoltaCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
 
     private EntityPortfolio portfolio;
     private EntityRaccolta  raccolta;
     private EntityContenuto contenuto;
 
+    // ── Metodi ──────────────────
     public void setPortfolio(EntityPortfolio p) {
         this.portfolio = p;
         db.setCurrentPortfolio(p.getIdPortfolio());
     }
 
+    /** Imposta raccolta. */
     public void setRaccolta(EntityRaccolta r)   { this.raccolta  = r; }
+    /** Imposta contenuto. */
     public void setContenuto(EntityContenuto c) { this.contenuto = c; }
 
+    /** Restituisce id portfolio. */
     public UUID getIdPortfolio() {
         return portfolio != null ? portfolio.getIdPortfolio() : null;
     }
 
+    /** Restituisce id raccolta. */
     public UUID getIdRaccolta(UUID idPortfolio) {
         return raccolta != null ? raccolta.getIdRaccolta(idPortfolio) : null;
     }
 
+    /** Restituisce id contenuto. */
     public UUID getIdContenuto(UUID idRaccolta) {
         return contenuto != null ? contenuto.getIdContenuto(idRaccolta) : null;
     }

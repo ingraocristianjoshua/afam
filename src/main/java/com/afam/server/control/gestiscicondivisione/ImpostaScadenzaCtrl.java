@@ -12,19 +12,23 @@ import java.util.UUID;
  * Nota: la firma aggiornaScadenza(scadenza, idLink) ha idLink come secondo parametro
  * perché la spec richiede la stessa firma disambiguata del DBMSBnd
  * (necessaria per distinguerla da altri metodi senza parametro).
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class ImpostaScadenzaCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
+
     private EntityLink link;
 
+    // ── Metodi ──────────────────
     public void setLink(EntityLink l) { this.link = l; }
 
+    /** Restituisce id link. */
     public UUID getIdLink() {
         return link != null ? link.getIdLink() : null;
     }
 
+    /** Recupera scadenza. */
     public OffsetDateTime recuperaScadenza(UUID idLink) {
         return db.recuperaScadenza(idLink);
     }

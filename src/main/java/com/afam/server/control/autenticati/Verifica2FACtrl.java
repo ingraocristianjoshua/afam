@@ -19,13 +19,14 @@ import java.util.Map;
  * Nota sulle firme:
  *   generaOTP(otp) nei diagrammi indica che il risultato è catturato
  *   nella variabile otp; in Java è un metodo che RESTITUISCE il codice.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class Verifica2FACtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd       db   = DBMSBnd.getInstance();
     private final MailServerBnd mail = MailServerBnd.getInstance();
 
+    // ── Metodi ──────────────────
     /**
      * Genera un codice OTP.
      * Nel sequence diagram la notazione è generaOTP(otp) dove otp
@@ -60,6 +61,7 @@ public class Verifica2FACtrl {
         return db.recuperaNumTelefono(null); // id_utente preso da currentUserId in DBMSBnd
     }
 
+    /** Invia sms. */
     public void inviaSMS(String numero, String otp) {
         mail.inviaSMS(numero, otp);
     }

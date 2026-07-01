@@ -16,13 +16,13 @@ import java.util.UUID;
  * PortfolioApi – endpoint REST per il sottosistema Gestisci Portfolio.
  * Base path: /api/portfolio
  * Header richiesto: X-User-Id (UUID stringa) per tutte le operazioni.
- * @author Cristian Joshua Ingrao (0780672)
  */
 @Path("/portfolio")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class PortfolioApi {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
 
     // ── Crea Portfolio ────────────────────────────────────────────────────────
@@ -382,10 +382,12 @@ public class PortfolioApi {
         }
     }
 
+    /** Ok. */
     private Response ok() {
         return Response.ok(Map.of("success", true)).build();
     }
 
+    /** Ok. */
     private Response ok(Object data) {
         Map<String, Object> body = new HashMap<>();
         body.put("success", true);
@@ -393,18 +395,21 @@ public class PortfolioApi {
         return Response.ok(body).build();
     }
 
+    /** Bad. */
     private Response bad(String errore) {
         return Response.status(Response.Status.BAD_REQUEST)
                 .entity(Map.of("success", false, "errore", errore))
                 .build();
     }
 
+    /** Not found. */
     private Response notFound() {
         return Response.status(Response.Status.NOT_FOUND)
                 .entity(Map.of("success", false, "errore", "Risorsa non trovata."))
                 .build();
     }
 
+    /** Server. */
     private Response server(String errore) {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(Map.of("success", false, "errore", errore != null ? errore : "Errore interno."))

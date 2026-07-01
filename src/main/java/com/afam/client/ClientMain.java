@@ -10,8 +10,14 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 
+/**
+ * ClientMain – punto di ingresso del client JavaFX (utente registrato).
+ * Carica la schermata di accesso, applica tema e icona dell'app.
+ */
 public class ClientMain extends Application {
 
+    // ── Metodi ──────────────────
+    /** Avvia la UI: imposta icona, carica AuthPage.fxml e applica il CSS. */
     @Override
     public void start(Stage primaryStage) throws Exception {
         AppIcon.applyDockIcon();
@@ -35,6 +41,7 @@ public class ClientMain extends Application {
         primaryStage.show();
     }
 
+    /** Bootstrap dell'applicazione JavaFX. */
     public static void main(String[] args) {
         launch(args);
     }

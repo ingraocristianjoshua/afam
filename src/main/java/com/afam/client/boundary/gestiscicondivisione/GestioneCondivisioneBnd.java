@@ -9,10 +9,10 @@ import javafx.stage.Stage;
 /**
  * GestioneCondivisioneBnd – hub per la gestione condivisione.
  * Due azioni: visualizza i link esistenti oppure genera un nuovo link.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class GestioneCondivisioneBnd {
 
+    // ── Metodi ──────────────────
     @FXML
     public void onVisualizzaLink() {
         try {
@@ -24,6 +24,7 @@ public class GestioneCondivisioneBnd {
         }
     }
 
+    /** Gestisce l'azione «Genera Link». */
     @FXML
     public void onGeneraLink() {
         try {
@@ -35,6 +36,7 @@ public class GestioneCondivisioneBnd {
         }
     }
 
+    /** Nuovo stage. */
     private Stage nuovoStage(String titolo, javafx.scene.Parent root) {
         Stage stage = new Stage();
         stage.setTitle("AFAM – " + titolo);

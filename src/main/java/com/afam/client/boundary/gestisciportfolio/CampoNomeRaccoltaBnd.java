@@ -13,10 +13,10 @@ import java.util.Map;
 
 /**
  * CampoNomeRaccoltaBnd – form per la creazione di una nuova raccolta in un portfolio.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class CampoNomeRaccoltaBnd {
 
+    // ── Campi ──────────────────
     @FXML private Label labelTitolo;
     @FXML private TextField fieldNome;
     @FXML private Button btnAzione;
@@ -25,10 +25,12 @@ public class CampoNomeRaccoltaBnd {
     private Map<String, Object> portfolio;
     private Map<String, Object> raccolta; // Se presente, siamo in modalità Rinomina
 
+    // ── Metodi ──────────────────
     public void setPortfolio(Map<String, Object> p) { 
         this.portfolio = p; 
     }
 
+    /** Imposta raccolta da rinominare. */
     public void setRaccoltaDaRinominare(Map<String, Object> p, Map<String, Object> r) {
         this.portfolio = p;
         this.raccolta = r;
@@ -37,6 +39,7 @@ public class CampoNomeRaccoltaBnd {
         fieldNome.setText((String) r.get("nome"));
     }
 
+    /** Gestisce l'azione «Azione». */
     @FXML
     public void onAzione() {
         if (portfolio == null) { MessErrBnd.create("Portfolio non impostato."); return; }
@@ -60,9 +63,11 @@ public class CampoNomeRaccoltaBnd {
         }
     }
 
+    /** Gestisce l'azione «Annulla». */
     @FXML
     public void onAnnulla() { chiudi(); }
 
+    /** Chiude la finestra corrente. */
     private void chiudi() {
         Stage stage = (Stage) fieldNome.getScene().getWindow();
         stage.close();

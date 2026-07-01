@@ -10,11 +10,12 @@ import java.util.UUID;
  * Sequence: getIdPortfolio → getNomeRaccolta → verificaNomeRaccolta
  *           → isNomeInUso(nomeRaccolta) → checkValid → generaIdRaccolta
  *           → salvaRaccolta(idRaccolta, nomeRaccolta)
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class CreaRaccoltaCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
+
     private boolean valid = true;
     private String  errorMessage = "";
 
@@ -22,19 +23,24 @@ public class CreaRaccoltaCtrl {
     private String          nomeRaccolta;
     private UUID            idRaccolta;
 
+    // ── Metodi ──────────────────
     public UUID getIdPortfolio() {
         return portfolio != null ? portfolio.getIdPortfolio() : null;
     }
 
+    /** Imposta portfolio. */
     public void setPortfolio(EntityPortfolio p) {
         this.portfolio = p;
         db.setCurrentPortfolio(p.getIdPortfolio());
     }
 
+    /** Restituisce nome raccolta. */
     public String getNomeRaccolta() { return nomeRaccolta; }
 
+    /** Imposta nome raccolta. */
     public void setNomeRaccolta(String nome) { this.nomeRaccolta = nome; }
 
+    /** Verifica nome raccolta. */
     public boolean verificaNomeRaccolta(String nomeRaccolta) {
         if (!Validators.isNomeRaccoltaValido(nomeRaccolta)) {
             return fail("Nome raccolta non valido (1–80 caratteri).");
@@ -48,22 +54,28 @@ public class CreaRaccoltaCtrl {
         return false;
     }
 
+    /** Check valid. */
     public boolean checkValid() {
         if (!valid) throw new IllegalStateException(errorMessage);
         return true;
     }
 
+    /** Genera id raccolta. */
     public UUID generaIdRaccolta() {
         idRaccolta = UUID.randomUUID();
         return idRaccolta;
     }
 
+    /** Salva raccolta. */
     public void salvaRaccolta(UUID idRaccolta, String nomeRaccolta) {
         db.salvaRaccolta(idRaccolta, nomeRaccolta);
     }
 
+    /** Indica se valid. */
     public boolean isValid()         { return valid; }
+    /** Restituisce error message. */
     public String  getErrorMessage() { return errorMessage; }
 
+    /** Fail. */
     private boolean fail(String msg) { valid = false; errorMessage = msg; return false; }
 }

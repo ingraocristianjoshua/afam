@@ -11,22 +11,24 @@ import java.util.Map;
 
 /**
  * FormModificheBnd – form per rinominare una raccolta esistente.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class FormModificheBnd {
 
+    // ── Campi ──────────────────
     @FXML private TextField fieldNome;
 
     private final RestClient rest = RestClient.getInstance();
     private Map<String, Object> portfolio;
     private Map<String, Object> raccolta;
 
+    // ── Metodi ──────────────────
     public void setContesto(Map<String, Object> portfolio, Map<String, Object> raccolta) {
         this.portfolio = portfolio;
         this.raccolta  = raccolta;
         fieldNome.setText((String) raccolta.get("nome"));
     }
 
+    /** Gestisce l'azione «Rinomina». */
     @FXML
     public void onRinomina() {
         String nome = fieldNome.getText().trim();
@@ -43,9 +45,11 @@ public class FormModificheBnd {
         }
     }
 
+    /** Gestisce l'azione «Annulla». */
     @FXML
     public void onAnnulla() { chiudi(); }
 
+    /** Chiude la finestra corrente. */
     private void chiudi() {
         Stage stage = (Stage) fieldNome.getScene().getWindow();
         stage.close();

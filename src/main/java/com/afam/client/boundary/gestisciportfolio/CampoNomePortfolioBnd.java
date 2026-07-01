@@ -11,18 +11,20 @@ import java.util.Map;
 
 /**
  * CampoNomePortfolioBnd – form per la creazione di un nuovo portfolio.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class CampoNomePortfolioBnd {
 
+    // ── Campi ──────────────────
     @FXML private TextField fieldNome;
 
     private final RestClient rest = RestClient.getInstance();
     private String idCreato;
 
+    // ── Metodi ──────────────────
     /** Id del portfolio appena creato (null se non creato). */
     public String getIdCreato() { return idCreato; }
 
+    /** Gestisce l'azione «Crea». */
     @FXML
     @SuppressWarnings("unchecked")
     public void onCrea() {
@@ -39,9 +41,11 @@ public class CampoNomePortfolioBnd {
         }
     }
 
+    /** Gestisce l'azione «Annulla». */
     @FXML
     public void onAnnulla() { chiudi(); }
 
+    /** Chiude la finestra corrente. */
     private void chiudi() {
         Stage stage = (Stage) fieldNome.getScene().getWindow();
         stage.close();

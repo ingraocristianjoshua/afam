@@ -18,13 +18,13 @@ import java.util.Map;
 
 /**
  * PannelloLinkBnd – form per la generazione di un nuovo link di condivisione.
- * Permette di scegliere il portfolio, la visibilità, e di copiare il link generato.
- * @author Cristian Joshua Ingrao (0780672)
+ * Permette di scegliere il portfolio e di copiare il link generato.
+ * I portfolio sono sempre pubblici, quindi non c'è scelta di visibilità del link.
  */
 public class PannelloLinkBnd {
 
+    // ── Campi ──────────────────
     @FXML private ComboBox<Map<String, Object>> comboPortfolio;
-    @FXML private ComboBox<String>              comboVisibilita;
     @FXML private TextField                     fieldEmail;
     @FXML private Label                         labelLink;
     @FXML private Button                        btnCopia;
@@ -32,11 +32,9 @@ public class PannelloLinkBnd {
     private final RestClient rest = RestClient.getInstance();
     private String linkGenerato;
 
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
-        comboVisibilita.setItems(FXCollections.observableArrayList(
-                Constants.VIS_PRIVATO, Constants.VIS_PUBBLICO));
-        comboVisibilita.setValue(Constants.VIS_PRIVATO);
         comboPortfolio.setCellFactory(lv -> portfolioCell());
         comboPortfolio.setButtonCell(portfolioCell());
         btnCopia.setDisable(true);
@@ -44,6 +42,7 @@ public class PannelloLinkBnd {
         new Thread(this::caricaPortfolio, "carica-portfolio-link").start();
     }
 
+    /** Carica portfolio. */
     @SuppressWarnings("unchecked")
     private void caricaPortfolio() {
         try {
@@ -56,6 +55,7 @@ public class PannelloLinkBnd {
         }
     }
 
+    /** Gestisce l'azione «Genera». */
     @FXML
     public void onGenera() {
         Map<String, Object> sel = comboPortfolio.getValue();
@@ -63,7 +63,8 @@ public class PannelloLinkBnd {
 
         Map<String, Object> body = new HashMap<>();
         body.put("idPortfolio", sel.get("idPortfolio"));
-        body.put("visibilita",  comboVisibilita.getValue());
+        // I portfolio sono sempre pubblici: il link di condivisione è pubblico
+        body.put("visibilita",  Constants.VIS_PUBBLICO);
 
         String email = fieldEmail.getText().trim();
         if (!email.isEmpty()) body.put("emailDestinatario", email);
@@ -88,6 +89,7 @@ public class PannelloLinkBnd {
         }, "genera-link").start();
     }
 
+    /** Gestisce l'azione «Copia Link». */
     @FXML
     public void onCopiaLink() {
         if (linkGenerato == null) return;
@@ -97,6 +99,7 @@ public class PannelloLinkBnd {
         MessSuccessoBnd.create("Link copiato negli appunti.");
     }
 
+    /** Gestisce l'azione «Chiudi». */
     @FXML
     public void onChiudi() {
         Stage stage = (Stage) comboPortfolio.getScene().getWindow();

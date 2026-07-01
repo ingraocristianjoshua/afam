@@ -11,13 +11,14 @@ import java.util.Map;
  *
  * Tentativo di ripristino della sessione: quando la connessione torna disponibile,
  * invia al DB le operazioni accumulate localmente da SalvataggioLocaleCtrl.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class RipristinaDatiSessioneCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd              db           = DBMSBnd.getInstance();
     private final SalvataggioLocaleCtrl salvataggio = new SalvataggioLocaleCtrl();
 
+    // ── Metodi ──────────────────
     /** @return true se la connessione al DB è attiva. */
     public boolean verificaStatoConnessione() {
         return db.verificaStatoConnessione();

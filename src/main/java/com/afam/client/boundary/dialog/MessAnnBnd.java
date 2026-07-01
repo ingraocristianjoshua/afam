@@ -12,18 +12,20 @@ import javafx.stage.Window;
 
 /**
  * MessAnnBnd – dialog di avviso/annullamento con tema AFAM.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class MessAnnBnd {
 
+    // ── Campi ──────────────────
     @FXML private Label labelMessaggio;
 
     private Stage stage;
 
+    // ── Metodi ──────────────────
     public static void create(String messaggio) {
         create(messaggio, null);
     }
 
+    /** Create. */
     public static void create(String messaggio, Window owner) {
         try {
             FXMLLoader loader = new FXMLLoader(
@@ -46,6 +48,7 @@ public class MessAnnBnd {
         }
     }
 
+    /** Gestisce l'azione «Chiudi». */
     @FXML
     public void onChiudi() {
         stage.close();

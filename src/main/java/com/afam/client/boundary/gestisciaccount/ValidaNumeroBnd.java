@@ -10,22 +10,24 @@ import javafx.stage.Stage;
 import java.util.Map;
 
 /** ValidaNumeroBnd – invia OTP via SMS e verifica il codice.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class ValidaNumeroBnd {
 
+    // ── Campi ──────────────────
     @FXML private Label     labelInfo;
     @FXML private TextField campoOTP;
     @FXML private Label     labelErrore;
 
     private final RestClient rest = RestClient.getInstance();
 
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
         labelErrore.setVisible(false);
         richiediOTP();
     }
 
+    /** Richiede al server l'invio di un nuovo codice OTP. */
     private void richiediOTP() {
         try {
             Map<String, Object> resp = rest.post("account/valida-numero/richiedi", Map.of());
@@ -43,6 +45,7 @@ public class ValidaNumeroBnd {
         return Map.of("otp", campoOTP.getText().trim());
     }
 
+    /** Gestisce l'azione «Verifica». */
     @FXML
     public void onVerifica() {
         labelErrore.setVisible(false);
@@ -58,6 +61,8 @@ public class ValidaNumeroBnd {
     @FXML public void onInviaDiNuovo() { campoOTP.clear(); richiediOTP(); }
     @FXML public void onAnnulla() { chiudi(); }
 
+    /** Mostra il messaggio di errore indicato. */
     public void mostraErrore(String msg) { labelErrore.setText(msg); labelErrore.setVisible(true); }
+    /** Chiude la finestra corrente. */
     public void chiudi() { ((Stage) campoOTP.getScene().getWindow()).close(); }
 }

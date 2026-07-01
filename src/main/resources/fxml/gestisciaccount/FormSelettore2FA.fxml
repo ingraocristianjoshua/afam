@@ -5,24 +5,32 @@
 
 <VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.afam.client.boundary.gestisciaccount.FormSelettore2FABnd"
-      spacing="0" prefWidth="420" styleClass="root">
+      spacing="0" prefWidth="420" styleClass="root" alignment="CENTER">
 
-    <VBox spacing="14" styleClass="card">
+    <VBox spacing="14" styleClass="card" maxWidth="480">
         <padding><Insets top="30" right="36" bottom="30" left="36"/></padding>
         <Label text="Autenticazione a due fattori" styleClass="label-title"/>
         <Label fx:id="labelStato" styleClass="label-subtitle"/>
-        <CheckBox fx:id="checkAbilita" text="Abilita autenticazione a due fattori"/>
-        <VBox spacing="4">
-            <Label text="Email associata" styleClass="label"/>
-            <TextField fx:id="campoEmail" promptText="email@esempio.it" maxWidth="Infinity" styleClass="text-field"/>
+
+        <!-- Sezione ABILITAZIONE: visibile solo quando il 2FA è disattivato -->
+        <VBox fx:id="boxAbilita" spacing="14">
+            <Label text="Per abilitare il 2FA l'email e il numero devono essere già validati."
+                   styleClass="label" wrapText="true" maxWidth="340"/>
+            <VBox spacing="4">
+                <Label text="Email associata" styleClass="label"/>
+                <TextField fx:id="campoEmail" promptText="email@esempio.it" maxWidth="Infinity" styleClass="text-field"/>
+            </VBox>
+            <VBox spacing="4">
+                <Label text="Numero di telefono" styleClass="label"/>
+                <TextField fx:id="campoNumero" promptText="+39 333 1234567" maxWidth="Infinity" styleClass="text-field"/>
+            </VBox>
         </VBox>
-        <VBox spacing="4">
-            <Label text="Numero di telefono" styleClass="label"/>
-            <TextField fx:id="campoNumero" promptText="+39 333 1234567" maxWidth="Infinity" styleClass="text-field"/>
-        </VBox>
+
         <Label fx:id="labelErrore" styleClass="label-error" wrapText="true" maxWidth="340"/>
+
         <HBox spacing="10" alignment="CENTER_RIGHT">
-            <Button text="SALVA" onAction="#onSalva" styleClass="button-primary"/>
+            <Button fx:id="btnAttiva"    text="ATTIVA 2FA"    onAction="#onAttiva"    styleClass="button-primary"/>
+            <Button fx:id="btnDisattiva" text="DISATTIVA 2FA" onAction="#onDisattiva" styleClass="button-danger"/>
         </HBox>
     </VBox>
 </VBox>

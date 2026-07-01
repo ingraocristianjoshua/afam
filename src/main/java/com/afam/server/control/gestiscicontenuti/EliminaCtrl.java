@@ -7,13 +7,15 @@ import java.util.UUID;
 
 /**
  * Sequence: getIdContenuto → eliminaContenuto(idContenuto)
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class EliminaCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
+
     private EntityContenuto contenuto;
 
+    // ── Metodi ──────────────────
     public void setContenuto(EntityContenuto c) { this.contenuto = c; }
 
     /** Legge l'id dal contenuto caricato in memoria (getId... = lettura da entity). */
@@ -21,6 +23,7 @@ public class EliminaCtrl {
         return contenuto != null ? contenuto.getIdContenuto() : null;
     }
 
+    /** Elimina contenuto. */
     public void eliminaContenuto(UUID idContenuto) {
         db.eliminaContenuto(idContenuto);
     }

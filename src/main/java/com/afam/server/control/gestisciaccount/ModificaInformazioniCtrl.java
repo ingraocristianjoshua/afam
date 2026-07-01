@@ -11,20 +11,22 @@ import java.util.UUID;
  *
  * Sequence: getIdUtente → recuperaEmail(idUtente) → verificaDati
  *           → isMailInUse(email) → checkValid → aggiornaDati(data)
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class ModificaInformazioniCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
 
     private boolean valid        = true;
     private String  errorMessage = "";
 
+    // ── Metodi ──────────────────
     /** Legge l'id dell'utente corrente dal contesto DBMSBnd. */
     public UUID getIdUtente() {
         return db.getCurrentUserId();
     }
 
+    /** Recupera email. */
     public String recuperaEmail(UUID idUtente) {
         return db.recuperaEmail(idUtente);
     }
@@ -63,17 +65,22 @@ public class ModificaInformazioniCtrl {
         return false;
     }
 
+    /** Check valid. */
     public boolean checkValid() {
         if (!valid) throw new IllegalStateException(errorMessage);
         return true;
     }
 
+    /** Aggiorna dati. */
     public void aggiornaDati(Map<String, Object> data) {
         db.aggiornaDati(data);
     }
 
+    /** Indica se valid. */
     public boolean isValid()         { return valid; }
+    /** Restituisce error message. */
     public String  getErrorMessage() { return errorMessage; }
 
+    /** Fail. */
     private boolean fail(String msg) { valid = false; errorMessage = msg; return false; }
 }

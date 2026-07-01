@@ -6,9 +6,9 @@
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.afam.client.boundary.autenticati.FormOTPBnd"
-      spacing="0" prefWidth="380" styleClass="root">
+      spacing="0" prefWidth="380" styleClass="root" alignment="CENTER">
 
-    <VBox spacing="16" styleClass="card">
+    <VBox spacing="16" styleClass="card" maxWidth="480">
         <padding><Insets top="30" right="36" bottom="30" left="36"/></padding>
 
         <Label text="Verifica OTP" styleClass="label-title"/>

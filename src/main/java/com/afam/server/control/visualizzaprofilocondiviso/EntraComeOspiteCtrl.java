@@ -6,12 +6,13 @@ package com.afam.server.control.visualizzaprofilocondiviso;
  * Questa control verifica che l'accesso anonimo sia permesso per l'area pubblica.
  * Non richiede connessione al DB: il sistema AFAM consente sempre la navigazione
  * pubblica (ricerca studenti e visualizzazione portfolio pubblici) senza login.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class EntraComeOspiteCtrl {
 
+    // ── Campi ──────────────────
     private static final boolean OSPITE_PERMESSO = true;
 
+    // ── Metodi ──────────────────
     /**
      * Verifica se l'accesso come ospite è consentito.
      * Estendibile in futuro per configurare restrizioni all'accesso anonimo.

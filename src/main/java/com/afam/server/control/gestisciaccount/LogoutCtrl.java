@@ -10,12 +10,13 @@ import com.afam.utils.Constants;
  *
  * Nota: recuperaStatoSessione è listato senza parentesi nel sequence diagram
  * (accesso a proprietà); in Java è un metodo che interroga il DB.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class LogoutCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
 
+    // ── Metodi ──────────────────
     /**
      * Legge lo stato della sessione corrente dal DB.
      * @return "aperta" | "chiusa"

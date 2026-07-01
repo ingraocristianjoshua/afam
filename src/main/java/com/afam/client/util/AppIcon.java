@@ -20,18 +20,20 @@ import javax.imageio.ImageIO;
  * AppIcon – genera l'icona dell'applicazione: il logo viene ridotto con un
  * margine trasparente e con gli angoli arrotondati (stile icona macOS), così
  * da non apparire fuori scala né squadrato nel dock/taskbar.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public final class AppIcon {
 
+    // ── Campi ──────────────────
     private static final String LOGO = "/images/logo.png";
     /** Frazione del riquadro occupata dal logo (il resto è margine trasparente). */
     private static final double SCALA = 0.82;
     /** Raggio degli angoli, in frazione del lato del logo (squircle ~22%). */
     private static final double RAGGIO = 0.225;
 
+    // ── Costruttori ──────────────────
     private AppIcon() {}
 
+    // ── Metodi ──────────────────
     /** Icona JavaFX (barra del titolo finestra) ridotta e con angoli arrotondati. */
     public static Image fxIcon() {
         try (InputStream in = AppIcon.class.getResourceAsStream(LOGO)) {

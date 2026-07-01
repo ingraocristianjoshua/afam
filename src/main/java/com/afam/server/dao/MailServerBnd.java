@@ -18,16 +18,17 @@ import java.util.logging.Logger;
  *
  * SMS: questa implementazione simula l'invio SMS inviando un'email al gateway
  * SMTP configurato. In produzione, sostituire con un'API SMS reale.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class MailServerBnd {
 
+    // ── Campi ──────────────────
     private static final Logger LOG = Logger.getLogger(MailServerBnd.class.getName());
 
     // ── Singleton ─────────────────────────────────────────────────────────────
 
     private static volatile MailServerBnd instance;
 
+    /** Restituisce instance. */
     public static MailServerBnd getInstance() {
         if (instance == null) {
             synchronized (MailServerBnd.class) {
@@ -43,12 +44,15 @@ public class MailServerBnd {
     private String  fromAddress;
     private String  linkBaseUrl;
 
+    // ── Costruttori ──────────────────
     private MailServerBnd() {
         loadConfig();
     }
 
+    // ── Metodi ──────────────────
     public String getLinkBaseUrl() { return linkBaseUrl; }
 
+    /** Load config. */
     private void loadConfig() {
         Properties cfg = new Properties();
         try (InputStream in = getClass().getClassLoader()
@@ -131,6 +135,7 @@ public class MailServerBnd {
         inviaLink(email, link, "Uno studente AFAM");
     }
 
+    /** Invia link. */
     public void inviaLink(String email, String link, String nomeMittente) {
         String soggetto = "AFAM – " + nomeMittente + " ha condiviso un portfolio con te";
         String corpo = "Ciao,\n\n"
@@ -138,15 +143,15 @@ public class MailServerBnd {
                 + "Clicca sul link qui sotto per visualizzarlo:\n"
                 + linkBaseUrl + link + "\n\n"
                 + "Il link si aprirà direttamente nel client AFAM.\n"
-                + "Se il client non si apre, copia il token e incollalo nella schermata 'Accedi con link'.\n\n"
-                + "Token: " + link + "\n\n"
+                + "Se il client non si apre, copia il codice qui sotto e incollalo nella schermata 'Accedi con link'.\n\n"
+                + "Codice del link: " + link + "\n\n"
                 + "Team AFAM";
         invia(email, soggetto, corpo);
     }
 
     /**
-     * Recupera l'url_token del link identificato da idLink (delega a DBMSBnd).
-     * Implementazione di supporto per MailServerBnd.recuperaLink come da spec.
+     * Recupera l'identificatore condivisibile del link (id_link in forma di stringa),
+     * delegando a DBMSBnd. Implementazione di supporto per MailServerBnd.recuperaLink.
      */
     public String recuperaLink(String email, UUID idLink) {
         com.afam.entities.EntityLink link = DBMSBnd.getInstance().recuperaLink(email, idLink);
@@ -166,6 +171,7 @@ public class MailServerBnd {
         System.out.println(sep + "\n");
     }
 
+    /** Invia. */
     private void invia(String to, String soggetto, String corpo) {
         // Stampa sempre in console per consentire i test locali facilitati
         System.out.println("\n[AFAM MAIL GATEWAY] Destinatario: " + to);

@@ -12,23 +12,26 @@ import java.util.UUID;
  *           → aggiornaNumero(n+1, idPortfolio)
  *
  * aggiornaNumero incrementa il contatore di visualizzazioni.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class VisualizzaPortfolioCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
 
     private EntityPortfolio portfolio;
 
+    // ── Metodi ──────────────────
     public void setPortfolio(EntityPortfolio p) {
         this.portfolio = p;
         db.setCurrentPortfolio(p.getIdPortfolio());
     }
 
+    /** Restituisce id portfolio. */
     public UUID getIdPortfolio() {
         return portfolio != null ? portfolio.getIdPortfolio() : null;
     }
 
+    /** Recupera portfolio. */
     public EntityPortfolio recuperaPortfolio(UUID idPortfolio) {
         portfolio = db.recuperaPortfolio(idPortfolio);
         return portfolio;
@@ -44,9 +47,11 @@ public class VisualizzaPortfolioCtrl {
         db.aggiornaNumero(numeroVisualizzazioni, idPortfolio);
     }
 
+    /** Recupera visualizzazioni. */
     public int recuperaVisualizzazioni(UUID idPortfolio) {
         return db.recuperaVisualizzazioni(idPortfolio);
     }
 
+    /** Restituisce portfolio. */
     public EntityPortfolio getPortfolio() { return portfolio; }
 }

@@ -59,7 +59,7 @@
                         style="-fx-background-color: transparent; -fx-text-fill: #c4b5fd;
                                -fx-font-size: 12px; -fx-cursor: hand; -fx-padding: 4 8;"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button text="Password dimenticata?" onAction="#onRecuperaPassword"
+                <Button text="Recupera password" onAction="#onRecuperaPassword"
                         style="-fx-background-color: transparent; -fx-text-fill: #a78bfa;
                                -fx-font-size: 12px; -fx-font-weight: bold;
                                -fx-cursor: hand; -fx-padding: 4 8;"/>

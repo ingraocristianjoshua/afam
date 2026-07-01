@@ -9,24 +9,28 @@ import java.util.UUID;
 /**
  * Sequence: getIdPortfolio → recuperaContenuto(idContenuto) → recuperaPosizione(idPortfolio, contenuto)
  *           → recuperaPosizioneAdiacente(idPortfolio, contenuto) → aggiornaPosizione(c1, c2)
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class OrdinaSequenzaCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
 
     private EntityPortfolio portfolio;
     private EntityContenuto contenuto1;
     private EntityContenuto contenuto2;
 
+    // ── Metodi ──────────────────
     public void setPortfolio(EntityPortfolio p) {
         this.portfolio = p;
         db.setCurrentPortfolio(p.getIdPortfolio());
     }
 
+    /** Imposta contenuto1. */
     public void setContenuto1(EntityContenuto c) { this.contenuto1 = c; }
+    /** Imposta contenuto2. */
     public void setContenuto2(EntityContenuto c) { this.contenuto2 = c; }
 
+    /** Restituisce id portfolio. */
     public UUID getIdPortfolio() {
         return portfolio != null ? portfolio.getIdPortfolio() : null;
     }
@@ -37,6 +41,7 @@ public class OrdinaSequenzaCtrl {
         return contenuto1;
     }
 
+    /** Recupera posizione. */
     public int recuperaPosizione(UUID idPortfolio, EntityContenuto contenuto) {
         return db.recuperaPosizione(idPortfolio, contenuto);
     }
@@ -51,6 +56,8 @@ public class OrdinaSequenzaCtrl {
         db.aggiornaPosizione(c1, c2);
     }
 
+    /** Restituisce contenuto1. */
     public EntityContenuto getContenuto1() { return contenuto1; }
+    /** Restituisce contenuto2. */
     public EntityContenuto getContenuto2() { return contenuto2; }
 }

@@ -14,10 +14,10 @@ import java.util.Map;
  * CambiaEmailBnd – flusso a due step per il cambio email con verifica OTP.
  * Step 1: l'utente inserisce la nuova email → server invia OTP alla nuova email.
  * Step 2: l'utente inserisce il codice OTP → server aggiorna l'email.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class CambiaEmailBnd {
 
+    // ── Campi ──────────────────
     @FXML private VBox   panelEmail;
     @FXML private VBox   panelOTP;
     @FXML private TextField campoNuovaEmail;
@@ -28,6 +28,7 @@ public class CambiaEmailBnd {
     private final RestClient rest = RestClient.getInstance();
     private String nuovaEmailInAttesa;
 
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
         labelErrore.setVisible(false);
@@ -40,6 +41,7 @@ public class CambiaEmailBnd {
         return Map.of("nuovaEmail", campoNuovaEmail.getText().trim());
     }
 
+    /** Gestisce l'azione «Invia OTP». */
     @FXML
     public void onInviaOTP() {
         mostraErrore(null);
@@ -57,6 +59,7 @@ public class CambiaEmailBnd {
         }
     }
 
+    /** Gestisce l'azione «Conferma OTP». */
     @FXML
     public void onConfermaOTP() {
         mostraErrore(null);
@@ -71,13 +74,16 @@ public class CambiaEmailBnd {
         }
     }
 
+    /** Gestisce l'azione «Annulla». */
     @FXML
     public void onAnnulla() { chiudi(); }
 
+    /** Chiude la finestra corrente. */
     public void chiudi() {
         ((Stage) campoNuovaEmail.getScene().getWindow()).close();
     }
 
+    /** Mostra il messaggio di errore indicato. */
     private void mostraErrore(String msg) {
         if (msg == null || msg.isEmpty()) {
             labelErrore.setVisible(false);

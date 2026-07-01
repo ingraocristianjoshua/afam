@@ -3,6 +3,7 @@ package com.afam.server.api;
 import com.afam.entities.EntityContenuto;
 import com.afam.entities.EntityLink;
 import com.afam.entities.EntityPortfolio;
+import com.afam.entities.EntityRaccolta;
 import com.afam.entities.EntityUtente;
 import com.afam.server.control.visualizzaprofilocondiviso.*;
 import com.afam.server.dao.DBMSBnd;
@@ -10,6 +11,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,13 +23,13 @@ import java.util.UUID;
  *
  * Questi endpoint sono accessibili senza autenticazione (nessun header X-User-Id richiesto).
  * Espongono solo dati pubblici: nessun hashPassword, solo portfolio/contenuti visibili.
- * @author Cristian Joshua Ingrao (0780672)
  */
 @Path("/pubblico")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class ProfiloCondivisoApi {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
 
     // ── Accesso ospite ────────────────────────────────────────────────────────
@@ -110,6 +112,8 @@ public class ProfiloCondivisoApi {
             ctrl.aggiornaNumero(n + 1, idPortfolio);
             Map<String, Object> resp = new HashMap<>();
             resp.put("portfolio", portfolio);
+            // Raccolte (con i loro contenuti) e tutti i contenuti caricati nel portfolio
+            resp.put("raccolte",  costruisciRaccolte(idPortfolio));
             resp.put("contenuti", contenuti);
             return ok(resp);
         } catch (Exception e) {
@@ -120,17 +124,23 @@ public class ProfiloCondivisoApi {
     // ── Accesso tramite link ──────────────────────────────────────────────────
 
     /**
-     * GET /api/pubblico/link/{token}
+     * GET /api/pubblico/link/{idLink}
      * Verifica la validità del link e restituisce il portfolio associato.
-     * Il token è l'url_token del link (non l'id UUID).
+     * L'identificatore del link è il suo id_link (UUID): non esiste un token separato.
      */
     @GET
-    @Path("/link/{token}")
-    public Response accediTramiteLink(@PathParam("token") String token) {
+    @Path("/link/{idLink}")
+    public Response accediTramiteLink(@PathParam("idLink") String idLinkStr) {
         AccediTramiteLinkCtrl ctrl = new AccediTramiteLinkCtrl();
         try {
-            // Recupera il link per token senza richiedere currentUserId (accesso pubblico)
-            EntityLink link = db.recuperaLinkByToken(token);
+            // Recupera il link per id senza richiedere currentUserId (accesso pubblico)
+            UUID idLinkParam;
+            try {
+                idLinkParam = UUID.fromString(idLinkStr);
+            } catch (IllegalArgumentException ex) {
+                return notFound("Link non valido.");
+            }
+            EntityLink link = db.recuperaLinkById(idLinkParam);
 
             if (link == null) return notFound("Link non trovato.");
             ctrl.setLink(link);
@@ -155,6 +165,8 @@ public class ProfiloCondivisoApi {
 
             Map<String, Object> resp = new HashMap<>();
             resp.put("portfolio", portfolio);
+            // Raccolte (con i loro contenuti) e tutti i contenuti caricati nel portfolio
+            resp.put("raccolte",  costruisciRaccolte(idPortfolio));
             resp.put("contenuti", contenuti);
             resp.put("flagAperto", link.isFlagAperto());
             return ok(resp);
@@ -165,6 +177,22 @@ public class ProfiloCondivisoApi {
 
     // ── Helper ────────────────────────────────────────────────────────────────
 
+    /**
+     * Costruisce l'elenco delle raccolte del portfolio, ciascuna con i propri
+     * contenuti, per la visualizzazione condivisa.
+     */
+    private List<Map<String, Object>> costruisciRaccolte(UUID idPortfolio) {
+        List<Map<String, Object>> out = new ArrayList<>();
+        for (EntityRaccolta r : db.recuperaRaccolte(idPortfolio)) {
+            Map<String, Object> rm = new HashMap<>();
+            rm.put("idRaccolta", r.getIdRaccolta() != null ? r.getIdRaccolta().toString() : null);
+            rm.put("nome",       r.getNome());
+            rm.put("contenuti",  db.recuperaContenutiRaccolta(r.getIdRaccolta()));
+            out.add(rm);
+        }
+        return out;
+    }
+
     private static Map<String, Object> sanitizzaUtente(EntityUtente u) {
         Map<String, Object> m = new HashMap<>();
         m.put("idUtente", u.getIdUtente() != null ? u.getIdUtente().toString() : null);
@@ -174,6 +202,7 @@ public class ProfiloCondivisoApi {
         return m;
     }
 
+    /** Ok. */
     private Response ok(Object data) {
         Map<String, Object> body = new HashMap<>();
         body.put("success", true);
@@ -181,12 +210,14 @@ public class ProfiloCondivisoApi {
         return Response.ok(body).build();
     }
 
+    /** Not found. */
     private Response notFound(String msg) {
         return Response.status(Response.Status.NOT_FOUND)
                 .entity(Map.of("success", false, "errore", msg))
                 .build();
     }
 
+    /** Server. */
     private Response server(String errore) {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(Map.of("success", false, "errore", errore != null ? errore : "Errore interno."))

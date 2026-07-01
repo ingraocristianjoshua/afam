@@ -18,10 +18,10 @@ import java.util.Map;
 
 /**
  * AccediFormBnd – form di login con email e password.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class AccediFormBnd {
 
+    // ── Campi ──────────────────
     @FXML private TextField     campoEmail;
     @FXML private PasswordField campoPassword;
     @FXML private Label         labelErrore;
@@ -29,6 +29,7 @@ public class AccediFormBnd {
 
     private final RestClient rest = RestClient.getInstance();
 
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
         labelErrore.setVisible(false);
@@ -42,8 +43,10 @@ public class AccediFormBnd {
         return dati;
     }
 
+    /** Restituisce email. */
     public String getEmail() { return campoEmail.getText().trim(); }
 
+    /** Gestisce l'azione «Accedi». */
     @FXML
     public void onAccedi() {
         nascondErrore();
@@ -75,34 +78,41 @@ public class AccediFormBnd {
         }, "accedi").start();
     }
 
+    /** Gestisce l'azione «Recupera Password». */
     @FXML
     public void onRecuperaPassword() {
         apriSchermata("/fxml/autenticati/InserisciEmail.fxml", "Inserisci email");
     }
 
+    /** Gestisce l'azione «Indietro». */
     @FXML
     public void onIndietro() {
         apriSchermata("/fxml/autenticati/AuthPage.fxml", "Benvenuto");
     }
 
+    /** Mostra un messaggio di conferma. */
     public void visualizza(String messaggio) { MessSuccessoBnd.create(messaggio); }
 
+    /** Mostra il messaggio di errore indicato. */
     public void visualizzaErrore(String messaggio) {
         labelErrore.setText(messaggio);
         labelErrore.setVisible(true);
         labelErrore.setManaged(true);
     }
 
+    /** Nasconde il messaggio di errore. */
     private void nascondErrore() {
         labelErrore.setVisible(false);
         labelErrore.setManaged(false);
     }
 
+    /** Chiude la finestra corrente. */
     public void chiudi() {
         Stage stage = (Stage) campoEmail.getScene().getWindow();
         stage.close();
     }
 
+    /** Avvia2 fa. */
     private void avvia2FA() {
         try {
             Map<String, Object> risposta = rest.post("auth/invia-2fa", Map.of());
@@ -131,6 +141,7 @@ public class AccediFormBnd {
         }
     }
 
+    /** Apre la schermata FXML indicata. */
     private void apriSchermata(String path, String titolo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));

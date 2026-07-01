@@ -9,15 +9,18 @@ import java.util.UUID;
 /**
  * Sequence: getIdContenuto → recuperaVisibilita(idContenuto)
  *           → aggiornaLivelloVisibilita(idContenuto, visibilita)
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class VisibilitaCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
+
     private EntityContenuto contenuto;
 
+    // ── Metodi ──────────────────
     public void setContenuto(EntityContenuto c) { this.contenuto = c; }
 
+    /** Restituisce id contenuto. */
     public UUID getIdContenuto() {
         return contenuto != null ? contenuto.getIdContenuto() : null;
     }

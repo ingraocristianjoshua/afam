@@ -19,10 +19,10 @@ import java.util.Map;
 
 /**
  * FormScadenzaBnd – form per impostare o rimuovere la scadenza di un link.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class FormScadenzaBnd {
 
+    // ── Campi ──────────────────
     @FXML private Label      labelToken;
     @FXML private Label      labelErrore;
     @FXML private DatePicker datePicker;
@@ -34,6 +34,7 @@ public class FormScadenzaBnd {
     private Map<String, Object> link;
     private Runnable onSuccesso;
 
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
         datePicker.setConverter(new StringConverter<>() {
@@ -46,11 +47,12 @@ public class FormScadenzaBnd {
         datePicker.setPromptText("gg/mm/aaaa");
     }
 
+    /** Imposta link. */
     public void setLink(Map<String, Object> l, Runnable onSuccesso) {
         this.link       = l;
         this.onSuccesso = onSuccesso;
-        String token = (String) l.getOrDefault("urlToken", "");
-        labelToken.setText("Token: " + (token.length() > 20 ? token.substring(0, 20) + "…" : token));
+        String idLink = String.valueOf(l.getOrDefault("idLink", ""));
+        labelToken.setText("Link: " + (idLink.length() > 20 ? idLink.substring(0, 20) + "…" : idLink));
         Object scad = l.get("scadenza");
         if (scad instanceof String s && !s.isBlank()) {
             try { datePicker.setValue(OffsetDateTime.parse(s).toLocalDate()); }
@@ -58,8 +60,10 @@ public class FormScadenzaBnd {
         }
     }
 
+    /** Imposta link. */
     public void setLink(Map<String, Object> l) { setLink(l, null); }
 
+    /** Gestisce l'azione «Salva». */
     @FXML
     public void onSalva() {
         if (link == null) return;
@@ -95,20 +99,24 @@ public class FormScadenzaBnd {
         }, "imposta-scadenza").start();
     }
 
+    /** Gestisce l'azione «Annulla». */
     @FXML
     public void onAnnulla() { chiudi(); }
 
+    /** Mostra il messaggio di errore indicato. */
     private void mostraErrore(String msg) {
         labelErrore.setText(msg);
         labelErrore.setVisible(true);
         labelErrore.setManaged(true);
     }
 
+    /** Nasconde il messaggio di errore. */
     private void nascondErrore() {
         labelErrore.setVisible(false);
         labelErrore.setManaged(false);
     }
 
+    /** Chiude la finestra corrente. */
     private void chiudi() {
         ((Stage) btnSalva.getScene().getWindow()).close();
     }

@@ -15,10 +15,10 @@ import java.util.Map;
 
 /**
  * ImpostaPasswordBnd – form per impostare la nuova password nel flusso di recupero.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class ImpostaPasswordBnd {
 
+    // ── Campi ──────────────────
     @FXML private PasswordField campoNuovaPassword;
     @FXML private Label         labelErrore;
 
@@ -28,12 +28,14 @@ public class ImpostaPasswordBnd {
     private String otp;
     private String scadenza;
 
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
         labelErrore.setVisible(false);
         labelErrore.setManaged(false);
     }
 
+    /** Configura. */
     public void configura(String email, String otp, String scadenza) {
         this.email    = email;
         this.otp      = otp;
@@ -49,6 +51,7 @@ public class ImpostaPasswordBnd {
         return dati;
     }
 
+    /** Gestisce l'azione «Conferma». */
     @FXML
     public void onConferma() {
         nascondErrore();
@@ -70,27 +73,32 @@ public class ImpostaPasswordBnd {
         }, "reimposta-password").start();
     }
 
+    /** Gestisce l'azione «Indietro». */
     @FXML
     public void onIndietro() {
         apriSchermata("/fxml/autenticati/AuthPage.fxml", "Benvenuto");
     }
 
+    /** Mostra il messaggio di errore indicato. */
     public void visualizzaErrore(String messaggio) {
         labelErrore.setText(messaggio);
         labelErrore.setVisible(true);
         labelErrore.setManaged(true);
     }
 
+    /** Nasconde il messaggio di errore. */
     private void nascondErrore() {
         labelErrore.setVisible(false);
         labelErrore.setManaged(false);
     }
 
+    /** Chiude la finestra corrente. */
     public void chiudi() {
         Stage stage = (Stage) campoNuovaPassword.getScene().getWindow();
         stage.close();
     }
 
+    /** Apre la schermata FXML indicata. */
     private void apriSchermata(String path, String titolo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));

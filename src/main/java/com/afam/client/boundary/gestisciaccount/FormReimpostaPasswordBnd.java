@@ -13,16 +13,17 @@ import java.util.Map;
 
 /**
  * FormReimpostaPasswordBnd – form cambio password per utente autenticato.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class FormReimpostaPasswordBnd {
 
+    // ── Campi ──────────────────
     @FXML private PasswordField campoVecchia;
     @FXML private PasswordField campoNuova;
     @FXML private Label         labelErrore;
 
     private final RestClient rest = RestClient.getInstance();
 
+    // ── Metodi ──────────────────
     @FXML public void initialize() {
         labelErrore.setVisible(false);
         labelErrore.setManaged(false);
@@ -35,6 +36,7 @@ public class FormReimpostaPasswordBnd {
         return d;
     }
 
+    /** Gestisce l'azione «Conferma». */
     @FXML
     public void onConferma() {
         labelErrore.setVisible(false);
@@ -57,11 +59,13 @@ public class FormReimpostaPasswordBnd {
 
     @FXML public void onAnnulla() { chiudi(); }
 
+    /** Mostra il messaggio di errore indicato. */
     public void mostraErrore(String msg) {
         labelErrore.setText(msg);
         labelErrore.setVisible(true);
         labelErrore.setManaged(true);
     }
 
+    /** Chiude la finestra corrente. */
     public void chiudi() { ((Stage) campoVecchia.getScene().getWindow()).close(); }
 }

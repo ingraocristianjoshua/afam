@@ -15,10 +15,10 @@ import java.util.UUID;
  *   verificaStatoEmail(statoEmail), generaOTP(otp), salvaCodiceOTP(otp, scadenza),
  *   inviaEmail(email, otp), verificaOTP(otp), recuperaOTP(), checkCurrentTime(),
  *   aggiornaStatoEmail(statoEmail)
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class ValidaEmailCtrl extends ValidaContattoCtrl {
 
+    // ── Campi ──────────────────
     private final MailServerBnd mail = MailServerBnd.getInstance();
 
     // ── Metodi esplicitamente nominati nel sequence diagram ───────────────────
@@ -27,6 +27,7 @@ public class ValidaEmailCtrl extends ValidaContattoCtrl {
         return db.recuperaEmail(idUtente);
     }
 
+    /** Recupera stato email. */
     public boolean recuperaStatoEmail(String email) {
         return db.recuperaStatoEmail(email);
     }
@@ -39,10 +40,12 @@ public class ValidaEmailCtrl extends ValidaContattoCtrl {
         return statoEmail; // true = già validata → skip
     }
 
+    /** Invia email. */
     public void inviaEmail(String email, String otp) {
         mail.inviaEmail(email, otp);
     }
 
+    /** Aggiorna stato email. */
     public void aggiornaStatoEmail(boolean statoEmail) {
         db.aggiornaStatoEmail(statoEmail);
     }
@@ -54,21 +57,25 @@ public class ValidaEmailCtrl extends ValidaContattoCtrl {
         return recuperaEmail(idUtente);
     }
 
+    /** Recupera stato. */
     @Override
     protected boolean recuperaStato(String email) {
         return recuperaStatoEmail(email);
     }
 
+    /** Verifica stato. */
     @Override
     protected boolean verificaStato(boolean stato) {
         return verificaStatoEmail(stato);
     }
 
+    /** Invia. */
     @Override
     protected void invia(String email, String otp) {
         inviaEmail(email, otp);
     }
 
+    /** Aggiorna stato. */
     @Override
     protected void aggiornaStato(boolean stato) {
         aggiornaStatoEmail(stato);

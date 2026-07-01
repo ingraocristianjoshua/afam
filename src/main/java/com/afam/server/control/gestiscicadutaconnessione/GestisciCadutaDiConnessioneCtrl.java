@@ -16,10 +16,10 @@ import java.util.logging.Logger;
  *   verificaStatoConnessione → [vero] → eseguiRipristino
  *
  * Non contiene logica di business: orchestra le control specializzate.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class GestisciCadutaDiConnessioneCtrl {
 
+    // ── Campi ──────────────────
     private static final Logger LOG = Logger.getLogger(
             GestisciCadutaDiConnessioneCtrl.class.getName());
 
@@ -29,6 +29,7 @@ public class GestisciCadutaDiConnessioneCtrl {
     private final NotificaErrCtrl        notificaCtrl = new NotificaErrCtrl();
     private final RipristinaDatiSessioneCtrl ripristinaCtrl = new RipristinaDatiSessioneCtrl();
 
+    // ── Metodi ──────────────────
     /** @return true se la connessione al DB è attiva. */
     public boolean verificaStatoConnessione() {
         return db.verificaStatoConnessione();
@@ -62,6 +63,8 @@ public class GestisciCadutaDiConnessioneCtrl {
         return ripristinaCtrl.eseguiRipristino();
     }
 
+    /** Has dati locali. */
     public boolean hasDatiLocali() { return !salvataggio.isCodaVuota(); }
+    /** Dimensione coda. */
     public int     dimensioneCoda() { return salvataggio.dimensioneCoda(); }
 }

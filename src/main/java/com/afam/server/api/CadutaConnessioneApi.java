@@ -18,13 +18,13 @@ import java.util.UUID;
  *   - verificare lo stato della connessione al DB
  *   - tentare il ripristino delle operazioni sospese
  *   - attivare il rollback in caso di connessione non recuperabile
- * @author Cristian Joshua Ingrao (0780672)
  */
 @Path("/sessione")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class CadutaConnessioneApi {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
 
     // ── Stato connessione ─────────────────────────────────────────────────────
@@ -123,6 +123,7 @@ public class CadutaConnessioneApi {
         }
     }
 
+    /** Ok. */
     private Response ok(Object data) {
         Map<String, Object> body = new HashMap<>();
         body.put("success", true);
@@ -130,6 +131,7 @@ public class CadutaConnessioneApi {
         return Response.ok(body).build();
     }
 
+    /** Server. */
     private Response server(String errore) {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(Map.of("success", false, "errore", errore != null ? errore : "Errore interno."))

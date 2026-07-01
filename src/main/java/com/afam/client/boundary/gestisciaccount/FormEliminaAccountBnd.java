@@ -12,21 +12,23 @@ import javafx.stage.Stage;
 import java.util.Map;
 
 /** FormEliminaAccountBnd – form conferma eliminazione account.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class FormEliminaAccountBnd {
 
+    // ── Campi ──────────────────
     @FXML private PasswordField campoPassword;
     @FXML private Label         labelErrore;
 
     private final RestClient rest = RestClient.getInstance();
 
+    // ── Metodi ──────────────────
     @FXML public void initialize() { labelErrore.setVisible(false); }
 
     public Map<String, Object> getDati() {
         return Map.of("password", campoPassword.getText());
     }
 
+    /** Gestisce l'azione «Elimina». */
     @FXML
     public void onElimina() {
         labelErrore.setVisible(false);
@@ -50,6 +52,8 @@ public class FormEliminaAccountBnd {
 
     @FXML public void onAnnulla() { chiudi(); }
 
+    /** Mostra il messaggio di errore indicato. */
     public void mostraErrore(String msg) { labelErrore.setText(msg); labelErrore.setVisible(true); }
+    /** Chiude la finestra corrente. */
     public void chiudi() { ((Stage) campoPassword.getScene().getWindow()).close(); }
 }

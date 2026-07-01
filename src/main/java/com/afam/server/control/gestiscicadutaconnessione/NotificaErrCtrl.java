@@ -8,13 +8,15 @@ import com.afam.server.dao.DBMSBnd;
  * Formatta il messaggio di errore da trasmettere al boundary client tramite
  * la risposta REST. La "notifica" in questo contesto è il payload JSON di errore;
  * la visualizzazione finale spetta al boundary (MessErrBnd côté client).
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class NotificaErrCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
+
     private String messaggioCorrente = "";
 
+    // ── Metodi ──────────────────
     /** Recupera il messaggio di errore più recente dal DB. */
     public String recuperaMessErrore() {
         messaggioCorrente = db.recuperaMessErrore();
@@ -30,5 +32,6 @@ public class NotificaErrCtrl {
         return "Errore di connessione: " + messaggio;
     }
 
+    /** Restituisce messaggio corrente. */
     public String getMessaggioCorrente() { return messaggioCorrente; }
 }

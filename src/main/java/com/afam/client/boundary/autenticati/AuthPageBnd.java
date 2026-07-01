@@ -20,16 +20,25 @@ import javafx.util.Duration;
 
 /**
  * AuthPageBnd – schermata di accesso iniziale.
- * Mostra i pulsanti: Accedi, Registrati, SPID (stub), eIDAS (stub).
+ * Mostra i pulsanti: Accedi, Registrati, Ospite e SPID/eIDAS (segnaposto:
+ * mostra solo un avviso, l'integrazione sarà aggiunta in futuro).
  * Non contiene logica di dominio: delega tutto al server via RestClient.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class AuthPageBnd {
 
+    // ── Campi ──────────────────
     @FXML private Label labelTitolo;
     @FXML private StackPane logoContainer;
     @FXML private Pane bgDecor;
 
+    /** Posizioni in frazione (x,y) delle emoji: distribuite sulle fasce laterali
+     *  così restano ben disposte a qualsiasi dimensione, anche a tutto schermo. */
+    private static final double[][] POS_SFONDO = {
+        {0.05, 0.10}, {0.11, 0.32}, {0.04, 0.55}, {0.09, 0.75}, {0.13, 0.90},
+        {0.91, 0.11}, {0.94, 0.33}, {0.87, 0.55}, {0.93, 0.75}, {0.86, 0.90}
+    };
+
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
         labelTitolo.setText("Alta Formazione Artistica, Musicale e Coreutica");
@@ -52,6 +61,28 @@ public class AuthPageBnd {
         fade.play();
 
         animaSfondo();
+
+        // Sfondo responsive: riposiziona le emoji ad ogni ridimensionamento
+        // (così a tutto schermo restano distribuite e non ammassate in un angolo).
+        if (bgDecor != null) {
+            bgDecor.widthProperty().addListener((o, a, b) -> posizionaSfondo());
+            bgDecor.heightProperty().addListener((o, a, b) -> posizionaSfondo());
+            javafx.application.Platform.runLater(this::posizionaSfondo);
+        }
+    }
+
+    /** Dispone le emoji in percentuale rispetto alla dimensione attuale del pannello. */
+    private void posizionaSfondo() {
+        if (bgDecor == null) return;
+        double w = bgDecor.getWidth(), h = bgDecor.getHeight();
+        if (w <= 0 || h <= 0) return;
+        int i = 0;
+        for (Node n : bgDecor.getChildren()) {
+            if (i >= POS_SFONDO.length) break;
+            n.setLayoutX(POS_SFONDO[i][0] * w);
+            n.setLayoutY(POS_SFONDO[i][1] * h);
+            i++;
+        }
     }
 
     /**
@@ -109,16 +140,17 @@ public class AuthPageBnd {
         apriSchermata("/fxml/autenticati/RegistratiForm.fxml", "Registrati");
     }
 
-    /** Integrazione SPID – non ancora disponibile. */
+    /** Integrazione SPID/eIDAS – funzionalità non ancora disponibile: mostra un avviso. */
     @FXML
     public void onSpid() {
-        MessSuccessoBnd.create("L'accesso con SPID/eIDAS sarà implementato in futuro.");
+        com.afam.client.boundary.dialog.MessAnnBnd.create(
+                "L'accesso con SPID / eIDAS non è ancora disponibile: sarà implementato in una versione futura.");
     }
 
     /** Entra come ospite: naviga alla ricerca studenti senza autenticazione. */
     @FXML
     public void onEntraComeOspite() {
-        apriSchermata("/fxml/visualizzaprofilocondiviso/FormRicercaStudente.fxml", "Ricerca studente");
+        apriSchermata("/fxml/visualizzaprofilocondiviso/FormRicercaStudente.fxml", "Visualizza Profilo Condiviso");
     }
 
     // ── Helper navigazione ────────────────────────────────────────────────────
@@ -138,6 +170,7 @@ public class AuthPageBnd {
         }
     }
 
+    /** Chiude la finestra corrente. */
     public void chiudi() {
         Stage stage = (Stage) labelTitolo.getScene().getWindow();
         stage.close();

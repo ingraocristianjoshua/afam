@@ -14,15 +14,16 @@ import java.util.Map;
  * Il metodo verificaStato2FA assicura che l'utente abbia sia un'email
  * sia un numero di telefono associati prima di abilitare il 2FA,
  * garantendo che il canale SMS sia disponibile.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class Gestione2FACtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
 
     private boolean valid        = true;
     private String  errorMessage = "";
 
+    // ── Metodi ──────────────────
     /** @return true se il 2FA è attualmente attivo per l'utente corrente. */
     public boolean recuperaStato2FA() {
         return db.recuperaStato2FA();
@@ -58,17 +59,35 @@ public class Gestione2FACtrl {
         return true;
     }
 
+    /**
+     * Verifica che, in fase di abilitazione, l'utente abbia SIA l'email SIA il
+     * numero di telefono già validati: condizione necessaria affinché il codice
+     * OTP possa essere recapitato in modo affidabile. In fase di disabilitazione
+     * non è richiesta alcuna validazione.
+     */
+    public boolean verificaContattiValidati(boolean abilita) {
+        if (abilita && !db.verificaContattiValidati()) {
+            return fail("Per abilitare il 2FA devi prima validare sia l'email sia il numero di telefono.");
+        }
+        return true;
+    }
+
+    /** Check valid. */
     public boolean checkValid() {
         if (!valid) throw new IllegalStateException(errorMessage);
         return true;
     }
 
+    /** Aggiorna stato2 fa. */
     public void aggiornaStato2FA(boolean stato2FA) {
         db.aggiornaStato2FA(stato2FA);
     }
 
+    /** Indica se valid. */
     public boolean isValid()         { return valid; }
+    /** Restituisce error message. */
     public String  getErrorMessage() { return errorMessage; }
 
+    /** Fail. */
     private boolean fail(String msg) { valid = false; errorMessage = msg; return false; }
 }

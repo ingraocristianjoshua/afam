@@ -21,10 +21,10 @@ import java.util.Map;
 
 /**
  * RegistratiFormBnd – form di registrazione nuovo account.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class RegistratiFormBnd {
 
+    // ── Campi ──────────────────
     @FXML private TextField     campoNome;
     @FXML private TextField     campoCognome;
     @FXML private DatePicker    campoDataNascita;
@@ -38,6 +38,7 @@ public class RegistratiFormBnd {
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final RestClient rest = RestClient.getInstance();
 
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
         labelErrore.setVisible(false);
@@ -64,6 +65,7 @@ public class RegistratiFormBnd {
         return dati;
     }
 
+    /** Gestisce l'azione «Registrati». */
     @FXML
     public void onRegistrati() {
         nascondErrore();
@@ -96,27 +98,32 @@ public class RegistratiFormBnd {
         }, "registra").start();
     }
 
+    /** Gestisce l'azione «Indietro». */
     @FXML
     public void onIndietro() {
         apriSchermata("/fxml/autenticati/AuthPage.fxml", "Benvenuto");
     }
 
+    /** Mostra il messaggio di errore indicato. */
     public void visualizzaErrore(String messaggio) {
         labelErrore.setText(messaggio);
         labelErrore.setVisible(true);
         labelErrore.setManaged(true);
     }
 
+    /** Nasconde il messaggio di errore. */
     private void nascondErrore() {
         labelErrore.setVisible(false);
         labelErrore.setManaged(false);
     }
 
+    /** Chiude la finestra corrente. */
     public void chiudi() {
         Stage stage = (Stage) campoEmail.getScene().getWindow();
         stage.close();
     }
 
+    /** Apre la schermata FXML indicata. */
     private void apriSchermata(String path, String titolo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));

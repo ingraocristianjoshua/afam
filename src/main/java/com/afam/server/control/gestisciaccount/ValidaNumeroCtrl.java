@@ -15,10 +15,10 @@ import java.util.UUID;
  *   verificaStatoNumero(statoNumero), generaOTP(otp), salvaCodiceOTP(otp, scadenza),
  *   inviaNumero(numero, otp), verificaOTP(otp), recuperaOTP(), checkCurrentTime(),
  *   aggiornaStatoNumero(statoNumero)
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class ValidaNumeroCtrl extends ValidaContattoCtrl {
 
+    // ── Campi ──────────────────
     private final MailServerBnd mail = MailServerBnd.getInstance();
 
     // ── Metodi esplicitamente nominati nel sequence diagram ───────────────────
@@ -27,6 +27,7 @@ public class ValidaNumeroCtrl extends ValidaContattoCtrl {
         return db.recuperaNumTelefono(idUtente);
     }
 
+    /** Recupera stato numero. */
     public boolean recuperaStatoNumero(String numero) {
         return db.recuperaStatoNumero(numero);
     }
@@ -39,10 +40,12 @@ public class ValidaNumeroCtrl extends ValidaContattoCtrl {
         return statoNumero;
     }
 
+    /** Invia numero. */
     public void inviaNumero(String numero, String otp) {
         mail.inviaNumero(numero, otp);
     }
 
+    /** Aggiorna stato numero. */
     public void aggiornaStatoNumero(boolean statoNumero) {
         db.aggiornaStatoNumero(statoNumero);
     }
@@ -54,21 +57,25 @@ public class ValidaNumeroCtrl extends ValidaContattoCtrl {
         return recuperaNumTelefono(idUtente);
     }
 
+    /** Recupera stato. */
     @Override
     protected boolean recuperaStato(String numero) {
         return recuperaStatoNumero(numero);
     }
 
+    /** Verifica stato. */
     @Override
     protected boolean verificaStato(boolean stato) {
         return verificaStatoNumero(stato);
     }
 
+    /** Invia. */
     @Override
     protected void invia(String numero, String otp) {
         inviaNumero(numero, otp);
     }
 
+    /** Aggiorna stato. */
     @Override
     protected void aggiornaStato(boolean stato) {
         aggiornaStatoNumero(stato);

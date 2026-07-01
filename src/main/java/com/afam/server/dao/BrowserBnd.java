@@ -8,14 +8,15 @@ import java.util.logging.Logger;
  * BrowserBnd – Façade verso il browser di sistema.
  * Usato da AccediTramiteLinkCtrl per aprire il portfolio condiviso
  * nel browser predefinito del sistema operativo.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class BrowserBnd {
 
+    // ── Campi ──────────────────
     private static final Logger LOG = Logger.getLogger(BrowserBnd.class.getName());
 
     private static volatile BrowserBnd instance;
 
+    // ── Metodi ──────────────────
     public static BrowserBnd getInstance() {
         if (instance == null) {
             synchronized (BrowserBnd.class) {
@@ -25,6 +26,7 @@ public class BrowserBnd {
         return instance;
     }
 
+    // ── Costruttori ──────────────────
     private BrowserBnd() {}
 
     /**

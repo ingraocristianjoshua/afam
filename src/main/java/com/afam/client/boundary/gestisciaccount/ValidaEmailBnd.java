@@ -13,10 +13,10 @@ import java.util.Map;
 /**
  * ValidaEmailBnd – invia OTP all'email e verifica il codice.
  * Riutilizza FormOTPBnd internamente (apre la schermata OTP con il contesto email).
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class ValidaEmailBnd {
 
+    // ── Campi ──────────────────
     @FXML private Label     labelInfo;
     @FXML private TextField campoOTP;
     @FXML private Label     labelErrore;
@@ -24,12 +24,14 @@ public class ValidaEmailBnd {
     private final RestClient rest = RestClient.getInstance();
     private String scadenzaOTP;
 
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
         labelErrore.setVisible(false);
         richiediOTP();
     }
 
+    /** Richiede al server l'invio di un nuovo codice OTP. */
     private void richiediOTP() {
         try {
             Map<String, Object> resp = rest.post("account/valida-email/richiedi", Map.of());
@@ -48,6 +50,7 @@ public class ValidaEmailBnd {
         return Map.of("otp", campoOTP.getText().trim());
     }
 
+    /** Gestisce l'azione «Verifica». */
     @FXML
     public void onVerifica() {
         labelErrore.setVisible(false);
@@ -60,6 +63,7 @@ public class ValidaEmailBnd {
         }
     }
 
+    /** Gestisce l'azione «Invia Di Nuovo». */
     @FXML
     public void onInviaDiNuovo() {
         campoOTP.clear();
@@ -68,6 +72,8 @@ public class ValidaEmailBnd {
 
     @FXML public void onAnnulla() { chiudi(); }
 
+    /** Mostra il messaggio di errore indicato. */
     public void mostraErrore(String msg) { labelErrore.setText(msg); labelErrore.setVisible(true); }
+    /** Chiude la finestra corrente. */
     public void chiudi() { ((Stage) campoOTP.getScene().getWindow()).close(); }
 }

@@ -8,17 +8,16 @@ import java.util.UUID;
  * Entity che rappresenta un portfolio di uno studente AFAM.
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-/**
- * @author Cristian Joshua Ingrao (0780672)
- */
 public class EntityPortfolio {
 
+    // ── Campi ──────────────────
     private UUID           idPortfolio;
     private String         nome;
     private OffsetDateTime dataCreazione;
     private int            numeroVisualizzazioni;
     private UUID           idUtente;
 
+    // ── Costruttori ──────────────────
     public EntityPortfolio() {}
 
     public EntityPortfolio(UUID idPortfolio, String nome,
@@ -38,7 +37,10 @@ public class EntityPortfolio {
     // ── getter aggiuntivi ─────────────────────────────────────────────────────
 
     public String         getNome()                  { return nome; }
+    /** Restituisce data creazione. */
     public OffsetDateTime getDataCreazione()          { return dataCreazione; }
+    /** Restituisce numero visualizzazioni. */
     public int            getNumeroVisualizzazioni()  { return numeroVisualizzazioni; }
+    /** Restituisce id utente. */
     public UUID           getIdUtente()               { return idUtente; }
 }

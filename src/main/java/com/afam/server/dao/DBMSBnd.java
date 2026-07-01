@@ -31,16 +31,17 @@ import java.util.logging.Logger;
  *  – recuperaRaccolta(UUID) accetta sia idRaccolta sia idPortfolio:
  *    usare recuperaRaccolta(idRaccolta) per id diretto,
  *    recuperaRaccolte(idPortfolio) per lista, come da spec.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class DBMSBnd {
 
+    // ── Campi ──────────────────
     private static final Logger LOG = Logger.getLogger(DBMSBnd.class.getName());
 
     // ── Singleton ─────────────────────────────────────────────────────────────
 
     private static volatile DBMSBnd instance;
 
+    /** Restituisce instance. */
     public static DBMSBnd getInstance() {
         if (instance == null) {
             synchronized (DBMSBnd.class) {
@@ -66,11 +67,13 @@ public class DBMSBnd {
     /** Mappa temporanea nuova-email in attesa di conferma OTP: idUtente → nuovaEmail. */
     private final Map<UUID, String> nuoveEmailInAttesa = new HashMap<>();
 
+    // ── Costruttori ──────────────────
     private DBMSBnd() {
         loadConfig();
         connect();
     }
 
+    /** Load config. */
     private void loadConfig() {
         try (InputStream in = getClass().getClassLoader()
                 .getResourceAsStream("config.properties")) {
@@ -87,6 +90,7 @@ public class DBMSBnd {
         }
     }
 
+    /** Connect. */
     private void connect() {
         try {
             conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
@@ -192,26 +196,6 @@ public class DBMSBnd {
         return null;
     }
 
-    /**
-     * Associa i dati dell'identity provider (SPID/eIDAS) a un utente esistente.
-     * data deve contenere: email (chiave di ricerca), più campi da aggiornare.
-     */
-    public void associaDati(Map<String, Object> data) {
-        String sql = """
-            UPDATE utente SET nome = ?, cognome = ?
-            WHERE email = ?
-            """;
-        try (PreparedStatement ps = getConn().prepareStatement(sql)) {
-            ps.setString(1, (String) data.get("nome"));
-            ps.setString(2, (String) data.get("cognome"));
-            ps.setString(3, (String) data.get("email"));
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            lastError = e.getMessage();
-            throw new RuntimeException("associaDati: " + e.getMessage(), e);
-        }
-    }
-
     /** @return true se esiste un utente con questa email. */
     public boolean verificaEmailAssociata(String email) {
         return countWhere("utente", "email", email) > 0;
@@ -266,10 +250,12 @@ public class DBMSBnd {
         return Constants.SESSIONE_CHIUSA;
     }
 
+    /** Aggiorna stato sessione. */
     public void aggiornaStatoSessione(String stato) {
         update("utente", "stato_sessione", stato, "id_utente", currentUserId);
     }
 
+    /** Recupera email. */
     public String recuperaEmail(UUID idUtente) {
         return selectString("utente", "email", "id_utente", idUtente);
     }
@@ -308,6 +294,7 @@ public class DBMSBnd {
         return verificaVecchiaPassword(password);
     }
 
+    /** Elimina utente. */
     public void eliminaUtente(UUID idUtente) {
         delete("utente", "id_utente", idUtente);
     }
@@ -344,6 +331,27 @@ public class DBMSBnd {
         return false;
     }
 
+    /**
+     * Verifica che l'utente corrente abbia SIA l'email SIA il numero di telefono
+     * validati: condizione necessaria per abilitare il 2FA, così che l'OTP possa
+     * essere recapitato in modo affidabile.
+     */
+    public boolean verificaContattiValidati() {
+        String sql = "SELECT email_validata, numero_validato FROM utente WHERE id_utente = ?";
+        try (PreparedStatement ps = getConn().prepareStatement(sql)) {
+            ps.setObject(1, currentUserId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBoolean("email_validata") && rs.getBoolean("numero_validato");
+                }
+            }
+        } catch (SQLException e) {
+            lastError = e.getMessage();
+        }
+        return false;
+    }
+
+    /** Aggiorna stato2 fa. */
     public void aggiornaStato2FA(boolean stato2FA) {
         String sql = "UPDATE utente SET stato_2fa = ? WHERE id_utente = ?";
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
@@ -356,6 +364,7 @@ public class DBMSBnd {
         }
     }
 
+    /** Recupera num telefono. */
     public String recuperaNumTelefono(UUID idUtente) {
         return selectString("utente", "numero_telefono", "id_utente", idUtente);
     }
@@ -374,6 +383,7 @@ public class DBMSBnd {
         return false;
     }
 
+    /** Aggiorna stato numero. */
     public void aggiornaStatoNumero(boolean statoNumero) {
         String sql = "UPDATE utente SET numero_validato = ? WHERE id_utente = ?";
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
@@ -400,6 +410,7 @@ public class DBMSBnd {
         return false;
     }
 
+    /** Aggiorna stato email. */
     public void aggiornaStatoEmail(boolean statoEmail) {
         String sql = "UPDATE utente SET email_validata = ? WHERE id_utente = ?";
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
@@ -412,6 +423,7 @@ public class DBMSBnd {
         }
     }
 
+    /** Aggiorna email. */
     public void aggiornaEmail(String nuovaEmail) {
         String sql = "UPDATE utente SET email = ? WHERE id_utente = ?";
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
@@ -491,6 +503,7 @@ public class DBMSBnd {
         }
     }
 
+    /** Salva raccolta. */
     public void salvaRaccolta(UUID idRaccolta, String nomeRaccolta) {
         // La raccolta deve essere associata a un portfolio: il chiamante
         // deve aver impostato currentPortfolioId o passarlo implicitamente.
@@ -514,18 +527,22 @@ public class DBMSBnd {
     /** Id del portfolio su cui operano i metodi raccolta che non lo ricevono esplicitamente. */
     private UUID currentPortfolioId;
 
+    // ── Metodi ──────────────────
     public void setCurrentPortfolio(UUID idPortfolio) {
         this.currentPortfolioId = idPortfolio;
     }
 
+    /** Elimina portfolio. */
     public void eliminaPortfolio(UUID idPortfolio) {
         delete("portfolio", "id_portfolio", idPortfolio);
     }
 
+    /** Elimina raccolta. */
     public void eliminaRaccolta(UUID idRaccolta) {
         delete("raccolta", "id_raccolta", idRaccolta);
     }
 
+    /** Recupera portfolio. */
     public EntityPortfolio recuperaPortfolio(UUID idPortfolio) {
         String sql = "SELECT * FROM portfolio WHERE id_portfolio = ?";
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
@@ -565,6 +582,7 @@ public class DBMSBnd {
         return queryList(sql, idPortfolio, this::mapRaccolta);
     }
 
+    /** Recupera contenuto. */
     public EntityContenuto recuperaContenuto(UUID idContenuto) {
         String sql = "SELECT * FROM contenuto WHERE id_contenuto = ?";
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
@@ -595,13 +613,20 @@ public class DBMSBnd {
         return queryList(sql, idPortfolio, this::mapContenuto);
     }
 
-    /** Restituisce i contenuti di una raccolta. */
+    /**
+     * Restituisce i contenuti di una raccolta, ordinati per la posizione che i
+     * contenuti hanno nel portfolio: così "sposta su/giù" (che agisce sulla
+     * posizione in portfolio_contenuto) si riflette nell'ordine della raccolta.
+     */
     public List<EntityContenuto> recuperaContenutiRaccolta(UUID idRaccolta) {
         String sql = """
             SELECT c.* FROM contenuto c
             JOIN raccolta_contenuto rc ON c.id_contenuto = rc.id_contenuto
+            JOIN raccolta r            ON r.id_raccolta  = rc.id_raccolta
+            LEFT JOIN portfolio_contenuto pc
+                   ON pc.id_portfolio = r.id_portfolio AND pc.id_contenuto = c.id_contenuto
             WHERE rc.id_raccolta = ?
-            ORDER BY c.titolo
+            ORDER BY pc.posizione NULLS LAST, c.titolo
             """;
         return queryList(sql, idRaccolta, this::mapContenuto);
     }
@@ -675,6 +700,7 @@ public class DBMSBnd {
         }
     }
 
+    /** Aggiorna nome raccolta. */
     public void aggiornaNomeRaccolta(EntityRaccolta raccolta, String nomeRaccolta) {
         String sql = "UPDATE raccolta SET nome = ? WHERE id_raccolta = ?";
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
@@ -754,6 +780,7 @@ public class DBMSBnd {
         }
     }
 
+    /** Elimina contenuto. */
     public void eliminaContenuto(UUID idContenuto) {
         delete("contenuto", "id_contenuto", idContenuto);
     }
@@ -781,6 +808,7 @@ public class DBMSBnd {
         }
     }
 
+    /** Recupera visibilita. */
     public String recuperaVisibilita(UUID idContenuto) {
         return selectString("contenuto", "visibilita", "id_contenuto", idContenuto);
     }
@@ -801,6 +829,7 @@ public class DBMSBnd {
         }
     }
 
+    /** Recupera posizione. */
     public int recuperaPosizione(UUID idPortfolio, EntityContenuto contenuto) {
         String sql = "SELECT posizione FROM portfolio_contenuto WHERE id_portfolio=? AND id_contenuto=?";
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
@@ -859,6 +888,7 @@ public class DBMSBnd {
         return recuperaUtente(idUtente);
     }
 
+    /** Recupera elenco studenti. */
     public List<EntityUtente> recuperaElencoStudenti(String nomeUtente) {
         String sql = """
             SELECT * FROM utente
@@ -876,6 +906,7 @@ public class DBMSBnd {
         return Collections.emptyList();
     }
 
+    /** Recupera elenco studenti. */
     public List<EntityUtente> recuperaElencoStudenti() {
         String sql = "SELECT * FROM utente ORDER BY cognome, nome";
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
@@ -886,6 +917,7 @@ public class DBMSBnd {
         return Collections.emptyList();
     }
 
+    /** Recupera utente. */
     public EntityUtente recuperaUtente(UUID idUtente) {
         String sql = "SELECT * FROM utente WHERE id_utente = ?";
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
@@ -899,11 +931,13 @@ public class DBMSBnd {
         return null;
     }
 
+    /** Recupera elenco portfoli. */
     public List<EntityPortfolio> recuperaElencoPortfoli(UUID idUtente) {
         String sql = "SELECT * FROM portfolio WHERE id_utente = ? ORDER BY data_creazione";
         return queryList(sql, idUtente, this::mapPortfolio);
     }
 
+    /** Recupera visualizzazioni. */
     public int recuperaVisualizzazioni(UUID idPortfolio) {
         String sql = "SELECT numero_visualizzazioni FROM portfolio WHERE id_portfolio = ?";
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
@@ -994,17 +1028,16 @@ public class DBMSBnd {
             conn.setAutoCommit(false);
             String insLink = """
                 INSERT INTO link
-                  (id_link, url_token, scadenza, stato, flag_aperto, visibilita, id_utente)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                  (id_link, scadenza, stato, flag_aperto, visibilita, id_utente)
+                VALUES (?, ?, ?, ?, ?, ?)
                 """;
             try (PreparedStatement ps = getConn().prepareStatement(insLink)) {
                 ps.setObject(1, link.getIdLink());
-                ps.setString(2, link.getLink());
-                ps.setObject(3, link.getScadenza());
-                ps.setString(4, link.getStato() != null ? link.getStato() : Constants.LINK_ATTIVO);
-                ps.setBoolean(5, link.isFlagAperto());
-                ps.setString(6, link.getVisibilita() != null ? link.getVisibilita() : Constants.VIS_PRIVATO);
-                ps.setObject(7, link.getIdUtente());
+                ps.setObject(2, link.getScadenza());
+                ps.setString(3, link.getStato() != null ? link.getStato() : Constants.LINK_ATTIVO);
+                ps.setBoolean(4, link.isFlagAperto());
+                ps.setString(5, link.getVisibilita() != null ? link.getVisibilita() : Constants.VIS_PRIVATO);
+                ps.setObject(6, link.getIdUtente());
                 ps.executeUpdate();
             }
             String insPonte = "INSERT INTO link_portfolio (id_link, id_portfolio) VALUES (?, ?)";
@@ -1042,18 +1075,18 @@ public class DBMSBnd {
     }
 
     /**
-     * Recupera un link per url_token (accesso pubblico — non richiede currentUserId).
+     * Recupera un link per id_link (accesso pubblico — non richiede currentUserId).
      * Usato da AccediTramiteLinkCtrl tramite ProfiloCondivisoApi.
      */
-    public EntityLink recuperaLinkByToken(String urlToken) {
+    public EntityLink recuperaLinkById(UUID idLink) {
         String sql = """
             SELECT l.*, lp.id_portfolio
             FROM link l
             LEFT JOIN link_portfolio lp ON l.id_link = lp.id_link
-            WHERE l.url_token = ?
+            WHERE l.id_link = ?
             """;
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
-            ps.setString(1, urlToken);
+            ps.setObject(1, idLink);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return mapLink(rs);
             }
@@ -1097,6 +1130,7 @@ public class DBMSBnd {
         }
     }
 
+    /** Recupera scadenza. */
     public OffsetDateTime recuperaScadenza(UUID idLink) {
         String sql = "SELECT scadenza FROM link WHERE id_link = ?";
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
@@ -1129,6 +1163,7 @@ public class DBMSBnd {
         }
     }
 
+    /** Recupera visibilita link. */
     public String recuperaVisibilitaLink(UUID idLink) {
         return selectString("link", "visibilita", "id_link", idLink);
     }
@@ -1169,6 +1204,7 @@ public class DBMSBnd {
         return false;
     }
 
+    /** Restituisce id portfolio. */
     public UUID getIdPortfolio(UUID idLink) {
         String sql = "SELECT id_portfolio FROM link_portfolio WHERE id_link = ?";
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
@@ -1202,6 +1238,7 @@ public class DBMSBnd {
         LOG.info("inviaDatiAttuali: sincronizzazione " + data.size() + " operazioni");
     }
 
+    /** Recupera mess errore. */
     public String recuperaMessErrore() {
         return lastError;
     }
@@ -1259,6 +1296,7 @@ public class DBMSBnd {
         return list;
     }
 
+    /** Count where. */
     private int countWhere(String table, String col, String val) {
         String sql = "SELECT COUNT(*) FROM " + table + " WHERE " + col + " = ?";
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
@@ -1272,6 +1310,7 @@ public class DBMSBnd {
         return 0;
     }
 
+    /** Select string. */
     private String selectString(String table, String col, String whereCol, Object whereVal) {
         String sql = "SELECT " + col + " FROM " + table + " WHERE " + whereCol + " = ?";
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
@@ -1285,6 +1324,7 @@ public class DBMSBnd {
         return null;
     }
 
+    /** Update. */
     private void update(String table, String col, Object val, String whereCol, Object whereVal) {
         String sql = "UPDATE " + table + " SET " + col + " = ? WHERE " + whereCol + " = ?";
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
@@ -1297,6 +1337,7 @@ public class DBMSBnd {
         }
     }
 
+    /** Delete. */
     private void delete(String table, String col, UUID id) {
         String sql = "DELETE FROM " + table + " WHERE " + col + " = ?";
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
@@ -1327,6 +1368,7 @@ public class DBMSBnd {
         );
     }
 
+    /** Map portfolio. */
     private EntityPortfolio mapPortfolio(ResultSet rs) throws SQLException {
         Timestamp ts = rs.getTimestamp("data_creazione");
         return new EntityPortfolio(
@@ -1338,6 +1380,7 @@ public class DBMSBnd {
         );
     }
 
+    /** Map raccolta. */
     private EntityRaccolta mapRaccolta(ResultSet rs) throws SQLException {
         return new EntityRaccolta(
             rs.getObject("id_raccolta", UUID.class),
@@ -1347,6 +1390,7 @@ public class DBMSBnd {
         );
     }
 
+    /** Map contenuto. */
     private EntityContenuto mapContenuto(ResultSet rs) throws SQLException {
         return new EntityContenuto(
             rs.getObject("id_contenuto", UUID.class),
@@ -1359,13 +1403,13 @@ public class DBMSBnd {
         );
     }
 
+    /** Map link. */
     private EntityLink mapLink(ResultSet rs) throws SQLException {
         Timestamp ts = rs.getTimestamp("scadenza");
         UUID idPortfolio = null;
         try { idPortfolio = rs.getObject("id_portfolio", UUID.class); } catch (SQLException ignored) {}
         return new EntityLink(
             rs.getObject("id_link", UUID.class),
-            rs.getString("url_token"),
             ts != null ? ts.toInstant().atOffset(java.time.ZoneOffset.UTC) : null,
             rs.getString("stato"),
             rs.getBoolean("flag_aperto"),

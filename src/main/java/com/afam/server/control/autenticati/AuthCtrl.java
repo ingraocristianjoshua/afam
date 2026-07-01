@@ -18,10 +18,10 @@ import java.util.UUID;
  *                  → checkValid → generaIdUtente → creaAccount
  *
  * Istanza per-richiesta (stateful per la durata della singola chiamata REST).
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class AuthCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
 
     // stato interno accumulato da verificaDati / isMailInUse
@@ -33,21 +33,6 @@ public class AuthCtrl {
     private UUID         idUtente;
 
     // ── FLUSSO LOGIN ──────────────────────────────────────────────────────────
-
-    /**
-     * Seleziona l'identity provider (SPID / eIDAS).
-     * Implementato solo fino al pulsante come da spec: apre il browser
-     * verso il provider ma non completa la verifica certificato.
-     */
-    public void selezionaIDProvider(String identityProvider) {
-        com.afam.server.dao.BrowserBnd.getInstance()
-                .richiediBrowser("https://www.agid.gov.it/it/piattaforme/spid");
-    }
-
-    /** Stub per autenticazione con certificato SPID/eIDAS. */
-    public void inserisciCredenzialiCertificate(Map<String, Object> data) {
-        // In produzione: redirect al provider e gestione asserzione SAML/OIDC.
-    }
 
     /**
      * Valida i dati del form.
@@ -85,22 +70,12 @@ public class AuthCtrl {
         return true;
     }
 
-    /** Associa i dati dell'identity provider a un account esistente. */
-    public void associaDati(Map<String, Object> data) {
-        db.associaDati(data);
-    }
-
     /**
      * Lancia {@link IllegalStateException} se verificaDati o isMailInUse hanno fallito.
      */
     public boolean checkValid() {
         if (!valid) throw new IllegalStateException(errorMessage);
         return true;
-    }
-
-    /** Crea account per flusso SPID/eIDAS (id generato internamente). */
-    public void creaAccount(Map<String, Object> data) {
-        creaAccount(data, UUID.randomUUID());
     }
 
     /**
@@ -158,8 +133,11 @@ public class AuthCtrl {
     // ── Getter per AuthApi ────────────────────────────────────────────────────
 
     public EntityUtente getEntityUtente()  { return entityUtente; }
+    /** Restituisce id utente. */
     public UUID         getIdUtente()      { return idUtente; }
+    /** Indica se valid. */
     public boolean      isValid()          { return valid; }
+    /** Restituisce error message. */
     public String       getErrorMessage()  { return errorMessage; }
 
     // ── Helper privato ────────────────────────────────────────────────────────

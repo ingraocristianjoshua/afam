@@ -21,10 +21,10 @@ import java.util.Map;
 /**
  * VisualizzaProfiloBnd – profilo pubblico dello studente con lista portfolio.
  * Ogni riga ha nome+email e pulsante verde VISUALIZZA PROFILO, come da mockup.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class VisualizzaProfiloBnd {
 
+    // ── Campi ──────────────────
     @FXML private Label labelNome;
     @FXML private Label labelEmail;
     @FXML private VBox  boxPortfolio;
@@ -32,6 +32,7 @@ public class VisualizzaProfiloBnd {
     private final RestClient rest = RestClient.getInstance();
     private Map<String, Object> studente;
 
+    // ── Metodi ──────────────────
     public void setStudente(Map<String, Object> s) {
         this.studente = s;
         String nome = s.getOrDefault("cognome", "") + " " + s.getOrDefault("nome", "");
@@ -40,6 +41,7 @@ public class VisualizzaProfiloBnd {
         new Thread(this::caricaPortfolio, "carica-portfolio-pubblico").start();
     }
 
+    /** Carica portfolio. */
     @SuppressWarnings("unchecked")
     private void caricaPortfolio() {
         if (studente == null) return;
@@ -65,6 +67,7 @@ public class VisualizzaProfiloBnd {
         }
     }
 
+    /** Crea riga. */
     private HBox creaRiga(Map<String, Object> p) {
         HBox row = new HBox(10);
         row.setAlignment(Pos.CENTER_LEFT);
@@ -88,6 +91,7 @@ public class VisualizzaProfiloBnd {
         return row;
     }
 
+    /** Apri portfolio. */
     private void apriPortfolio(Map<String, Object> p) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
@@ -105,6 +109,7 @@ public class VisualizzaProfiloBnd {
         }
     }
 
+    /** Gestisce l'azione «Cerca Studenti». */
     @FXML
     public void onCercaStudenti() {
         try {
@@ -121,6 +126,7 @@ public class VisualizzaProfiloBnd {
         }
     }
 
+    /** Chiude la finestra corrente. */
     @FXML
     public void chiudi() {
         Stage stage = (Stage) boxPortfolio.getScene().getWindow();

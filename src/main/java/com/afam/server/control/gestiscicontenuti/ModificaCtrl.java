@@ -15,24 +15,29 @@ import java.util.UUID;
  * verificaNome = verifica formato (regex)
  * isNomeInUso  = verifica unicità per l'utente corrente (DB)
  * Mantenuti distinti come da spec (non unificati).
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class ModificaCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
+
     private boolean valid = true;
     private String  errorMessage = "";
 
     private EntityContenuto contenuto;
     private String          nuovoTitolo;
 
+    // ── Metodi ──────────────────
     public void setContenuto(EntityContenuto c)  { this.contenuto    = c; }
+    /** Imposta nuovo titolo. */
     public void setNuovoTitolo(String titolo)     { this.nuovoTitolo = titolo; }
 
+    /** Restituisce id contenuto. */
     public UUID getIdContenuto() {
         return contenuto != null ? contenuto.getIdContenuto() : null;
     }
 
+    /** Recupera contenuto. */
     public EntityContenuto recuperaContenuto(UUID idContenuto) {
         contenuto = db.recuperaContenuto(idContenuto);
         return contenuto;
@@ -61,6 +66,7 @@ public class ModificaCtrl {
         return false;
     }
 
+    /** Check valid. */
     public boolean checkValid() {
         if (!valid) throw new IllegalStateException(errorMessage);
         return true;
@@ -74,9 +80,13 @@ public class ModificaCtrl {
         db.aggiornaDati(contenuto);
     }
 
+    /** Restituisce contenuto. */
     public EntityContenuto getContenuto() { return contenuto; }
+    /** Indica se valid. */
     public boolean isValid()              { return valid; }
+    /** Restituisce error message. */
     public String  getErrorMessage()      { return errorMessage; }
 
+    /** Fail. */
     private boolean fail(String msg) { valid = false; errorMessage = msg; return false; }
 }

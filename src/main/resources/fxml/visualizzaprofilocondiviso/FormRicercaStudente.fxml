@@ -11,16 +11,13 @@
     <top>
         <VBox styleClass="header-bar" spacing="10">
             <padding><Insets top="16" right="24" bottom="16" left="24"/></padding>
-            <Label text="Esplora profili AFAM" styleClass="label-title"
+            <Label text="Visualizza Profilo Condiviso" styleClass="label-title"
                    style="-fx-text-fill: white; -fx-font-size: 20px;"/>
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <TextField fx:id="fieldNome" promptText="Cerca per nome o cognome…"
                            HBox.hgrow="ALWAYS" styleClass="text-field"
                            onAction="#onCerca"/>
                 <Button text="CERCA"            onAction="#onCerca"    styleClass="button-primary"/>
-                <Button text="ACCEDI CON LINK"  onAction="#onAccediTramiteLink"
-                        style="-fx-background-color: #27ae60; -fx-text-fill: white;
-                               -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 14;"/>
             </HBox>
         </VBox>
     </top>

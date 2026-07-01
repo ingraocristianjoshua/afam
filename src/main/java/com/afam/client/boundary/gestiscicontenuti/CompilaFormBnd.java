@@ -17,10 +17,10 @@ import java.util.Map;
  * CompilaFormBnd – form per il caricamento di un nuovo contenuto.
  * L'utente seleziona un file locale; il client legge i metadati e li invia al server.
  * Il file fisico resta localmente (o è gestito da un sistema di storage esterno).
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class CompilaFormBnd {
 
+    // ── Campi ──────────────────
     @FXML private TextField        fieldTitolo;
     @FXML private TextField        labelFile;
     @FXML private ComboBox<String> comboVisibilita;
@@ -28,6 +28,7 @@ public class CompilaFormBnd {
     private final RestClient rest = RestClient.getInstance();
     private File fileScelto;
 
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
         comboVisibilita.getItems().addAll(
@@ -35,6 +36,7 @@ public class CompilaFormBnd {
         comboVisibilita.setValue(Constants.VIS_PRIVATO);
     }
 
+    /** Gestisce l'azione «Sfoglia». */
     @FXML
     public void onSfoglia() {
         FileChooser fc = new FileChooser();
@@ -51,6 +53,7 @@ public class CompilaFormBnd {
         }
     }
 
+    /** Gestisce l'azione «Carica». */
     @FXML
     public void onCarica() {
         if (fileScelto == null) { MessErrBnd.create("Seleziona un file."); return; }
@@ -76,9 +79,11 @@ public class CompilaFormBnd {
         }
     }
 
+    /** Gestisce l'azione «Annulla». */
     @FXML
     public void onAnnulla() { chiudi(); }
 
+    /** Chiude la finestra corrente. */
     private void chiudi() {
         Stage stage = (Stage) fieldTitolo.getScene().getWindow();
         stage.close();

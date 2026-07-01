@@ -13,21 +13,23 @@ import java.util.Map;
 
 /**
  * InserisciEmailBnd – form per la richiesta di recupero password.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class InserisciEmailBnd {
 
+    // ── Campi ──────────────────
     @FXML private TextField campoEmail;
     @FXML private Label     labelErrore;
 
     private final RestClient rest = RestClient.getInstance();
 
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
         labelErrore.setVisible(false);
         labelErrore.setManaged(false);
     }
 
+    /** Gestisce l'azione «Invia OTP». */
     @FXML
     public void onInviaOTP() {
         nascondErrore();
@@ -48,27 +50,32 @@ public class InserisciEmailBnd {
         }, "richiedi-otp").start();
     }
 
+    /** Gestisce l'azione «Indietro». */
     @FXML
     public void onIndietro() {
         apriSchermata("/fxml/autenticati/AccediForm.fxml", "Accedi");
     }
 
+    /** Mostra il messaggio di errore indicato. */
     public void visualizzaErrore(String messaggio) {
         labelErrore.setText(messaggio);
         labelErrore.setVisible(true);
         labelErrore.setManaged(true);
     }
 
+    /** Nasconde il messaggio di errore. */
     private void nascondErrore() {
         labelErrore.setVisible(false);
         labelErrore.setManaged(false);
     }
 
+    /** Chiude la finestra corrente. */
     public void chiudi() {
         Stage stage = (Stage) campoEmail.getScene().getWindow();
         stage.close();
     }
 
+    /** Apre il form di inserimento dell'OTP. */
     private void apriFormOTP(String scadenza, String email) {
         try {
             FXMLLoader loader = new FXMLLoader(
@@ -87,6 +94,7 @@ public class InserisciEmailBnd {
         }
     }
 
+    /** Apre la schermata FXML indicata. */
     private void apriSchermata(String path, String titolo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));

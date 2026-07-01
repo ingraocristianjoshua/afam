@@ -10,15 +10,16 @@ import java.util.Map;
  * ReimpostaPasswordCtrl – cambio password per l'utente già autenticato.
  *
  * Sequence: verificaDati → verificaVecchiaPassword → checkValid → aggiornaPassword
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class ReimpostaPasswordCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
 
     private boolean valid        = true;
     private String  errorMessage = "";
 
+    // ── Metodi ──────────────────
     /**
      * Valida che la nuova password sia robusta e diversa da quella attuale.
      * data deve contenere: vecchiaPassword, nuovaPassword.
@@ -44,6 +45,7 @@ public class ReimpostaPasswordCtrl {
         return true;
     }
 
+    /** Check valid. */
     public boolean checkValid() {
         if (!valid) throw new IllegalStateException(errorMessage);
         return true;
@@ -58,8 +60,11 @@ public class ReimpostaPasswordCtrl {
         db.aggiornaPassword(hash);
     }
 
+    /** Indica se valid. */
     public boolean isValid()          { return valid; }
+    /** Restituisce error message. */
     public String  getErrorMessage()  { return errorMessage; }
 
+    /** Fail. */
     private boolean fail(String msg) { valid = false; errorMessage = msg; return false; }
 }

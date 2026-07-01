@@ -24,13 +24,13 @@ import java.util.UUID;
  *   { "success": true/false, "data": {...}, "errore": "..." }
  *
  * Header richiesto per le richieste autenticate: X-User-Id (UUID stringa).
- * @author Cristian Joshua Ingrao (0780672)
  */
 @Path("/auth")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class AuthApi {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
 
     // ── Registrazione ─────────────────────────────────────────────────────────
@@ -168,11 +168,9 @@ public class AuthApi {
             // legge il numero dall'entity recuperato dal DB
             EntityUtente utente = db.recuperaUtente(UUID.fromString(userId));
             if (utente == null) return bad("Utente non trovato.");
+            // 2FA: invio dell'OTP SOLO via SMS al numero di telefono (non via email)
             ctrl.inviaSMS(utente.getNumTelefono(), otp);
-            
-            // Invia anche via email per consentire la ricezione su Gmail reale
-            com.afam.server.dao.MailServerBnd.getInstance().inviaEmail(utente.getEmail(), otp);
- 
+
             Map<String, Object> resp = new HashMap<>();
             resp.put("success", true);
             resp.put("scadenza", scad.toString());
@@ -287,34 +285,6 @@ public class AuthApi {
         }
     }
 
-    // ── Login con Identity Provider (stub) ────────────────────────────────────
-
-    /**
-     * POST /api/auth/spid
-     * Implementato solo fino al redirect del browser, come da spec.
-     */
-    @POST
-    @Path("/spid")
-    public Response accediConSpid(Map<String, Object> data) {
-        AuthCtrl ctrl = new AuthCtrl();
-        ctrl.selezionaIDProvider("SPID");
-        Map<String, Object> resp = new HashMap<>();
-        resp.put("success", true);
-        resp.put("messaggio", "Redirect al provider SPID (stub).");
-        return Response.ok(resp).build();
-    }
-
-    @POST
-    @Path("/eidas")
-    public Response accediConEidas(Map<String, Object> data) {
-        AuthCtrl ctrl = new AuthCtrl();
-        ctrl.selezionaIDProvider("eIDAS");
-        Map<String, Object> resp = new HashMap<>();
-        resp.put("success", true);
-        resp.put("messaggio", "Redirect al provider eIDAS (stub).");
-        return Response.ok(resp).build();
-    }
-
     // ── Helper privati ────────────────────────────────────────────────────────
 
     private void impostaUtente(String userId) {
@@ -324,6 +294,7 @@ public class AuthApi {
         }
     }
 
+    /** Cerca utente per email. */
     private EntityUtente cercaUtentePerEmail(String email) {
         return db.recuperaUtentePerEmail(email);
     }
@@ -334,14 +305,17 @@ public class AuthApi {
         return Response.ok(Map.of("success", true)).build();
     }
 
+    /** Bad. */
     private Response bad(String msg) {
         return Response.status(400).entity(error(msg)).build();
     }
 
+    /** Conflict. */
     private Response conflict(String msg) {
         return Response.status(409).entity(error(msg)).build();
     }
 
+    /** Server. */
     private Response server(String msg) {
         return Response.serverError().entity(error(msg)).build();
     }

@@ -17,10 +17,10 @@ import java.util.Map;
  *   verificaDati(email) → verificaEmailAssociata → checkValid
  *   → generaOTP → inviaOTPviaEmail
  *   → loop { recuperaOTP → verificaDati(nuovaPwd, ora) } → aggiornaPassword
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class RecuperaPasswordCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd       db   = DBMSBnd.getInstance();
     private final MailServerBnd mail = MailServerBnd.getInstance();
 
@@ -43,6 +43,7 @@ public class RecuperaPasswordCtrl {
         return true;
     }
 
+    /** Verifica email associata. */
     public boolean verificaEmailAssociata(String email) {
         if (!db.verificaEmailAssociata(email)) {
             return fail("Nessun account associato a questa email.");
@@ -50,6 +51,7 @@ public class RecuperaPasswordCtrl {
         return true;
     }
 
+    /** Check valid. */
     public boolean checkValid() {
         if (!valid) throw new IllegalStateException(errorMessage);
         return true;
@@ -116,9 +118,12 @@ public class RecuperaPasswordCtrl {
     // ── Getter per AuthApi ────────────────────────────────────────────────────
 
     public OffsetDateTime getOtpScadenza() { return otpScadenza; }
+    /** Indica se valid. */
     public boolean        isValid()         { return valid; }
+    /** Restituisce error message. */
     public String         getErrorMessage() { return errorMessage; }
 
+    /** Fail. */
     private boolean fail(String msg) {
         valid = false; errorMessage = msg; return false;
     }

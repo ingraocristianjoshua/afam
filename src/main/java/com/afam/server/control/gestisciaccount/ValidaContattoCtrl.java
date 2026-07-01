@@ -23,10 +23,10 @@ import java.util.UUID;
  *
  * Entrambe le sottoclassi (ValidaEmailCtrl, ValidaNumeroCtrl) ereditano
  * i passi concreti e sovrascrivono solo i passi variabili.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public abstract class ValidaContattoCtrl {
 
+    // ── Campi ──────────────────
     protected final DBMSBnd db = DBMSBnd.getInstance();
 
     // ── Passi CONCRETI (identici in entrambe le sottoclassi) ─────────────────
@@ -44,6 +44,7 @@ public abstract class ValidaContattoCtrl {
         return OTPGenerator.genera();
     }
 
+    /** Salva codice otp. */
     public void salvaCodiceOTP(String otp, OffsetDateTime scadenza) {
         db.salvaCodiceOTP(otp, scadenza);
     }

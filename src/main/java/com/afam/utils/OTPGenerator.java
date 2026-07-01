@@ -3,14 +3,16 @@ package com.afam.utils;
 import java.security.SecureRandom;
 
 /** Genera codici OTP numerici crittograficamente sicuri.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public final class OTPGenerator {
 
+    // ── Campi ──────────────────
     private static final SecureRandom RNG = new SecureRandom();
 
+    // ── Costruttori ──────────────────
     private OTPGenerator() {}
 
+    // ── Metodi ──────────────────
     /**
      * Restituisce un codice OTP numerico di {@link Constants#OTP_LENGTH} cifre,
      * con zeri iniziali dove necessario.

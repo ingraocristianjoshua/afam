@@ -21,20 +21,22 @@ import java.util.Map;
 
 /**
  * FormRicercaStudenteBnd – ricerca studenti e accesso all'area pubblica.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class FormRicercaStudenteBnd {
 
+    // ── Campi ──────────────────
     @FXML private TextField fieldNome;
     @FXML private VBox      boxStudenti;
 
     private final RestClient rest = RestClient.getInstance();
 
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
         new Thread(this::caricaTutti, "carica-studenti").start();
     }
 
+    /** Gestisce l'azione «Cerca». */
     @FXML
     public void onCerca() {
         String query = fieldNome.getText().trim();
@@ -56,11 +58,13 @@ public class FormRicercaStudenteBnd {
         }, "cerca-studenti").start();
     }
 
+    /** Gestisce l'azione «Accedi Tramite Link». */
     @FXML
     public void onAccediTramiteLink() {
         apri("/fxml/visualizzaprofilocondiviso/AccediTramiteLink.fxml", "Accedi tramite link");
     }
 
+    /** Carica tutti. */
     private void caricaTutti() {
         try {
             Map<String, Object> resp = rest.get("pubblico/studenti");
@@ -74,6 +78,7 @@ public class FormRicercaStudenteBnd {
         }
     }
 
+    /** Popola box. */
     private void popolaBox(List<Map<String, Object>> lista) {
         boxStudenti.getChildren().clear();
         if (lista == null || lista.isEmpty()) {
@@ -87,6 +92,7 @@ public class FormRicercaStudenteBnd {
         }
     }
 
+    /** Crea riga. */
     private HBox creaRiga(Map<String, Object> s) {
         HBox row = new HBox(12);
         row.setAlignment(Pos.CENTER_LEFT);
@@ -113,6 +119,7 @@ public class FormRicercaStudenteBnd {
         return row;
     }
 
+    /** Apri profilo. */
     private void apriProfilo(Map<String, Object> studente) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
@@ -130,6 +137,7 @@ public class FormRicercaStudenteBnd {
         }
     }
 
+    /** Apri. */
     private void apri(String fxml, String titolo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));

@@ -46,6 +46,8 @@
                 <!-- Dettaglio del portfolio selezionato -->
                 <Label fx:id="labelPortfolioSel" text="Portfolio selezionato"
                        style="-fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;"/>
+                <Label fx:id="labelVisualizzazioni" text="👁 0 visualizzazioni"
+                       style="-fx-text-fill: #c4b5fd; -fx-font-size: 12px;"/>
 
                 <!-- Sezione Raccolte -->
                 <Label text="Raccolte" styleClass="label-subtitle"/>

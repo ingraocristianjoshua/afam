@@ -160,6 +160,21 @@
                     <mainClass>com.afam.client.ClientMain</mainClass>
                     <!-- Aggiunge automaticamente javafx.* al module-path -->
                 </configuration>
+                <!-- Esecuzione dedicata al client OSPITE (apertura portfolio da link).
+                     Si invoca con:  mvn javafx:run@ospite -Djavafx.args="<idLink> <serverUri>"
+                     L'id_link e l'URI del server arrivano come argomenti dell'applicazione,
+                     non come system property (javafx:run forka una JVM separata). -->
+                <executions>
+                    <execution>
+                        <id>ospite</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.afam.client.ClientOspiteMain</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- ── Exec Plugin — avvia il SERVER ──

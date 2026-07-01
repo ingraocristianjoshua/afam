@@ -17,10 +17,10 @@ import java.util.Map;
 /**
  * FormOTPBnd – form per l'inserimento del codice OTP.
  * Usato sia per la verifica 2FA che per il recupero password.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class FormOTPBnd {
 
+    // ── Campi ──────────────────
     @FXML private TextField campoOTP;
     @FXML private Label     labelIstruzione;
     @FXML private Label     labelErrore;
@@ -32,6 +32,7 @@ public class FormOTPBnd {
     private boolean flusso2FA = true;
     private String  emailUtente;
 
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
         labelErrore.setVisible(false);
@@ -39,6 +40,7 @@ public class FormOTPBnd {
         labelIstruzione.setText("Codice OTP visibile nel terminale del server.");
     }
 
+    /** Configura. */
     public void configura(String scadenzaOTP, boolean flusso2FA, String emailUtente) {
         this.scadenzaOTP  = scadenzaOTP;
         this.flusso2FA    = flusso2FA;
@@ -56,6 +58,7 @@ public class FormOTPBnd {
         return dati;
     }
 
+    /** Gestisce l'azione «Verifica». */
     @FXML
     public void onVerifica() {
         nascondErrore();
@@ -88,6 +91,7 @@ public class FormOTPBnd {
         }, "verifica-otp").start();
     }
 
+    /** Gestisce l'azione «Invia Di Nuovo». */
     @FXML
     public void onInviaDiNuovo() {
         nascondErrore();
@@ -107,24 +111,29 @@ public class FormOTPBnd {
         }, "reinvia-otp").start();
     }
 
+    /** Mostra un messaggio di conferma. */
     public void visualizza(String messaggio) { MessSuccessoBnd.create(messaggio); }
 
+    /** Mostra il messaggio di errore indicato. */
     public void visualizzaErrore(String messaggio) {
         labelErrore.setText(messaggio);
         labelErrore.setVisible(true);
         labelErrore.setManaged(true);
     }
 
+    /** Nasconde il messaggio di errore. */
     private void nascondErrore() {
         labelErrore.setVisible(false);
         labelErrore.setManaged(false);
     }
 
+    /** Chiude la finestra corrente. */
     public void chiudi() {
         Stage stage = (Stage) campoOTP.getScene().getWindow();
         stage.close();
     }
 
+    /** Apre la schermata FXML indicata. */
     private void apriSchermata(String path, String titolo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
@@ -140,6 +149,7 @@ public class FormOTPBnd {
         }
     }
 
+    /** Apri reimposta password. */
     private void apriReimpostaPassword(Map<String, Object> datiOTP) {
         try {
             FXMLLoader loader = new FXMLLoader(

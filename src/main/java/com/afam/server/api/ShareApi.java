@@ -12,19 +12,25 @@ import jakarta.ws.rs.core.Response;
  * Quando il Soggetto Esterno clicca il link ricevuto via email, il browser
  * apre questa pagina che propone il pulsante "Apri in AFAM" (custom URL scheme afam://).
  *
- * GET /share/{token} → HTML landing page
- * @author Cristian Joshua Ingrao (0780672)
+ * GET /share/{idLink} → HTML landing page
  */
 @Path("/share")
 public class ShareApi {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
 
+    // ── Metodi ──────────────────
     @GET
-    @Path("/{token}")
+    @Path("/{idLink}")
     @Produces(MediaType.TEXT_HTML)
-    public Response landingPage(@PathParam("token") String token) {
-        EntityLink link = db.recuperaLinkByToken(token);
+    public Response landingPage(@PathParam("idLink") String idLinkStr) {
+        EntityLink link = null;
+        try {
+            link = db.recuperaLinkById(java.util.UUID.fromString(idLinkStr));
+        } catch (IllegalArgumentException ignored) {
+            // idLink non valido → link resta null → pagina "non disponibile"
+        }
 
         String titolo    = "Portfolio condiviso";
         String messaggio = "";
@@ -40,11 +46,13 @@ public class ShareApi {
             if (p != null) titolo = "Portfolio: " + p.getNome();
         }
 
-        String html = buildHtml(token, titolo, messaggio, valido);
+        String html = buildHtml(idLinkStr, titolo, messaggio, valido);
         return Response.ok(html).build();
     }
 
-    private String buildHtml(String token, String titolo, String messaggio, boolean valido) {
+    /** Build html. */
+    private String buildHtml(String idLink, String titolo, String messaggio, boolean valido) {
+        String fullUrl = com.afam.server.dao.MailServerBnd.getInstance().getLinkBaseUrl() + idLink;
         if (!valido) {
             return """
                 <!DOCTYPE html><html lang="it"><head>
@@ -111,13 +119,14 @@ public class ShareApi {
                 .btn:hover { opacity: 0.85; }
                 .divider { color: #5b21b6; font-size: 13px; margin: 8px 0 16px; }
                 .token-box {
+                  display: block; text-decoration: none;
                   background: rgba(0,0,0,0.3); border: 1px solid rgba(167,139,250,0.2);
                   border-radius: 10px; padding: 12px 16px;
                   font-family: monospace; font-size: 13px; color: #a78bfa;
-                  word-break: break-all; cursor: pointer; user-select: all;
+                  word-break: break-all; cursor: pointer;
                   margin-bottom: 8px;
                 }
-                .token-hint { color: #6d28d9; font-size: 12px; margin-bottom: 0; }
+                .token-box:hover { border-color: rgba(167,139,250,0.5); color: #c4b5fd; }
                 .brand {
                   position: fixed; bottom: 20px; left: 0; right: 0; text-align: center;
                   color: #5b21b6; font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
@@ -130,9 +139,8 @@ public class ShareApi {
                 <h1>%s</h1>
                 <p class="subtitle">Clicca il pulsante per aprire il portfolio nel client AFAM.</p>
                 <a href="afam://%s" class="btn">Apri in AFAM</a>
-                <p class="divider">— oppure usa il token —</p>
-                <div class="token-box" onclick="this.select(); document.execCommand('copy');" title="Clicca per copiare">%s</div>
-                <p class="token-hint">Incolla questo codice nella schermata "Accedi con link" del client AFAM</p>
+                <p class="divider">— oppure apri questo link —</p>
+                <a href="%s" class="token-box" title="Apri il link">%s</a>
               </div>
               <p class="brand">AFAM – Alta Formazione Artistica, Musicale e Coreutica</p>
               <script>
@@ -141,6 +149,6 @@ public class ShareApi {
               </script>
             </body>
             </html>
-            """.formatted(titolo, token, token, token);
+            """.formatted(titolo, idLink, fullUrl, fullUrl, idLink);
     }
 }

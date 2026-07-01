@@ -20,10 +20,10 @@ import java.util.Map;
 /**
  * FormModificaBnd – form modifica nome e cognome.
  * L'email è in sola lettura; il cambio email avviene tramite flusso OTP dedicato.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class FormModificaBnd {
 
+    // ── Campi ──────────────────
     @FXML private TextField campoNome;
     @FXML private TextField campoCognome;
     @FXML private TextField campoDataNascita;
@@ -34,6 +34,7 @@ public class FormModificaBnd {
 
     private final RestClient rest = RestClient.getInstance();
 
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
         labelErrore.setVisible(false);
@@ -41,6 +42,7 @@ public class FormModificaBnd {
         new Thread(this::caricaDatiAttuali, "carica-profilo-modifica").start();
     }
 
+    /** Carica dati attuali. */
     private void caricaDatiAttuali() {
         try {
             Map<String, Object> resp = rest.get("account/profilo");
@@ -67,6 +69,7 @@ public class FormModificaBnd {
         return d;
     }
 
+    /** Gestisce l'azione «Salva». */
     @FXML
     public void onSalva() {
         labelErrore.setVisible(false);
@@ -86,6 +89,7 @@ public class FormModificaBnd {
         }, "salva-modifica").start();
     }
 
+    /** Gestisce l'azione «Cambia Email». */
     @FXML
     public void onCambiaEmail() {
         try {
@@ -105,17 +109,20 @@ public class FormModificaBnd {
 
     @FXML public void onAnnulla() { chiudi(); }
 
+    /** Format data. */
     private String formatData(String iso) {
         if (iso == null || iso.isBlank()) return "";
         try { return LocalDate.parse(iso).format(FMT); }
         catch (Exception e) { return iso; }
     }
 
+    /** Mostra il messaggio di errore indicato. */
     public void mostraErrore(String msg) {
         labelErrore.setText(msg);
         labelErrore.setVisible(true);
         labelErrore.setManaged(true);
     }
 
+    /** Chiude la finestra corrente. */
     public void chiudi() { ((Stage) campoNome.getScene().getWindow()).close(); }
 }

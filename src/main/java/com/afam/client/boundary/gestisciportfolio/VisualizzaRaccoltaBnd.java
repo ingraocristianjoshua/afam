@@ -22,10 +22,10 @@ import java.util.Map;
 
 /**
  * VisualizzaRaccoltaBnd – mostra i contenuti di una raccolta con azioni inline.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class VisualizzaRaccoltaBnd {
 
+    // ── Campi ──────────────────
     @FXML private TextField fieldNomeRaccolta;
     @FXML private VBox      boxContenuti;
 
@@ -33,6 +33,7 @@ public class VisualizzaRaccoltaBnd {
     private Map<String, Object> portfolio;
     private Map<String, Object> raccolta;
 
+    // ── Metodi ──────────────────
     public void setRaccolta(Map<String, Object> portfolio, Map<String, Object> raccolta) {
         this.portfolio = portfolio;
         this.raccolta  = raccolta;
@@ -40,6 +41,7 @@ public class VisualizzaRaccoltaBnd {
         caricaDati();
     }
 
+    /** Carica dati. */
     @SuppressWarnings("unchecked")
     private void caricaDati() {
         try {
@@ -54,6 +56,7 @@ public class VisualizzaRaccoltaBnd {
         }
     }
 
+    /** Popola contenuti. */
     private void popolaContenuti(List<Map<String, Object>> contenuti) {
         boxContenuti.getChildren().removeIf(n -> n instanceof HBox || (n instanceof Label l && !"Contenuti".equals(l.getText())));
 
@@ -68,6 +71,7 @@ public class VisualizzaRaccoltaBnd {
         }
     }
 
+    /** Crea riga. */
     private HBox creaRiga(List<Map<String, Object>> lista, int i) {
         Map<String, Object> c = lista.get(i);
         HBox row = new HBox(8);
@@ -102,6 +106,7 @@ public class VisualizzaRaccoltaBnd {
         return row;
     }
 
+    /** Icona per tipo. */
     private String iconaPerTipo(String tipo) {
         if (tipo == null) return "📄";
         return switch (tipo.toLowerCase()) {
@@ -111,6 +116,7 @@ public class VisualizzaRaccoltaBnd {
         };
     }
 
+    /** Bottone. */
     private Button bottone(String testo, String classeColore) {
         Button b = new Button(testo);
         b.getStyleClass().addAll("btn-chip", classeColore);
@@ -134,6 +140,7 @@ public class VisualizzaRaccoltaBnd {
         }
     }
 
+    /** Gestisce l'azione «Aggiungi Alla Raccolta». */
     @FXML
     @SuppressWarnings("unchecked")
     public void onAggiungiAllaRaccolta() {
@@ -145,29 +152,32 @@ public class VisualizzaRaccoltaBnd {
             if (tuttiContenuti == null || tuttiContenuti.isEmpty()) {
                 MessErrBnd.create("Il portfolio non contiene contenuti.\nAggiungi prima contenuti al portfolio."); return;
             }
-            List<String> titoli = tuttiContenuti.stream().map(m -> (String) m.get("titolo")).toList();
-            javafx.scene.control.ChoiceDialog<String> dialog = new javafx.scene.control.ChoiceDialog<>(titoli.get(0), titoli);
-            dialog.setTitle("Aggiungi alla raccolta");
-            dialog.setHeaderText("Seleziona il contenuto da aggiungere a questa raccolta:");
-            dialog.setContentText("Contenuto:");
-            dialog.showAndWait().ifPresent(t -> {
-                tuttiContenuti.stream().filter(m -> t.equals(m.get("titolo"))).findFirst().ifPresent(c -> {
-                    try {
-                        rest.post("portfolio/" + portfolio.get("idPortfolio") +
-                                  "/raccolte/" + raccolta.get("idRaccolta") + "/contenuti",
-                                  Map.of("idContenuto", c.get("idContenuto")));
-                        MessSuccessoBnd.create("Contenuto aggiunto alla raccolta con successo.");
-                        caricaDati();
-                    } catch (RestClient.RestException e) {
-                        MessErrBnd.create("Aggiunta fallita: " + e.getMessage());
-                    }
-                });
+            // Boundary di selezione contenuto (come da sequence diagram: InsiemeContenutiBnd)
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gestisciportfolio/InsiemeContenuti.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("AFAM – Aggiungi alla raccolta");
+            Scene scene = new Scene(loader.load());
+            scene.getStylesheets().add(getClass().getResource("/css/application.css").toExternalForm());
+            stage.setScene(scene);
+            InsiemeContenutiBnd ctrl = loader.getController();
+            ctrl.setContenuti(tuttiContenuti, c -> {
+                try {
+                    rest.post("portfolio/" + portfolio.get("idPortfolio") +
+                              "/raccolte/" + raccolta.get("idRaccolta") + "/contenuti",
+                              Map.of("idContenuto", c.get("idContenuto")));
+                    MessSuccessoBnd.create("Contenuto aggiunto alla raccolta con successo.");
+                    caricaDati();
+                } catch (RestClient.RestException e) {
+                    MessErrBnd.create("Aggiunta fallita: " + e.getMessage());
+                }
             });
-        } catch (RestClient.RestException e) {
+            stage.showAndWait();
+        } catch (Exception e) {
             MessErrBnd.create("Errore: " + e.getMessage());
         }
     }
 
+    /** Rimuovi dalla raccolta. */
     private void rimuoviDallaRaccolta(Map<String, Object> contenuto) {
         if (!MessConfermaBnd.create("Rimuovere \"" + contenuto.get("titolo") + "\" dalla raccolta?")) return;
         try {
@@ -180,6 +190,7 @@ public class VisualizzaRaccoltaBnd {
         }
     }
 
+    /** Sposta. */
     private void sposta(List<Map<String, Object>> lista, int idx, int delta) {
         int target = idx + delta;
         if (target < 0) {
@@ -202,12 +213,14 @@ public class VisualizzaRaccoltaBnd {
         }
     }
 
+    /** Chiude la finestra corrente. */
     @FXML
     public void chiudi() {
         Stage stage = (Stage) fieldNomeRaccolta.getScene().getWindow();
         stage.close();
     }
 
+    /** Nuovo stage. */
     private Stage nuovoStage(String titolo, javafx.scene.Parent root) {
         Stage stage = new Stage();
         stage.setTitle("AFAM – " + titolo);

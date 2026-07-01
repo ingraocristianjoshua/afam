@@ -24,14 +24,15 @@ import java.util.Map;
  * GestionePortfolioBnd – schermata unica per gestire il portfolio.
  * Mostra raccolte e contenuti del portfolio selezionato con azioni inline
  * per ogni riga (come da mockup).
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class GestionePortfolioBnd {
 
+    // ── Campi ──────────────────
     @FXML private VBox      panelVuoto;
     @FXML private VBox      panelPortfolio;
     @FXML private VBox      boxPortfolios;
     @FXML private Label     labelPortfolioSel;
+    @FXML private Label     labelVisualizzazioni;
     @FXML private VBox      boxRaccolte;
     @FXML private VBox      boxContenuti;
 
@@ -39,6 +40,7 @@ public class GestionePortfolioBnd {
     private Map<String, Object> portfolioCorrente;
     private final List<Map<String, Object>> portfolios = new java.util.ArrayList<>();
 
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
         new Thread(() -> caricaListaPortfolio(null), "carica-portfolio").start();
@@ -96,6 +98,7 @@ public class GestionePortfolioBnd {
         }
     }
 
+    /** Crea riga portfolio. */
     private HBox creaRigaPortfolio(Map<String, Object> p, boolean selezionato) {
         HBox row = new HBox(10);
         row.setAlignment(Pos.CENTER_LEFT);
@@ -131,11 +134,13 @@ public class GestionePortfolioBnd {
         return row;
     }
 
+    /** Gestisce l'azione «Seleziona Portfolio». */
     private void onSelezionaPortfolio(Map<String, Object> p) {
         renderListaPortfolios((String) p.get("idPortfolio"));
         new Thread(() -> apriPortfolio(p), "apri-portfolio-sel").start();
     }
 
+    /** Apri portfolio. */
     @SuppressWarnings("unchecked")
     private void apriPortfolio(Map<String, Object> portfolio) {
         try {
@@ -149,6 +154,10 @@ public class GestionePortfolioBnd {
                 portfolioCorrente = pf;
                 if (labelPortfolioSel != null)
                     labelPortfolioSel.setText("Portfolio selezionato: " + pf.getOrDefault("nome", ""));
+                if (labelVisualizzazioni != null) {
+                    int vis = ((Number) pf.getOrDefault("numeroVisualizzazioni", 0)).intValue();
+                    labelVisualizzazioni.setText("👁 " + vis + (vis == 1 ? " visualizzazione" : " visualizzazioni"));
+                }
                 popolaRaccolte(raccolte);
                 popolaContenuti(contenuti);
                 mostraPortfolio();
@@ -158,6 +167,7 @@ public class GestionePortfolioBnd {
         }
     }
 
+    /** Aggiorna dati. */
     private void aggiornaDati() {
         if (portfolioCorrente == null) return;
         new Thread(() -> apriPortfolio(portfolioCorrente), "aggiorna-portfolio").start();
@@ -178,6 +188,7 @@ public class GestionePortfolioBnd {
         }
     }
 
+    /** Crea riga raccolta. */
     private HBox creaRigaRaccolta(Map<String, Object> r) {
         HBox row = new HBox(10);
         row.setAlignment(Pos.CENTER_LEFT);
@@ -220,6 +231,7 @@ public class GestionePortfolioBnd {
         }
     }
 
+    /** Crea riga contenuto. */
     private HBox creaRigaContenuto(List<Map<String, Object>> lista, int i) {
         Map<String, Object> c = lista.get(i);
         HBox row = new HBox(8);
@@ -253,6 +265,7 @@ public class GestionePortfolioBnd {
         return row;
     }
 
+    /** Icona per tipo. */
     private String iconaPerTipo(String tipo) {
         if (tipo == null) return "📄";
         return switch (tipo.toLowerCase()) {
@@ -263,6 +276,7 @@ public class GestionePortfolioBnd {
         };
     }
 
+    /** Bottone. */
     private Button bottone(String testo, String classeColore) {
         Button b = new Button(testo);
         b.getStyleClass().addAll("btn-chip", classeColore);
@@ -286,6 +300,7 @@ public class GestionePortfolioBnd {
         }
     }
 
+    /** Gestisce l'azione «Elimina Portfolio». */
     private void onEliminaPortfolio(Map<String, Object> portfolio) {
         if (portfolio == null) return;
         String nome = (String) portfolio.get("nome");
@@ -305,9 +320,10 @@ public class GestionePortfolioBnd {
         }, "elimina-portfolio").start();
     }
 
+    /** Gestisce l'azione «Annulla». */
     @FXML
     public void onAnnulla() {
-        vai("/fxml/gestisciaccount/GestioneAccount.fxml", "Gestione Account");
+        vai("/fxml/homepage/HomePage.fxml", "Home");
     }
 
     // ── Azioni Raccolte ───────────────────────────────────────────────────────
@@ -327,6 +343,7 @@ public class GestionePortfolioBnd {
         }
     }
 
+    /** Gestisce l'azione «Visualizza Raccolta». */
     private void onVisualizzaRaccolta(Map<String, Object> raccolta) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gestisciportfolio/VisualizzaRaccolta.fxml"));
@@ -340,6 +357,7 @@ public class GestionePortfolioBnd {
         }
     }
 
+    /** Gestisce l'azione «Rinomina Raccolta». */
     private void onRinominaRaccolta(Map<String, Object> raccolta) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gestisciportfolio/CampoNomeRaccolta.fxml"));
@@ -353,6 +371,7 @@ public class GestionePortfolioBnd {
         }
     }
 
+    /** Gestisce l'azione «Elimina Raccolta». */
     private void onEliminaRaccolta(Map<String, Object> raccolta) {
         String nome = (String) raccolta.get("nome");
         if (!MessConfermaBnd.create("Eliminare la raccolta \"" + nome + "\"?\nI contenuti non verranno cancellati dal portfolio.")) return;
@@ -387,19 +406,27 @@ public class GestionePortfolioBnd {
                 } else {
                     tutti = (List<Map<String, Object>>) raw;
                 }
-                final List<Map<String, Object>> listaFinale = tutti;
+                final List<Map<String, Object>> rawTutti = tutti;
                 Platform.runLater(() -> {
-                    if (listaFinale == null || listaFinale.isEmpty()) {
+                    if (rawTutti == null || rawTutti.isEmpty()) {
                         MessErrBnd.create("Non hai ancora caricato nessun contenuto.\nVai nella sezione 'Gestione contenuti' per caricarne.");
                         return;
                     }
-                    List<String> titoli = listaFinale.stream().map(m -> (String) m.get("titolo")).toList();
-                    javafx.scene.control.ChoiceDialog<String> dialog = new javafx.scene.control.ChoiceDialog<>(titoli.get(0), titoli);
-                    dialog.setTitle("Aggiungi Contenuto");
-                    dialog.setHeaderText("Seleziona il contenuto da aggiungere al portfolio:");
-                    dialog.setContentText("Contenuto:");
-                    dialog.showAndWait().ifPresent(titoloScelto ->
-                        listaFinale.stream().filter(m -> titoloScelto.equals(m.get("titolo"))).findFirst().ifPresent(scelto -> {
+                    // Solo contenuti NON privati: i privati non sono aggiungibili al portfolio
+                    List<Map<String, Object>> visibili = rawTutti.stream()
+                            .filter(m -> !"privato".equalsIgnoreCase(
+                                    String.valueOf(m.getOrDefault("visibilita", "pubblico"))))
+                            .toList();
+                    if (visibili.isEmpty()) {
+                        MessErrBnd.create("Tutti i tuoi contenuti sono privati.\nImposta un contenuto come pubblico in 'Gestisci Contenuti' per poterlo aggiungere al portfolio.");
+                        return;
+                    }
+                    // Boundary di selezione (come da sequence diagram: InsiemeContenutiBnd)
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gestisciportfolio/InsiemeContenuti.fxml"));
+                        Stage stage = nuovoStage("Aggiungi contenuto", loader.load());
+                        InsiemeContenutiBnd ctrl = loader.getController();
+                        ctrl.setContenuti(visibili, scelto -> {
                             String url = "portfolio/" + portfolioCorrente.get("idPortfolio") + "/contenuti";
                             Map<String, Object> body = Map.of("idContenuto", scelto.get("idContenuto"));
                             new Thread(() -> {
@@ -410,8 +437,11 @@ public class GestionePortfolioBnd {
                                     Platform.runLater(() -> MessErrBnd.create("Aggiunta fallita: " + e.getMessage()));
                                 }
                             }, "aggiungi-contenuto").start();
-                        })
-                    );
+                        });
+                        stage.showAndWait();
+                    } catch (Exception e) {
+                        MessErrBnd.create("Impossibile aprire: " + e.getMessage());
+                    }
                 });
             } catch (RestClient.RestException e) {
                 Platform.runLater(() -> MessErrBnd.create("Impossibile caricare i contenuti: " + e.getMessage()));
@@ -419,6 +449,7 @@ public class GestionePortfolioBnd {
         }, "carica-contenuti-portfolio").start();
     }
 
+    /** Gestisce l'azione «Aggiungi Alla Raccolta». */
     private void onAggiungiAllaRaccolta(Map<String, Object> contenuto) {
         new Thread(() -> {
             try {
@@ -431,13 +462,12 @@ public class GestionePortfolioBnd {
                     if (raccolte == null || raccolte.isEmpty()) {
                         MessErrBnd.create("Non hai ancora creato nessuna raccolta."); return;
                     }
-                    List<String> nomi = raccolte.stream().map(r -> (String) r.get("nome")).toList();
-                    javafx.scene.control.ChoiceDialog<String> dialog = new javafx.scene.control.ChoiceDialog<>(nomi.get(0), nomi);
-                    dialog.setTitle("Aggiungi alla raccolta");
-                    dialog.setHeaderText("In quale raccolta vuoi aggiungere \"" + contenuto.get("titolo") + "\"?");
-                    dialog.setContentText("Raccolta:");
-                    dialog.showAndWait().ifPresent(nomeRaccolta ->
-                        raccolte.stream().filter(r -> nomeRaccolta.equals(r.get("nome"))).findFirst().ifPresent(r -> {
+                    // Boundary di selezione (come da sequence diagram: SelezioneRaccoltaBnd)
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gestisciportfolio/SelezioneRaccolta.fxml"));
+                        Stage stage = nuovoStage("Aggiungi alla raccolta", loader.load());
+                        SelezioneRaccoltaBnd ctrl = loader.getController();
+                        ctrl.setRaccolte((String) contenuto.getOrDefault("titolo", ""), raccolte, r -> {
                             String url = "portfolio/" + portfolioCorrente.get("idPortfolio") +
                                          "/raccolte/" + r.get("idRaccolta") + "/contenuti";
                             Map<String, Object> body = Map.of("idContenuto", contenuto.get("idContenuto"));
@@ -449,8 +479,11 @@ public class GestionePortfolioBnd {
                                     Platform.runLater(() -> MessErrBnd.create("Aggiunta alla raccolta fallita: " + e.getMessage()));
                                 }
                             }, "aggiungi-a-raccolta").start();
-                        })
-                    );
+                        });
+                        stage.showAndWait();
+                    } catch (Exception e) {
+                        MessErrBnd.create("Impossibile aprire: " + e.getMessage());
+                    }
                 });
             } catch (RestClient.RestException e) {
                 Platform.runLater(() -> MessErrBnd.create("Errore: " + e.getMessage()));
@@ -458,6 +491,7 @@ public class GestionePortfolioBnd {
         }, "carica-raccolte").start();
     }
 
+    /** Gestisce l'azione «Rimuovi Contenuto». */
     private void onRimuoviContenuto(Map<String, Object> contenuto) {
         if (!MessConfermaBnd.create("Rimuovere \"" + contenuto.get("titolo") + "\" dal portfolio?")) return;
         String url = "portfolio/" + portfolioCorrente.get("idPortfolio") + "/contenuti/" + contenuto.get("idContenuto");
@@ -471,6 +505,7 @@ public class GestionePortfolioBnd {
         }, "rimuovi-contenuto").start();
     }
 
+    /** Gestisce l'azione «Sposta Su». */
     private void onSpostaSu(List<Map<String, Object>> lista, int idx) {
         if (idx <= 0) {
             MessErrBnd.create("Il contenuto è già in cima: non può essere spostato più su.");
@@ -479,6 +514,7 @@ public class GestionePortfolioBnd {
         scambiaPosizione(lista.get(idx), lista.get(idx - 1));
     }
 
+    /** Gestisce l'azione «Sposta Giu». */
     private void onSpostaGiu(List<Map<String, Object>> lista, int idx) {
         if (idx >= lista.size() - 1) {
             MessErrBnd.create("Il contenuto è già in fondo: non può essere spostato più giù.");
@@ -487,6 +523,7 @@ public class GestionePortfolioBnd {
         scambiaPosizione(lista.get(idx), lista.get(idx + 1));
     }
 
+    /** Scambia posizione. */
     private void scambiaPosizione(Map<String, Object> c1, Map<String, Object> c2) {
         String url = "portfolio/" + portfolioCorrente.get("idPortfolio") + "/ordina";
         Map<String, Object> body = Map.of(
@@ -510,6 +547,7 @@ public class GestionePortfolioBnd {
         ((Stage) anchor.getScene().getWindow()).close();
     }
 
+    /** Mostra vuoto. */
     private void mostraVuoto() {
         panelVuoto.setVisible(true);
         panelVuoto.setManaged(true);
@@ -517,6 +555,7 @@ public class GestionePortfolioBnd {
         panelPortfolio.setManaged(false);
     }
 
+    /** Mostra portfolio. */
     private void mostraPortfolio() {
         panelVuoto.setVisible(false);
         panelVuoto.setManaged(false);
@@ -524,6 +563,7 @@ public class GestionePortfolioBnd {
         panelPortfolio.setManaged(true);
     }
 
+    /** Apri. */
     private void apri(String fxml, String titolo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
@@ -533,6 +573,7 @@ public class GestionePortfolioBnd {
         }
     }
 
+    /** Vai. */
     private void vai(String fxml, String titolo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
@@ -544,6 +585,7 @@ public class GestionePortfolioBnd {
         }
     }
 
+    /** Nuovo stage. */
     private Stage nuovoStage(String titolo, javafx.scene.Parent root) {
         Stage stage = new Stage();
         stage.setTitle("AFAM – " + titolo);

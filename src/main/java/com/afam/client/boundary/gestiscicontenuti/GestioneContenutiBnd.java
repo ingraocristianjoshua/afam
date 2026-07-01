@@ -23,19 +23,21 @@ import java.util.Map;
 /**
  * GestioneContenutiBnd – schermata con righe inline per ogni contenuto.
  * Ogni riga mostra icona, titolo/tipo e pulsanti MODIFICA/VISIBILITÀ/ELIMINA.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class GestioneContenutiBnd {
 
+    // ── Campi ──────────────────
     @FXML private VBox boxContenuti;
 
     private final RestClient rest = RestClient.getInstance();
 
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
         caricaContenuti();
     }
 
+    /** Carica contenuti. */
     @SuppressWarnings("unchecked")
     private void caricaContenuti() {
         new Thread(() -> {
@@ -62,6 +64,7 @@ public class GestioneContenutiBnd {
         }, "carica-contenuti").start();
     }
 
+    /** Crea riga. */
     private HBox creaRiga(Map<String, Object> c) {
         HBox row = new HBox(10);
         row.setAlignment(Pos.CENTER_LEFT);
@@ -69,7 +72,9 @@ public class GestioneContenutiBnd {
 
         String tipo = (String) c.getOrDefault("tipoFile", "");
         Label icona = new Label(iconaPerTipo(tipo));
-        icona.setStyle("-fx-font-size: 22px;");
+        icona.setStyle("-fx-font-size: 22px; -fx-cursor: hand;");
+        icona.setTooltip(new javafx.scene.control.Tooltip("Clicca per l'anteprima"));
+        icona.setOnMouseClicked(e -> onAnteprimaContenuto(c));
 
         VBox info = new VBox(2);
         Label titolo = new Label((String) c.getOrDefault("titolo", ""));
@@ -93,6 +98,7 @@ public class GestioneContenutiBnd {
         return row;
     }
 
+    /** Icona per tipo. */
     private String iconaPerTipo(String tipo) {
         if (tipo == null) return "📄";
         return switch (tipo.toLowerCase()) {
@@ -102,6 +108,7 @@ public class GestioneContenutiBnd {
         };
     }
 
+    /** Format dim. */
     private String formatDim(Number bytes) {
         if (bytes == null) return "";
         long b = bytes.longValue();
@@ -110,6 +117,7 @@ public class GestioneContenutiBnd {
         return (b / (1024 * 1024)) + " MB";
     }
 
+    /** Bottone. */
     private Button bottone(String testo, String classeColore) {
         Button b = new Button(testo);
         b.getStyleClass().addAll("btn-chip", classeColore);
@@ -130,6 +138,20 @@ public class GestioneContenutiBnd {
         }
     }
 
+    /** Apre l'anteprima del file (cliccando l'icona della riga). */
+    private void onAnteprimaContenuto(Map<String, Object> c) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gestiscicontenuti/AnteprimaContenuto.fxml"));
+            Stage stage = nuovoStage("Anteprima – " + c.getOrDefault("titolo", ""), loader.load());
+            AnteprimaContenutoBnd ctrl = loader.getController();
+            stage.show();
+            ctrl.setContenuto(c);
+        } catch (Exception e) {
+            MessErrBnd.create("Impossibile aprire l'anteprima: " + e.getMessage());
+        }
+    }
+
+    /** Gestisce l'azione «Modifica Contenuto». */
     private void onModificaContenuto(Map<String, Object> c) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gestiscicontenuti/FormModifiche.fxml"));
@@ -143,6 +165,7 @@ public class GestioneContenutiBnd {
         }
     }
 
+    /** Gestisce l'azione «Elimina Contenuto». */
     private void onEliminaContenuto(Map<String, Object> c) {
         if (!MessConfermaBnd.create("Eliminare il contenuto \"" + c.get("titolo") + "\"?")) return;
         new Thread(() -> {
@@ -158,31 +181,28 @@ public class GestioneContenutiBnd {
         }, "elimina-contenuto").start();
     }
 
+    /** Gestisce l'azione «Cambia Visibilita». */
     private void onCambiaVisibilita(Map<String, Object> c) {
-        Object idContenuto = c.get("idContenuto");
-        if (idContenuto == null) { MessErrBnd.create("ID contenuto non disponibile."); return; }
-        new Thread(() -> {
-            try {
-                Map<String, Object> resp = rest.patch("contenuti/" + idContenuto + "/visibilita", Map.of());
-                @SuppressWarnings("unchecked")
-                Map<String, Object> data = (Map<String, Object>) resp.get("data");
-                String nuova = data != null ? (String) data.get("visibilita") : "?";
-                Platform.runLater(() -> {
-                    caricaContenuti();
-                    MessSuccessoBnd.create("Visibilità aggiornata: " + nuova);
-                });
-            } catch (RestClient.RestException e) {
-                Platform.runLater(() -> MessErrBnd.create("Errore visibilità: " + e.getMessage()));
-            }
-        }, "cambia-visibilita-contenuto").start();
+        // Come da sequence diagram: apre un form di selezione visibilità (FormVisibilitaBnd)
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/gestiscicontenuti/FormVisibilita.fxml"));
+            Stage stage = nuovoStage("Imposta visibilità", loader.load());
+            FormVisibilitaBnd ctrl = loader.getController();
+            ctrl.setContenuto(c, this::caricaContenuti);
+            stage.showAndWait();
+        } catch (Exception e) {
+            MessErrBnd.create("Impossibile aprire: " + e.getMessage());
+        }
     }
 
+    /** Chiude la finestra corrente. */
     @FXML
     public void chiudi() {
         Stage stage = (Stage) boxContenuti.getScene().getWindow();
         stage.close();
     }
 
+    /** Nuovo stage. */
     private Stage nuovoStage(String titolo, javafx.scene.Parent root) {
         Stage stage = new Stage();
         stage.setTitle("AFAM – " + titolo);

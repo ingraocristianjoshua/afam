@@ -4,10 +4,10 @@ package com.afam.utils;
  * Costanti globali del sistema AFAM.
  * Tutti i valori numerici e testuali fissi vivono qui;
  * i parametri di connessione vengono caricati a runtime da config.properties.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public final class Constants {
 
+    // ── Costruttori ──────────────────
     private Constants() {}
 
     // ── File upload ───────────────────────────────────────────────────────────
@@ -15,8 +15,8 @@ public final class Constants {
     public static final long MAX_FILE_SIZE_BYTES = 52_428_800L;
 
     // ── OTP ───────────────────────────────────────────────────────────────────
-    /** Durata di validità di un OTP in minuti. */
-    public static final int OTP_DURATION_MINUTES = 10;
+    /** Durata di validità di un OTP in minuti (1 ora). */
+    public static final int OTP_DURATION_MINUTES = 60;
     /** Lunghezza del codice OTP (cifre). */
     public static final int OTP_LENGTH = 6;
 

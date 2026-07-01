@@ -16,11 +16,12 @@ import java.util.UUID;
  *   verificaNomeRaccolta(nome)  – valida il formato del nome (regex)
  *   verificaNome(nome)          – controlla unicità nel portfolio (DB)
  *   Sono metodi separati per rispettare la spec (non uniformati).
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class RinominaCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
+
     private boolean valid = true;
     private String  errorMessage = "";
 
@@ -28,17 +29,21 @@ public class RinominaCtrl {
     private EntityRaccolta  raccolta;
     private String          nuovoNome;
 
+    // ── Metodi ──────────────────
     public void setPortfolio(EntityPortfolio p) {
         this.portfolio = p;
         db.setCurrentPortfolio(p.getIdPortfolio());
     }
 
+    /** Imposta nuovo nome. */
     public void setNuovoNome(String nome) { this.nuovoNome = nome; }
 
+    /** Restituisce id portfolio. */
     public UUID getIdPortfolio() {
         return portfolio != null ? portfolio.getIdPortfolio() : null;
     }
 
+    /** Restituisce id raccolta. */
     public UUID getIdRaccolta(UUID idPortfolio) {
         return raccolta != null ? raccolta.getIdRaccolta(idPortfolio) : null;
     }
@@ -50,6 +55,7 @@ public class RinominaCtrl {
         return raccolta;
     }
 
+    /** Restituisce nome raccolta. */
     public String getNomeRaccolta() { return nuovoNome; }
 
     /** Verifica il formato del nome (regex — non accede al DB). */
@@ -71,18 +77,24 @@ public class RinominaCtrl {
         return true;
     }
 
+    /** Check valid. */
     public boolean checkValid() {
         if (!valid) throw new IllegalStateException(errorMessage);
         return true;
     }
 
+    /** Aggiorna nome raccolta. */
     public void aggiornaNomeRaccolta(EntityRaccolta raccolta, String nomeRaccolta) {
         db.aggiornaNomeRaccolta(raccolta, nomeRaccolta);
     }
 
+    /** Restituisce raccolta. */
     public EntityRaccolta getRaccolta()  { return raccolta; }
+    /** Indica se valid. */
     public boolean        isValid()      { return valid; }
+    /** Restituisce error message. */
     public String  getErrorMessage()     { return errorMessage; }
 
+    /** Fail. */
     private boolean fail(String msg) { valid = false; errorMessage = msg; return false; }
 }

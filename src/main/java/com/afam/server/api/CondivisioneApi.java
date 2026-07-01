@@ -20,13 +20,13 @@ import java.util.UUID;
  * CondivisioneApi – endpoint REST per il sottosistema Gestisci Condivisione.
  * Base path: /api/condivisione
  * Header richiesto: X-User-Id (UUID stringa).
- * @author Cristian Joshua Ingrao (0780672)
  */
 @Path("/condivisione")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class CondivisioneApi {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
 
     // ── Lista link ────────────────────────────────────────────────────────────
@@ -43,7 +43,6 @@ public class CondivisioneApi {
             List<Map<String, Object>> result = links.stream().map(l -> {
                 Map<String, Object> m = new HashMap<>();
                 m.put("idLink",      l.getIdLink() != null ? l.getIdLink().toString() : null);
-                m.put("urlToken",    l.getLink());
                 m.put("linkUrl",     baseUrl + l.getLink());
                 m.put("stato",       l.getStato());
                 m.put("visibilita",  l.getVisibilita());
@@ -102,7 +101,6 @@ public class CondivisioneApi {
             Map<String, Object> resp = new HashMap<>();
             String baseUrl = com.afam.server.dao.MailServerBnd.getInstance().getLinkBaseUrl();
             resp.put("idLink",    link.getIdLink().toString());
-            resp.put("urlToken",  link.getLink());
             resp.put("linkUrl",   baseUrl + link.getLink());
             return ok(resp);
         } catch (Exception e) {
@@ -241,10 +239,12 @@ public class CondivisioneApi {
                 .orElse(null);
     }
 
+    /** Ok. */
     private Response ok() {
         return Response.ok(Map.of("success", true)).build();
     }
 
+    /** Ok. */
     private Response ok(Object data) {
         Map<String, Object> body = new HashMap<>();
         body.put("success", true);
@@ -252,12 +252,14 @@ public class CondivisioneApi {
         return Response.ok(body).build();
     }
 
+    /** Not found. */
     private Response notFound(String msg) {
         return Response.status(Response.Status.NOT_FOUND)
                 .entity(Map.of("success", false, "errore", msg))
                 .build();
     }
 
+    /** Server. */
     private Response server(String errore) {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(Map.of("success", false, "errore", errore != null ? errore : "Errore interno."))

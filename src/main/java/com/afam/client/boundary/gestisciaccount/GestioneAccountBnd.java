@@ -27,10 +27,10 @@ import java.util.Map;
 /**
  * GestioneAccountBnd – schermata principale dell'area personale.
  * Layout BorderPane con sidebar di navigazione.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class GestioneAccountBnd {
 
+    // ── Campi ──────────────────
     @FXML private BorderPane root;
 
     // Campi profilo (read-only)
@@ -60,11 +60,13 @@ public class GestioneAccountBnd {
 
     private final RestClient rest = RestClient.getInstance();
 
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
         new Thread(this::caricaProfilo, "carica-profilo").start();
     }
 
+    /** Carica profilo. */
     private void caricaProfilo() {
         try {
             Map<String, Object> p = rest.get("account/profilo");
@@ -144,6 +146,7 @@ public class GestioneAccountBnd {
     @FXML public void onValidaEmail()          { apriConRefresh("/fxml/gestisciaccount/ValidaEmail.fxml",             "Valida email"); }
     @FXML public void onValidaNumero()         { apriConRefresh("/fxml/gestisciaccount/ValidaNumero.fxml",            "Valida numero"); }
 
+    /** Gestisce l'azione «Elimina Account». */
     @FXML
     public void onEliminaAccount() {
         if (MessConfermaBnd.create("Sei sicuro di voler eliminare il tuo account? L'operazione è irreversibile.")) {
@@ -195,18 +198,21 @@ public class GestioneAccountBnd {
         apri("/fxml/autenticati/AuthPage.fxml", "AFAM");
     }
 
+    /** Iniziali. */
     private static String iniziali(String nome, String cognome) {
         String n = (nome    != null && !nome.isBlank())    ? String.valueOf(nome.charAt(0)).toUpperCase()    : "";
         String c = (cognome != null && !cognome.isBlank()) ? String.valueOf(cognome.charAt(0)).toUpperCase() : "";
         return n.isEmpty() && c.isEmpty() ? "?" : n + c;
     }
 
+    /** Format data. */
     private String formatData(String iso) {
         if (iso == null || iso.isBlank()) return "";
         try { return LocalDate.parse(iso).format(FMT); }
         catch (Exception e) { return iso; }
     }
 
+    /** Chiude la finestra corrente. */
     public void chiudi() {
         ((Stage) root.getScene().getWindow()).close();
     }

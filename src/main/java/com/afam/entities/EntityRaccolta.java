@@ -12,16 +12,15 @@ import java.util.UUID;
  * this.idRaccolta.
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-/**
- * @author Cristian Joshua Ingrao (0780672)
- */
 public class EntityRaccolta {
 
+    // ── Campi ──────────────────
     private UUID   idRaccolta;
     private String nome;
     private int    ordine;
     private UUID   idPortfolio;
 
+    // ── Costruttori ──────────────────
     public EntityRaccolta() {}
 
     public EntityRaccolta(UUID idRaccolta, String nome, int ordine, UUID idPortfolio) {
@@ -44,7 +43,10 @@ public class EntityRaccolta {
 
     /** Getter diretto, usato internamente dalle control senza contesto portfolio. */
     public UUID   getIdRaccolta()  { return idRaccolta; }
+    /** Restituisce nome. */
     public String getNome()        { return nome; }
+    /** Restituisce ordine. */
     public int    getOrdine()      { return ordine; }
+    /** Restituisce id portfolio. */
     public UUID   getIdPortfolio() { return idPortfolio; }
 }

@@ -12,21 +12,25 @@ import java.util.UUID;
  *
  * Espone solo le informazioni pubbliche dello studente (no hashPassword).
  * I portfolio restituiti sono quelli con visibilità pubblica o condivisa.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class VisualizzaProfiloCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
+
     private EntityUtente utente;
 
+    // ── Metodi ──────────────────
     public EntityUtente recuperaInfoProfilo(UUID idUtente) {
         utente = db.recuperaInfoProfilo(idUtente);
         return utente;
     }
 
+    /** Recupera elenco portfoli. */
     public List<EntityPortfolio> recuperaElencoPortfoli(UUID idUtente) {
         return db.recuperaElencoPortfoli(idUtente);
     }
 
+    /** Restituisce utente. */
     public EntityUtente getUtente() { return utente; }
 }

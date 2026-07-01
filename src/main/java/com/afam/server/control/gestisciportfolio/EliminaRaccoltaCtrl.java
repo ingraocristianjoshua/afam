@@ -7,17 +7,21 @@ import com.afam.server.dao.DBMSBnd;
 import java.util.UUID;
 
 /** Sequence: getIdPortfolio → getIdRaccolta(idPortfolio) → eliminaRaccolta(idRaccolta)
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class EliminaRaccoltaCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
+
     private EntityPortfolio portfolio;
     private EntityRaccolta  raccolta;
 
+    // ── Metodi ──────────────────
     public void setPortfolio(EntityPortfolio p) { this.portfolio = p; }
+    /** Imposta raccolta. */
     public void setRaccolta(EntityRaccolta r)   { this.raccolta  = r; }
 
+    /** Restituisce id portfolio. */
     public UUID getIdPortfolio() {
         return portfolio != null ? portfolio.getIdPortfolio() : null;
     }
@@ -30,6 +34,7 @@ public class EliminaRaccoltaCtrl {
         return raccolta != null ? raccolta.getIdRaccolta(idPortfolio) : null;
     }
 
+    /** Elimina raccolta. */
     public void eliminaRaccolta(UUID idRaccolta) {
         db.eliminaRaccolta(idRaccolta);
     }

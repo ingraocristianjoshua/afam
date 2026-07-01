@@ -13,22 +13,26 @@ import java.util.UUID;
  *
  * Versione "condivisa" del visualizzatore: incrementa sempre il contatore
  * di visualizzazioni, anche per accessi anonimi o tramite link.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class VisualizzaPortfolioCondivisoCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
+
     private EntityPortfolio portfolio;
 
+    // ── Metodi ──────────────────
     public EntityPortfolio recuperaPortfolio(UUID idPortfolio) {
         portfolio = db.recuperaPortfolio(idPortfolio);
         return portfolio;
     }
 
+    /** Recupera contenuti portfolio. */
     public List<EntityContenuto> recuperaContenutiPortfolio(UUID idPortfolio) {
         return db.recuperaContenutiPortfolio(idPortfolio);
     }
 
+    /** Recupera visualizzazioni. */
     public int recuperaVisualizzazioni(UUID idPortfolio) {
         return db.recuperaVisualizzazioni(idPortfolio);
     }
@@ -38,5 +42,6 @@ public class VisualizzaPortfolioCondivisoCtrl {
         db.aggiornaNumero(numeroVisualizzazioni, idPortfolio);
     }
 
+    /** Restituisce portfolio. */
     public EntityPortfolio getPortfolio() { return portfolio; }
 }

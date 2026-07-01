@@ -12,19 +12,21 @@ import javafx.stage.Window;
 
 /**
  * MessConfermaBnd – dialog di conferma (CONFERMA / ANNULLA) con tema AFAM.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class MessConfermaBnd {
 
+    // ── Campi ──────────────────
     @FXML private Label labelMessaggio;
 
     private Stage stage;
     private boolean confermato = false;
 
+    // ── Metodi ──────────────────
     public static boolean create(String domanda) {
         return create(domanda, null);
     }
 
+    /** Create. */
     public static boolean create(String domanda, Window owner) {
         try {
             FXMLLoader loader = new FXMLLoader(
@@ -49,12 +51,14 @@ public class MessConfermaBnd {
         }
     }
 
+    /** Gestisce l'azione «Conferma». */
     @FXML
     public void onConferma() {
         confermato = true;
         stage.close();
     }
 
+    /** Gestisce l'azione «Annulla». */
     @FXML
     public void onAnnulla() {
         confermato = false;

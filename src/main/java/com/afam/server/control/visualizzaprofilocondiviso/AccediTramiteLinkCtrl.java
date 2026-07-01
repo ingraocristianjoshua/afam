@@ -12,14 +12,16 @@ import java.util.UUID;
  * La verifica della validità del link è sincrona (confronto con now() nel DB);
  * non esiste uno scheduler che revoca automaticamente i link scaduti.
  * Il link viene verificato al momento dell'accesso.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class AccediTramiteLinkCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
+
     private EntityLink    link;
     private EntityPortfolio portfolio;
 
+    // ── Metodi ──────────────────
     public void setLink(EntityLink l) { this.link = l; }
 
     /**
@@ -42,10 +44,12 @@ public class AccediTramiteLinkCtrl {
         return db.getIdPortfolio(idLink);
     }
 
+    /** Recupera portfolio. */
     public EntityPortfolio recuperaPortfolio(UUID idPortfolio) {
         portfolio = db.recuperaPortfolio(idPortfolio);
         return portfolio;
     }
 
+    /** Restituisce portfolio. */
     public EntityPortfolio getPortfolio() { return portfolio; }
 }

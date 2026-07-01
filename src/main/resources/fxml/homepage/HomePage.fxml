@@ -117,27 +117,6 @@
                                 styleClass="button" maxWidth="Infinity"/>
                     </VBox>
 
-                    <!-- Profilo pubblico (a tutta larghezza) -->
-                    <VBox styleClass="card" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="2"
-                          GridPane.columnSpan="2" prefHeight="108">
-                        <HBox spacing="16" alignment="CENTER_LEFT">
-                            <StackPane minWidth="54" minHeight="54" maxWidth="54" maxHeight="54"
-                                       style="-fx-background-color: linear-gradient(to bottom right,#00f2fe,#4facfe);
-                                              -fx-background-radius: 50;
-                                              -fx-effect: dropshadow(gaussian,rgba(79,172,254,0.45),12,0,0,3);">
-                                <Label text="👁" style="-fx-font-size: 24px;"/>
-                            </StackPane>
-                            <VBox spacing="4" HBox.hgrow="ALWAYS">
-                                <Label text="Visualizza Profilo Condiviso"
-                                       style="-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: white;"/>
-                                <Label text="Guarda come appare il tuo profilo agli ospiti e cerca altri studenti"
-                                       wrapText="true" style="-fx-font-size: 13px; -fx-text-fill: #c4b5fd;"/>
-                            </VBox>
-                            <Button text="Clicca" onAction="#onVisualizzaProfilo"
-                                    styleClass="button-primary"/>
-                        </HBox>
-                    </VBox>
-
                 </GridPane>
             </VBox>
         </ScrollPane>

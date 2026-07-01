@@ -6,9 +6,9 @@
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.afam.client.boundary.gestiscicontenuti.FormModificheBnd"
-      spacing="0" prefWidth="440" styleClass="root">
+      spacing="0" prefWidth="440" styleClass="root" alignment="CENTER">
 
-    <VBox spacing="16" styleClass="card">
+    <VBox spacing="16" styleClass="card" maxWidth="480">
         <padding><Insets top="30" right="36" bottom="30" left="36"/></padding>
 
         <Label text="Modifica contenuto" styleClass="label-title"/>
@@ -17,11 +17,6 @@
             <Label text="Titolo" styleClass="label"/>
             <TextField fx:id="fieldTitolo" promptText="Titolo del contenuto"
                        maxWidth="Infinity" styleClass="text-field"/>
-        </VBox>
-
-        <VBox spacing="4">
-            <Label text="Visibilità" styleClass="label"/>
-            <ComboBox fx:id="comboVisibilita" maxWidth="Infinity"/>
         </VBox>
 
         <HBox spacing="10" alignment="CENTER_RIGHT">

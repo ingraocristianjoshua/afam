@@ -17,13 +17,13 @@ import java.util.UUID;
  * ContenutoApi – endpoint REST per il sottosistema Gestisci Contenuti.
  * Base path: /api/contenuti
  * Header richiesto: X-User-Id (UUID stringa).
- * @author Cristian Joshua Ingrao (0780672)
  */
 @Path("/contenuti")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class ContenutoApi {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
 
     // ── Lista contenuti utente ────────────────────────────────────────────────
@@ -191,16 +191,19 @@ public class ContenutoApi {
         }
     }
 
+    /** To long. */
     private long toLong(Object val) {
         if (val instanceof Number n) return n.longValue();
         if (val instanceof String s) return Long.parseLong(s);
         return 0L;
     }
 
+    /** Ok. */
     private Response ok() {
         return Response.ok(Map.of("success", true)).build();
     }
 
+    /** Ok. */
     private Response ok(Object data) {
         Map<String, Object> body = new HashMap<>();
         body.put("success", true);
@@ -208,18 +211,21 @@ public class ContenutoApi {
         return Response.ok(body).build();
     }
 
+    /** Bad. */
     private Response bad(String errore) {
         return Response.status(Response.Status.BAD_REQUEST)
                 .entity(Map.of("success", false, "errore", errore))
                 .build();
     }
 
+    /** Not found. */
     private Response notFound() {
         return Response.status(Response.Status.NOT_FOUND)
                 .entity(Map.of("success", false, "errore", "Contenuto non trovato."))
                 .build();
     }
 
+    /** Server. */
     private Response server(String errore) {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(Map.of("success", false, "errore", errore != null ? errore : "Errore interno."))

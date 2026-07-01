@@ -28,23 +28,26 @@ import java.util.Map;
 
 /**
  * VisualizzaLinkBnd – elenco dei link con azioni inline: scadenza, visibilità, revoca.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class VisualizzaLinkBnd {
 
+    // ── Campi ──────────────────
     @FXML private VBox boxLinks;
 
     private final RestClient rest = RestClient.getInstance();
 
+    // ── Metodi ──────────────────
     @FXML
     public void initialize() {
         aggiorna();
     }
 
+    /** Aggiorna. */
     private void aggiorna() {
         new Thread(this::caricaLinks, "carica-links").start();
     }
 
+    /** Carica links. */
     @SuppressWarnings("unchecked")
     private void caricaLinks() {
         try {
@@ -68,9 +71,9 @@ public class VisualizzaLinkBnd {
         }
     }
 
+    /** Crea riga. */
     private HBox creaRiga(Map<String, Object> link) {
         String linkUrl = (String) link.getOrDefault("linkUrl", "");
-        String vis     = (String) link.getOrDefault("visibilita", "privato");
         String stato   = (String) link.getOrDefault("stato", "attivo");
         String scad    = (String) link.getOrDefault("scadenza", null);
         boolean attivo = "attivo".equals(stato);
@@ -100,34 +103,31 @@ public class VisualizzaLinkBnd {
                 Platform.runLater(() -> btnCopia.setText("📋 COPIA"));
             }).start();
         });
-        String urlToken = (String) link.getOrDefault("urlToken", "");
+        String idLink = String.valueOf(link.getOrDefault("idLink", ""));
         Button btnApri = bottone("👁 ANTEPRIMA", "btn-chip-indigo");
-        btnApri.setOnAction(e -> onApriAnteprima(urlToken, btnApri));
+        btnApri.setOnAction(e -> onApriAnteprima(idLink, btnApri));
         urlRow.getChildren().addAll(lUrl, btnCopia, btnApri);
 
-        // Info secondarie
+        // Info secondarie (la visibilità non si applica: i portfolio sono sempre pubblici)
         String scadInfo = scad != null ? "Scade: " + scad.substring(0, 10) : "Nessuna scadenza";
-        Label lInfo = new Label("Visibilità: " + vis + "  •  Stato: " + stato + "  •  " + scadInfo);
+        Label lInfo = new Label("Stato: " + stato + "  •  " + scadInfo);
         lInfo.setStyle("-fx-font-size: 11px; -fx-text-fill: #9879e0;");
 
         // Pulsanti azione
         HBox btnRow = new HBox(8);
         btnRow.setAlignment(Pos.CENTER_LEFT);
         Button btnScad  = bottone("SCADENZA",     "btn-chip-gold");
-        Button btnVis   = bottone("VISIBILITÀ",   "btn-chip-teal");
         Button btnEmail = bottone("✉ INVIA EMAIL", "btn-chip-blue");
         Button btnRev   = bottone("REVOCA",       "btn-chip-red");
         btnScad.setOnAction(e  -> onScadenza(link));
-        btnVis.setOnAction(e   -> onVisibilita(link, btnVis));
         btnEmail.setOnAction(e -> onInviaEmail(link, btnEmail));
         btnRev.setOnAction(e   -> onRevoca(link, btnRev));
         if (!attivo) {
             btnScad.setDisable(true);
-            btnVis.setDisable(true);
             btnEmail.setDisable(true);
             btnRev.setDisable(true);
         }
-        btnRow.getChildren().addAll(btnScad, btnVis, btnEmail, btnRev);
+        btnRow.getChildren().addAll(btnScad, btnEmail, btnRev);
 
         card.getChildren().addAll(urlRow, lInfo, btnRow);
 
@@ -137,19 +137,21 @@ public class VisualizzaLinkBnd {
         return row;
     }
 
+    /** Bottone. */
     private Button bottone(String testo, String classeColore) {
         Button b = new Button(testo);
         b.getStyleClass().addAll("btn-chip", classeColore);
         return b;
     }
 
+    /** Gestisce l'azione «Apri Anteprima». */
     @SuppressWarnings("unchecked")
-    private void onApriAnteprima(String urlToken, Button btn) {
+    private void onApriAnteprima(String idLink, Button btn) {
         btn.setDisable(true);
         btn.setText("…");
         new Thread(() -> {
             try {
-                Map<String, Object> resp = rest.get("pubblico/link/" + urlToken);
+                Map<String, Object> resp = rest.get("pubblico/link/" + idLink);
                 Map<String, Object> data = (Map<String, Object>) resp.get("data");
                 Platform.runLater(() -> {
                     try {
@@ -181,6 +183,7 @@ public class VisualizzaLinkBnd {
         }, "apri-anteprima").start();
     }
 
+    /** Gestisce l'azione «Scadenza». */
     private void onScadenza(Map<String, Object> link) {
         try {
             FXMLLoader loader = new FXMLLoader(
@@ -201,6 +204,7 @@ public class VisualizzaLinkBnd {
         }
     }
 
+    /** Gestisce l'azione «Invia Email». */
     private void onInviaEmail(Map<String, Object> link, Button btn) {
         Object idLink = link.get("idLink");
         if (idLink == null) {
@@ -237,6 +241,7 @@ public class VisualizzaLinkBnd {
         });
     }
 
+    /** Gestisce l'azione «Visibilita». */
     private void onVisibilita(Map<String, Object> link, Button btn) {
         Object idLink = link.get("idLink");
         if (idLink == null) {
@@ -264,6 +269,7 @@ public class VisualizzaLinkBnd {
         }, "toggle-visibilita").start();
     }
 
+    /** Gestisce l'azione «Revoca». */
     private void onRevoca(Map<String, Object> link, Button btn) {
         if (!MessConfermaBnd.create("Revocare il link? L'operazione è irreversibile.")) return;
         btn.setDisable(true);
@@ -283,6 +289,7 @@ public class VisualizzaLinkBnd {
         }, "revoca-link").start();
     }
 
+    /** Chiude la finestra corrente. */
     @FXML
     public void chiudi() {
         ((Stage) boxLinks.getScene().getWindow()).close();

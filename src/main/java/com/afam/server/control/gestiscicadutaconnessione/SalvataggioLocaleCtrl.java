@@ -14,13 +14,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * La coda è statica (condivisa nell'arco della vita del processo server)
  * perché deve sopravvivere alla reinstanziazione della control.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class SalvataggioLocaleCtrl {
 
+    // ── Campi ──────────────────
     /** Coda thread-safe delle operazioni sospese (payload serializzabile come Map). */
     private static final List<Map<String, Object>> codaLocale = new CopyOnWriteArrayList<>();
 
+    // ── Metodi ──────────────────
     /**
      * Raccoglie i dati della sessione corrente (da passare poi a salvaLocale).
      * In questa implementazione restituisce uno snapshot della coda corrente.
@@ -46,6 +47,8 @@ public class SalvataggioLocaleCtrl {
         codaLocale.clear();
     }
 
+    /** Indica se coda vuota. */
     public boolean isCodaVuota() { return codaLocale.isEmpty(); }
+    /** Dimensione coda. */
     public int     dimensioneCoda() { return codaLocale.size(); }
 }

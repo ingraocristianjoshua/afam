@@ -29,13 +29,15 @@ import java.util.logging.Logger;
  *   5. Notifica il ripristino
  *
  * Flusso normale (nessun errore): trasparente, restituisce il risultato.
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class GestisciCadutaBnd {
 
+    // ── Campi ──────────────────
     private static final Logger LOG = Logger.getLogger(GestisciCadutaBnd.class.getName());
 
     private static final GestisciCadutaBnd INSTANCE = new GestisciCadutaBnd();
+
+    /** Restituisce l'istanza singleton. */
     public  static GestisciCadutaBnd getInstance() { return INSTANCE; }
 
     private final RestClient rest = RestClient.getInstance();
@@ -46,6 +48,7 @@ public class GestisciCadutaBnd {
     private ScheduledFuture<?> pollingTask;
     private boolean             inRipristino = false;
 
+    // ── Costruttori ──────────────────
     private GestisciCadutaBnd() {}
 
     // ── API pubblica ──────────────────────────────────────────────────────────
@@ -76,7 +79,9 @@ public class GestisciCadutaBnd {
         tentaRipristino();
     }
 
+    /** Indica se offline. */
     public boolean isOffline()      { return inRipristino; }
+    /** Dimensione coda. */
     public int     dimensioneCoda() { return codaLocale.size(); }
 
     // ── Logica interna ────────────────────────────────────────────────────────
@@ -97,6 +102,7 @@ public class GestisciCadutaBnd {
         avviaPolling();
     }
 
+    /** Avvia polling. */
     private void avviaPolling() {
         if (pollingTask != null && !pollingTask.isDone()) return;
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
@@ -107,6 +113,7 @@ public class GestisciCadutaBnd {
         pollingTask = scheduler.scheduleWithFixedDelay(this::tentaRipristino, 5, 10, TimeUnit.SECONDS);
     }
 
+    /** Tenta ripristino. */
     private void tentaRipristino() {
         try {
             Map<String, Object> stato = rest.get("sessione/stato");

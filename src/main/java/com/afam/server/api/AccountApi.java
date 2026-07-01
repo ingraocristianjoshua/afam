@@ -17,13 +17,13 @@ import java.util.UUID;
  * AccountApi – endpoint REST per il sottosistema Gestisci Account.
  * Base path: /api/account
  * Header richiesto: X-User-Id (UUID stringa) per tutte le operazioni.
- * @author Cristian Joshua Ingrao (0780672)
  */
 @Path("/account")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class AccountApi {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
 
     // ── Logout ────────────────────────────────────────────────────────────────
@@ -127,8 +127,40 @@ public class AccountApi {
         return Response.ok(resp).build();
     }
 
+    /** POST /api/account/2fa/invia-otp
+     *  Genera e invia (via SMS) un OTP per confermare l'attivazione del 2FA.
+     *  Richiede che email e numero siano già validati. */
+    @POST
+    @Path("/2fa/invia-otp")
+    public Response inviaOtp2FA(@HeaderParam("X-User-Id") String userId) {
+        impostaUtente(userId);
+        Gestione2FACtrl ctrl = new Gestione2FACtrl();
+        try {
+            // L'attivazione è subordinata alla validazione di email e numero
+            if (!ctrl.verificaContattiValidati(true)) return bad(ctrl.getErrorMessage());
+
+            com.afam.server.control.autenticati.Verifica2FACtrl otpCtrl =
+                    new com.afam.server.control.autenticati.Verifica2FACtrl();
+            String otp = otpCtrl.generaOTP();
+            OffsetDateTime scad = OffsetDateTime.now().plusMinutes(Constants.OTP_DURATION_MINUTES);
+            otpCtrl.salvaCodiceOTP(otp, scad);
+
+            EntityUtente utente = db.recuperaUtente(db.getCurrentUserId());
+            if (utente == null) return bad("Utente non trovato.");
+            otpCtrl.inviaSMS(utente.getNumTelefono(), otp);
+
+            Map<String, Object> resp = new HashMap<>();
+            resp.put("success", true);
+            resp.put("data", Map.of("scadenza", scad.toString()));
+            return Response.ok(resp).build();
+        } catch (Exception e) {
+            return server(e.getMessage());
+        }
+    }
+
     /** POST /api/account/2fa/configura
-     *  Body: { email, numero, abilita:bool } */
+     *  Body: { email, numero, abilita:bool, otp?, scadenza? }
+     *  In abilitazione l'otp (ricevuto via SMS) è obbligatorio. */
     @POST
     @Path("/2fa/configura")
     public Response configura2FA(@HeaderParam("X-User-Id") String userId,
@@ -136,12 +168,30 @@ public class AccountApi {
         impostaUtente(userId);
         Gestione2FACtrl ctrl = new Gestione2FACtrl();
         try {
-            if (!ctrl.verificaDati(data))               return bad(ctrl.getErrorMessage());
-            if (!ctrl.verificaStato2FA(
-                    (String) data.get("email"),
-                    (String) data.get("numero")))       return bad(ctrl.getErrorMessage());
-            ctrl.checkValid();
             Boolean abilita = (Boolean) data.getOrDefault("abilita", false);
+            if (Boolean.TRUE.equals(abilita)) {
+                // Abilitazione: subordinata alla validazione di email e numero di telefono
+                if (!ctrl.verificaDati(data))               return bad(ctrl.getErrorMessage());
+                if (!ctrl.verificaStato2FA(
+                        (String) data.get("email"),
+                        (String) data.get("numero")))       return bad(ctrl.getErrorMessage());
+                if (!ctrl.verificaContattiValidati(abilita)) return bad(ctrl.getErrorMessage());
+                ctrl.checkValid();
+
+                // Conferma con OTP: l'utente deve inserire il codice ricevuto via SMS
+                String otp = (String) data.get("otp");
+                if (otp == null || otp.isBlank())
+                    return bad("Inserisci il codice OTP inviato per attivare il 2FA.");
+                String scadStr = (String) data.get("scadenza");
+                OffsetDateTime scad = scadStr != null
+                        ? OffsetDateTime.parse(scadStr)
+                        : OffsetDateTime.now().plusMinutes(Constants.OTP_DURATION_MINUTES);
+                com.afam.server.control.autenticati.Verifica2FACtrl otpCtrl =
+                        new com.afam.server.control.autenticati.Verifica2FACtrl();
+                if (!otpCtrl.recuperaOTP(otp, scad))
+                    return bad("Codice OTP non valido o scaduto.");
+            }
+            // Disattivazione: nessun vincolo, l'utente può sempre disabilitare il 2FA
             ctrl.aggiornaStato2FA(abilita);
             return ok();
         } catch (IllegalStateException e) {
@@ -333,18 +383,22 @@ public class AccountApi {
         }
     }
 
+    /** Ok. */
     private Response ok() {
         return Response.ok(Map.of("success", true)).build();
     }
 
+    /** Bad. */
     private Response bad(String msg) {
         return Response.status(400).entity(error(msg)).build();
     }
 
+    /** Conflict. */
     private Response conflict(String msg) {
         return Response.status(409).entity(error(msg)).build();
     }
 
+    /** Server. */
     private Response server(String msg) {
         return Response.serverError().entity(error(msg)).build();
     }

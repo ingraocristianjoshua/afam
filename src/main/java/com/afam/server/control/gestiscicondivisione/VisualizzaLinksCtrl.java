@@ -7,12 +7,13 @@ import java.util.List;
 
 /**
  * Sequence: recuperaLinks → (restituisce lista link dell'utente corrente)
- * @author Cristian Joshua Ingrao (0780672)
  */
 public class VisualizzaLinksCtrl {
 
+    // ── Campi ──────────────────
     private final DBMSBnd db = DBMSBnd.getInstance();
 
+    // ── Metodi ──────────────────
     /** Restituisce tutti i link di condivisione dell'utente corrente. */
     public List<EntityLink> recuperaLinks() {
         return db.recuperaLinks();
